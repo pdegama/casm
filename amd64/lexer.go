@@ -101,6 +101,8 @@ stringLoop:
 		case ';': // semicolon
 			tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
 			break stringLoop
+		case '%':
+			tokenPrint(&tok, &t, tokenModulo, &toks)
 		case ',': // comma
 			tokenPrint(&tok, &t, tokenComma, &toks)
 		case '"': // double quote

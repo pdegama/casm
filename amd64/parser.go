@@ -7,6 +7,7 @@ package amd64
 
 import (
 	"fmt"
+
 	"hellocomputers/casm/utils"
 )
 
@@ -32,15 +33,25 @@ func parseLine(line asmLine) (asmLine, error) {
 
 	///	fmt.Printf("%v:%v %v %v\n", *line.filePath, line.index, line.lineType, line.tokens)
 
-	for tokIndex, tok := range line.tokens {
-		if tok.tokenType == tokenUnknow && tokIndex == 0 {
-			switch tok.token {
-			case "db", "dw", "dd", "dq":
+	if len(line.tokens) > 0 {
+		// check first token
+
+		if line.tokens[0].tokenType == tokenModulo {
+			// if token is modulo then line is modulo
+			line.lineType = lineModulo
+			return line, nil
+		}
+
+		if line.tokens[0].tokenType == tokenUnknow {
+			switch line.tokens[0].token {
+			case "db", "dw", "dd", "dq": // if token is d* then line is token
 				line.lineType = lineData
 				return line, nil
 			}
 		}
+	}
 
+	for tokIndex, tok := range line.tokens {
 		switch tok.tokenType {
 		case tokenColon:
 			// token is colon and token index is 1 then is valid

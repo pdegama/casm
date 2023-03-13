@@ -5,7 +5,11 @@
 
 package amd64
 
-import "fmt"
+import (
+	"fmt"
+
+	"hellocomputers/casm/utils"
+)
 
 // assemble asm file
 func assemble(arch *amd64) {
@@ -18,9 +22,9 @@ func assemble(arch *amd64) {
 	}
 
 	// tmp
-	for _, line := range lines {
+	/* for _, line := range lines {
 		fmt.Println(line)
-	}
+	} */
 
 	// parse asm lines
 	lines, errs := parseLines(lines)
@@ -31,10 +35,15 @@ func assemble(arch *amd64) {
 		return
 	}
 
-	// tmp
-	fmt.Println("")
-	for _, line := range lines {
-		fmt.Println(line)
+	err = codeGen(lines)
+	if err != nil {
+		fmt.Printf("%v code generation error", utils.Error)
+		return
 	}
+
+	// tmp
+	/* for _, line := range lines {
+		fmt.Println(line)
+	} */
 
 }

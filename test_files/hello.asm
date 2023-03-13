@@ -1,4 +1,4 @@
-bits 
+% bits 32
 
 start:
   mov rax, 1        ; write(
