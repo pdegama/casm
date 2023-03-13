@@ -6,15 +6,17 @@
 package amd64
 
 // token type
-const (
-	tokenUnknow      = iota
-	tokenComma       // ,
-	tokenColon       // :
-	tokenDoubleQuote // "
+type tokenType string
+
+const ( // value is tmp
+	tokenUnknow      tokenType = "Unknow"
+	tokenComma                 = "Comma"        // ,
+	tokenColon                 = "Colon"        // :
+	tokenDoubleQuote           = "Double Quote" // "
 )
 
 // token structure
 type token struct {
-	token     string // token
-	tokenType int    // token type
+	token     string    // token
+	tokenType tokenType // token type
 }

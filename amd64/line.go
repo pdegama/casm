@@ -6,17 +6,20 @@
 package amd64
 
 // line type
-const (
-	lineUnknow = iota
-	lineInst   // instruction line
-	lineLabel  // label line
-	lineModulo // modulo line
+type lineType string
+
+const ( // value is tmp
+	lineUnknow lineType = "Unknow"
+	lineInst            = "Inst"
+	lineData            = "Data"
+	lineLabel           = "Label"
+	lineModulo          = "Modulo"
 )
 
 // line structure
 type asmLine struct {
-	tokens   []token // tokens
-	index    int     // line index
-	filePath *string // filename
-	lineType int     // line type
+	tokens   []token  // tokens
+	index    int      // line index
+	filePath *string  // filename
+	lineType lineType // line type
 }

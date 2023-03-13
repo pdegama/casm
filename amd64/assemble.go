@@ -17,7 +17,10 @@ func assemble(arch *amd64) {
 		return
 	}
 
-	fmt.Println(lines) // tmp
+	// tmp
+	for _, line := range lines {
+		fmt.Println(line)
+	}
 
 	// parse asm lines
 	lines, errs := parseLines(lines)
@@ -28,6 +31,10 @@ func assemble(arch *amd64) {
 		return
 	}
 
-	fmt.Println(lines) // tmp
+	// tmp
+	fmt.Println("")
+	for _, line := range lines {
+		fmt.Println(line)
+	}
 
 }

@@ -95,11 +95,11 @@ stringLoop:
 
 		switch t {
 		case ' ': // space
-			tokenPrint[rune](&tok, nil, 0, &toks)
+			tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
 		case ':': // colon
 			tokenPrint(&tok, &t, tokenColon, &toks)
 		case ';': // semicolon
-			tokenPrint[rune](&tok, nil, 0, &toks)
+			tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
 			break stringLoop
 		case ',': // comma
 			tokenPrint(&tok, &t, tokenComma, &toks)
@@ -112,13 +112,13 @@ stringLoop:
 
 	}
 
-	tokenPrint[rune](&tok, nil, 0, &toks)
+	tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
 
 	return toks, nil
 }
 
 // print tokne - tmp
-func tokenPrint[T string | rune](tok *string, newTok *T, newTokType int, toks *[]token) {
+func tokenPrint[T string | rune](tok *string, newTok *T, newTokType tokenType, toks *[]token) {
 	if *tok != "" {
 		// fmt.Println(*token)
 		*toks = append(*toks, token{
