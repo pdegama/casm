@@ -12,9 +12,21 @@ func codeGen(lines []asmLine) error {
 
 	for _, line := range lines {
 		if len(line.tokens) != 0 {
-			fmt.Println(line)
+			switch line.lineType{
+			case lineInst:
+				// if line type is insrtuction
+				genCodeInst(line) // gen code for instruction
+			}
 		}
 	}
-
+	
 	return nil
+}
+
+// code generation for instruction
+func genCodeInst(line asmLine) {
+
+	fmt.Println(line)
+
+	
 }
