@@ -9,11 +9,11 @@ package amd64
 type lineType string
 
 const ( // value is tmp
-	lineUnknow lineType = "Unknow"
-	lineInst            = "Inst"
-	lineData            = "Data"
-	lineLabel           = "Label"
-	lineModulo          = "Modulo"
+	lineUnknow lineType = "Unknow" // unknow
+	lineInst            = "Inst"   // instruction
+	lineData            = "Data"   // data
+	lineLabel           = "Label"  // label
+	lineModulo          = "Modulo" // modulo
 )
 
 // line structure

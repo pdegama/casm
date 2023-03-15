@@ -26,7 +26,7 @@ func codeGen(lines []asmLine) error {
 // code generation for instruction
 func genCodeInst(line asmLine) {
 
-	fmt.Println(line)
+	toks := parseInst(line.tokens)
+	fmt.Println(toks)
 
-	
 }

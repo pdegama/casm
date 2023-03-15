@@ -77,3 +77,44 @@ func parseLine(line asmLine) (asmLine, error) {
 
 	return line, nil
 }
+
+// parse instruction
+func parseInst(tokens []token) []token {
+
+	operandTokens := []token{} // operand token queue
+
+	for tokIndex, tok := range tokens {
+
+		if tokIndex == 0 {
+			// if first token mnemonic
+			// first token is
+			if tok.tokenType == tokenUnknow {
+				fmt.Println(tok.token, "Mnemonic")
+				continue
+			} else {
+				fmt.Println("error: invalid token")
+			}
+		}
+
+		if tok.tokenType == tokenUnknow {
+			// if token is unknow
+			operandTokens = append(operandTokens, tok)
+			continue
+		}
+
+		if tok.tokenType == tokenComma {
+			// token is comma then current operand is over
+			fmt.Println(operandTokens)
+			operandTokens = []token{} // clear operand
+			continue
+		}
+
+		fmt.Println("error: invalid token")
+	}
+
+	if len(operandTokens) > 0 {
+		fmt.Println(operandTokens)
+	}
+
+	return tokens
+}

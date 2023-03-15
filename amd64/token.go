@@ -9,7 +9,7 @@ package amd64
 type tokenType string
 
 const ( // value is tmp
-	tokenUnknow      tokenType = "Unknow"
+	tokenUnknow      tokenType = "Unknow"       // unknow
 	tokenComma                 = "Comma"        // ,
 	tokenColon                 = "Colon"        // :
 	tokenDoubleQuote           = "Double Quote" // "
