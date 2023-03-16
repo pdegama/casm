@@ -96,25 +96,29 @@ func parseInst(tokens []token) []token {
 			}
 		}
 
-		if tok.tokenType == tokenUnknow {
+		switch tok.tokenType {
+		case tokenUnknow:
 			// if token is unknow
 			operandTokens = append(operandTokens, tok)
-			continue
-		}
-
-		if tok.tokenType == tokenComma {
+		case tokenComma:
 			// token is comma then current operand is over
-			fmt.Println(operandTokens)
+			parseOperand(operandTokens)
 			operandTokens = []token{} // clear operand
-			continue
+		default:
+			// invalid token
+			fmt.Println("error: invalid token")
 		}
-
-		fmt.Println("error: invalid token")
 	}
 
 	if len(operandTokens) > 0 {
-		fmt.Println(operandTokens)
+		parseOperand(operandTokens)
 	}
 
 	return tokens
+}
+
+// parse operand
+func parseOperand(tokens []token) {
+
+	fmt.Println(tokens)
 }
