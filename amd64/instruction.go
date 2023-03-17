@@ -27,3 +27,9 @@ const ( // value is tmp
 	reg    = "regGroup"    // group of Reg*
 	regMem = "regMemGroup" // group of RegMem*
 )
+
+// operand structure
+type operand struct {
+	operandType operandType // operand type
+	operand     int      // operand
+}

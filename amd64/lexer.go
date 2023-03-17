@@ -77,11 +77,9 @@ func lineLexer(asmLine string) ([]token, error) {
 stringLoop:
 	for _, t := range asmLine {
 
-		// if str in start
 		if isStr {
-			if t == '"' {
-				// if rune is " then str stop
-			} else {
+			// if str is start
+			if t != '"' {
 				// add any rune in token and continue
 				tok += string(t)
 				continue
@@ -96,6 +94,13 @@ stringLoop:
 		switch t {
 		case ' ': // space
 			tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
+		case '$': // label
+			// label is start with `$`
+			if tok == "" {
+				tok += "$"
+			} else {
+				return toks, fmt.Errorf("invalid syntax")
+			}
 		case ':': // colon
 			tokenPrint(&tok, &t, tokenColon, &toks)
 		case ';': // semicolon
@@ -122,10 +127,17 @@ stringLoop:
 // print tokne - tmp
 func tokenPrint[T string | rune](tok *string, newTok *T, newTokType tokenType, toks *[]token) {
 	if *tok != "" {
-		// fmt.Println(*token)
+
+		tokType := tokenUnknow // token type
+
+		if strings.HasPrefix(*tok, "$") {
+			// if token is start with `$`
+			tokType = tokenLabel
+		}
+
 		*toks = append(*toks, token{
 			token:     *tok,
-			tokenType: tokenUnknow,
+			tokenType: tokType,
 		})
 	}
 	if newTok != nil {

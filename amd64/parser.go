@@ -120,5 +120,18 @@ func parseInst(tokens []token) []token {
 // parse operand
 func parseOperand(tokens []token) {
 
-	fmt.Println(tokens)
+	if len(tokens) == 1 {
+		fmt.Println(tokens)
+		isReg, reg := isRegister(tokens[0].token)
+		if isReg {
+			oper := operand{
+				operandType: getRegisterOperandType(reg),
+				operand:     reg.globleIndex,
+			}
+			fmt.Printf("yes is register %v\n", oper)
+		}
+	} else {
+		fmt.Println("error: invalid syntax")
+	}
+
 }

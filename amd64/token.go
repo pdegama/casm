@@ -14,6 +14,7 @@ const ( // value is tmp
 	tokenColon                 = "Colon"        // :
 	tokenDoubleQuote           = "Double Quote" // "
 	tokenModulo                = "Modulo"       // %
+	tokenLabel                 = "Label"        // $*
 )
 
 // token structure
