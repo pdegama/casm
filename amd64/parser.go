@@ -7,6 +7,7 @@ package amd64
 
 import (
 	"fmt"
+	"strconv"
 
 	"hellocomputers/casm/utils"
 )
@@ -102,7 +103,8 @@ func parseInst(tokens []token) []token {
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
 			// token is comma then current operand is over
-			parseOperand(operandTokens)
+			opr := parseOperand(operandTokens)
+			fmt.Println(opr)
 			operandTokens = []token{} // clear operand
 		default:
 			// invalid token
@@ -111,27 +113,53 @@ func parseInst(tokens []token) []token {
 	}
 
 	if len(operandTokens) > 0 {
-		parseOperand(operandTokens)
+		opr := parseOperand(operandTokens)
+		fmt.Println(opr)
 	}
 
 	return tokens
 }
 
 // parse operand
-func parseOperand(tokens []token) {
+func parseOperand(tokens []token) operand {
 
 	if len(tokens) == 1 {
-		fmt.Println(tokens)
-		isReg, reg := isRegister(tokens[0].token)
-		if isReg {
-			oper := operand{
-				operandType: getRegisterOperandType(reg),
-				operand:     reg.globleIndex,
+		// fmt.Println(tokens)
+		switch tokens[0].tokenType {
+		case tokenUnknow:
+			// if token is register
+			isReg, reg := isRegister(tokens[0].token)
+			if isReg {
+				return operand{
+					operandType: getRegisterOperandType(reg),
+					operand:     reg.globleIndex,
+				}
 			}
-			fmt.Printf("yes is register %v\n", oper)
+
+			// check token is imm
+			tokenVal, err := strconv.Atoi(tokens[0].token) // try to convert imm
+			if err == nil {
+				// is err is nil then token is imm
+				return operand{
+					operandType: imm,
+					operand:     tokenVal,
+				}
+			}
+
+		case tokenDoubleQuote:
+
+		case tokenLabel:
+			// token is label
+			return operand{
+				operandType: imm,
+				operand:     0x00,
+			}
 		}
+
 	} else {
-		fmt.Println("error: invalid syntax")
+		fmt.Println("error: todo")
 	}
+
+	return operand{}
 
 }
