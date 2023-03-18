@@ -97,8 +97,8 @@ func parseInst(tokens []token) []token {
 		}
 
 		switch tok.tokenType {
-		case tokenUnknow:
-			// if token is unknow
+		case tokenUnknow, tokenLabel:
+			// if token is unknow, or label
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
 			// token is comma then current operand is over

@@ -4,7 +4,7 @@ $start:
   mov rax, 1        ; write(
   mov rdi, 0x01        ;   STDOUT_FILENO,
   mov rsi, msg      ;   "Hello, world!\n",
-  mov $rdx, msglen   ;   sizeof("Hello, world!\n")
+  mov $rdx, $msglen   ;   sizeof("Hello, world!\n")
   syscall           ; );
 
   hello:
