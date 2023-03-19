@@ -7,6 +7,8 @@ package amd64
 
 // register globle index
 const (
+
+	//
 	noneReg = iota
 
 	// 64 bit registers
