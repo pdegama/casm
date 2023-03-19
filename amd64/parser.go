@@ -83,7 +83,7 @@ func parseLine(line asmLine) (asmLine, error) {
 }
 
 // parse instruction
-func parseInst(tokens []token) []token {
+func parseInst(tokens []token) ([]token, error) {
 
 	operandTokens := []token{} // operand token queue
 
@@ -108,7 +108,7 @@ func parseInst(tokens []token) []token {
 			// token is comma then current operand is over
 			opr, err := parseOperand(operandTokens)
 			if err != nil {
-				fmt.Printf("%v %v\n", utils.Error, err)
+				return tokens, err
 			}
 			fmt.Println(opr)
 			operandTokens = []token{} // clear operand
@@ -121,12 +121,12 @@ func parseInst(tokens []token) []token {
 	if len(operandTokens) > 0 {
 		opr, err := parseOperand(operandTokens)
 		if err != nil {
-			fmt.Printf("%v %v\n", utils.Error, err)
+			return tokens, err
 		}
 		fmt.Println(opr)
 	}
 
-	return tokens
+	return tokens, nil
 }
 
 // parse operand
@@ -181,8 +181,6 @@ func parseOperand(tokens []token) (operand, error) {
 				}, nil
 
 			}
-
-		case tokenDoubleQuote:
 
 		case tokenLabel:
 			// token is label

@@ -7,7 +7,6 @@ package amd64
 
 import (
 	"fmt"
-	"hellocomputers/casm/utils"
 )
 
 // assemble asm file
@@ -34,9 +33,11 @@ func assemble(arch *amd64) {
 		return
 	}
 
-	err = codeGen(lines)
-	if err != nil {
-		fmt.Printf("%v code generation error", utils.Error)
+	errs = codeGen(lines)
+	if len(errs) != 0 {
+		for _, err := range errs {
+			fmt.Println(err)
+		}
 		return
 	}
 

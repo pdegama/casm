@@ -13,6 +13,8 @@ $start:
   mov rdi, 0x2          ;   EXIT_SUCCESS
   syscall           ; );
 
+  mov rcx, rdx
+
   mov al, cx
 
   $msg:
