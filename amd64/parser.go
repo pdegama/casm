@@ -35,8 +35,6 @@ func parseLines(lines []asmLine) ([]asmLine, []error) {
 // parse one line
 func parseLine(line asmLine) (asmLine, error) {
 
-	///	fmt.Printf("%v:%v %v %v\n", *line.filePath, line.index, line.lineType, line.tokens)
-
 	if len(line.tokens) > 0 {
 		// check first token
 
@@ -55,6 +53,7 @@ func parseLine(line asmLine) (asmLine, error) {
 		}
 	}
 
+	// check other token
 	for tokIndex, tok := range line.tokens {
 		switch tok.tokenType {
 		case tokenColon:
@@ -83,9 +82,12 @@ func parseLine(line asmLine) (asmLine, error) {
 }
 
 // parse instruction
-func parseInst(tokens []token) ([]token, error) {
+func parseInst(tokens []token) (instruction, error) {
 
 	operandTokens := []token{} // operand token queue
+	operands := []operand{}    // operands queue
+
+	instMnemonic := "" // instruction mnemonic
 
 	for tokIndex, tok := range tokens {
 
@@ -93,10 +95,11 @@ func parseInst(tokens []token) ([]token, error) {
 			// if first token mnemonic
 			// first token is
 			if tok.tokenType == tokenUnknow {
-				fmt.Println(tok.token, "Mnemonic")
+				instMnemonic = strings.ToUpper(tok.token) // set inst mnemonic
 				continue
 			} else {
-				fmt.Println("error: invalid token")
+				// invalid token
+				return instruction{}, fmt.Errorf("invalid token")
 			}
 		}
 
@@ -108,25 +111,61 @@ func parseInst(tokens []token) ([]token, error) {
 			// token is comma then current operand is over
 			opr, err := parseOperand(operandTokens)
 			if err != nil {
-				return tokens, err
+				// operand parse error
+				return instruction{}, err
 			}
-			fmt.Println(opr)
-			operandTokens = []token{} // clear operand
+			operands = append(operands, opr) // add to operands
+			operandTokens = []token{}        // clear operand
 		default:
 			// invalid token
-			fmt.Println("error: invalid token")
+			return instruction{}, fmt.Errorf("invalid token")
 		}
 	}
 
 	if len(operandTokens) > 0 {
+		// if operand tokens is more then zero then parse the tokens
 		opr, err := parseOperand(operandTokens)
 		if err != nil {
-			return tokens, err
+			// operand parse error
+			return instruction{}, err
 		}
-		fmt.Println(opr)
+		operands = append(operands, opr) // add to operands
 	}
 
-	return tokens, nil
+	switch len(operands) {
+	case 2:
+		// if two operand
+		return instruction{
+			mnemonic:      instMnemonic,
+			operandFirst:  operands[0],
+			operandSecond: operands[1],
+		}, nil
+	case 1:
+		// if only one operand
+		return instruction{
+			mnemonic:     instMnemonic,
+			operandFirst: operands[0],
+			operandSecond: operand{
+				operandType: noneOperand,
+				operand:     0,
+			},
+		}, nil
+		case 0:
+			// if on any operand
+			return instruction{
+				mnemonic:      instMnemonic,
+				operandFirst:  operand{
+					operandType: noneOperand,
+					operand:     0,
+				},
+				operandSecond: operand{
+					operandType: noneOperand,
+					operand:     0,
+				},
+			}, nil
+	}
+
+	return instruction{}, fmt.Errorf("instruction error")
 }
 
 // parse operand
@@ -191,7 +230,7 @@ func parseOperand(tokens []token) (operand, error) {
 		}
 
 	} else {
-		return operand{}, fmt.Errorf("to do")
+		return operand{}, fmt.Errorf("todo")
 	}
 
 	return operand{}, fmt.Errorf("operand is not valid")

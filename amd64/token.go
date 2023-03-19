@@ -10,11 +10,11 @@ type tokenType string
 
 const ( // value is tmp
 	tokenUnknow      tokenType = "Unknow"       // unknow
-	tokenComma                 = "Comma"        // ,
-	tokenColon                 = "Colon"        // :
-	tokenDoubleQuote           = "Double Quote" // "
-	tokenModulo                = "Modulo"       // %
-	tokenLabel                 = "Label"        // $*
+	tokenComma       tokenType = "Comma"        // ,
+	tokenColon       tokenType = "Colon"        // :
+	tokenDoubleQuote tokenType = "Double Quote" // "
+	tokenModulo      tokenType = "Modulo"       // %
+	tokenLabel       tokenType = "Label"        // $*
 )
 
 // token structure
