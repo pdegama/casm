@@ -8,6 +8,7 @@ package amd64
 // operand type
 type operandType string
 
+// operand type
 const ( // value is tmp
 
 	//
@@ -54,8 +55,10 @@ type instructionOpcode struct {
 	opCode            []int       // instruction opcode
 }
 
-// opcode syntax code tmp will replace with original code
+// opcode syntax code
 const (
+
+	// code is tmp will replace with original code
 
 	//
 	NoneOpcode = -1
@@ -69,21 +72,18 @@ const (
 	ModRM5 = -8  // ModRM reg field 5
 	ModRM6 = -9  // ModRM reg field 6
 	ModRM7 = -10 // ModRM reg field 7
-
 	PlusRB = -11 // 8-bit register value (base offset)
 	PlusRW = -12 // 16-bit register value (base offset)
 	PlusRD = -13 // 32-bit register value (base offset)
 	PlusRQ = -14 // 64-bit register value (base offset)
-
-	ValIB = -15 // immediate-operand value 8-bit
-	ValIW = -16 // immediate-operand value 16-bit
-	ValID = -17 // immediate-operand value 32-bit
-	ValIQ = -18 // immediate-operand value 64-bit
-
-	ValCB = -19 // code-offset value 8-bit
-	ValCW = -20 // code-offset value 16-bit
-	ValCD = -21 // code-offset value 32-bit
-	ValCQ = -22 // code-offset value 64-bit
+	ValIB  = -15 // immediate-operand value 8-bit
+	ValIW  = -16 // immediate-operand value 16-bit
+	ValID  = -17 // immediate-operand value 32-bit
+	ValIQ  = -18 // immediate-operand value 64-bit
+	ValCB  = -19 // code-offset value 8-bit
+	ValCW  = -20 // code-offset value 16-bit
+	ValCD  = -21 // code-offset value 32-bit
+	ValCQ  = -22 // code-offset value 64-bit
 
 	//
 )

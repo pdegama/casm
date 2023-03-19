@@ -8,6 +8,7 @@ package amd64
 // line type
 type lineType string
 
+// line type
 const ( // value is tmp
 
 	//

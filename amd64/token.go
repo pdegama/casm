@@ -8,6 +8,7 @@ package amd64
 // token type
 type tokenType string
 
+// token type
 const ( // value is tmp
 
 	//
