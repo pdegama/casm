@@ -61,29 +61,29 @@ const (
 	// code is tmp will replace with original code
 
 	//
-	NoneOpcode = -1
+	noneOpcode = -1
 
-	ModRM  = -2  // ModRM byte
-	ModRM0 = -3  // ModRM reg field 0
-	ModRM1 = -4  // ModRM reg field 1
-	ModRM2 = -5  // ModRM reg field 2
-	ModRM3 = -6  // ModRM reg field 3
-	ModRM4 = -7  // ModRM reg field 4
-	ModRM5 = -8  // ModRM reg field 5
-	ModRM6 = -9  // ModRM reg field 6
-	ModRM7 = -10 // ModRM reg field 7
-	PlusRB = -11 // 8-bit register value (base offset)
-	PlusRW = -12 // 16-bit register value (base offset)
-	PlusRD = -13 // 32-bit register value (base offset)
-	PlusRQ = -14 // 64-bit register value (base offset)
-	ValIB  = -15 // immediate-operand value 8-bit
-	ValIW  = -16 // immediate-operand value 16-bit
-	ValID  = -17 // immediate-operand value 32-bit
-	ValIQ  = -18 // immediate-operand value 64-bit
-	ValCB  = -19 // code-offset value 8-bit
-	ValCW  = -20 // code-offset value 16-bit
-	ValCD  = -21 // code-offset value 32-bit
-	ValCQ  = -22 // code-offset value 64-bit
+	modRM  = -2  // ModRM byte
+	modRM0 = -3  // ModRM reg field 0
+	modRM1 = -4  // ModRM reg field 1
+	modRM2 = -5  // ModRM reg field 2
+	modRM3 = -6  // ModRM reg field 3
+	modRM4 = -7  // ModRM reg field 4
+	modRM5 = -8  // ModRM reg field 5
+	modRM6 = -9  // ModRM reg field 6
+	modRM7 = -10 // ModRM reg field 7
+	plusRB = -11 // 8-bit register value (base offset)
+	plusRW = -12 // 16-bit register value (base offset)
+	plusRD = -13 // 32-bit register value (base offset)
+	plusRQ = -14 // 64-bit register value (base offset)
+	valIB  = -15 // immediate-operand value 8-bit
+	valIW  = -16 // immediate-operand value 16-bit
+	valID  = -17 // immediate-operand value 32-bit
+	valIQ  = -18 // immediate-operand value 64-bit
+	valCB  = -19 // code-offset value 8-bit
+	valCW  = -20 // code-offset value 16-bit
+	valCD  = -21 // code-offset value 32-bit
+	valCQ  = -22 // code-offset value 64-bit
 
 	//
 )
