@@ -6,8 +6,11 @@
 package amd64
 
 import (
+	"encoding/hex"
 	"fmt"
+	"math/big"
 	"strconv"
+	"strings"
 
 	"hellocomputers/casm/utils"
 )
@@ -103,7 +106,10 @@ func parseInst(tokens []token) []token {
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
 			// token is comma then current operand is over
-			opr := parseOperand(operandTokens)
+			opr, err := parseOperand(operandTokens)
+			if err != nil {
+				fmt.Printf("%v %v\n", utils.Error, err)
+			}
 			fmt.Println(opr)
 			operandTokens = []token{} // clear operand
 		default:
@@ -113,7 +119,10 @@ func parseInst(tokens []token) []token {
 	}
 
 	if len(operandTokens) > 0 {
-		opr := parseOperand(operandTokens)
+		opr, err := parseOperand(operandTokens)
+		if err != nil {
+			fmt.Printf("%v %v\n", utils.Error, err)
+		}
 		fmt.Println(opr)
 	}
 
@@ -121,29 +130,56 @@ func parseInst(tokens []token) []token {
 }
 
 // parse operand
-func parseOperand(tokens []token) operand {
+func parseOperand(tokens []token) (operand, error) {
 
 	if len(tokens) == 1 {
-		// fmt.Println(tokens)
-		switch tokens[0].tokenType {
+
+		tok := tokens[0] // first token
+
+		switch tok.tokenType {
 		case tokenUnknow:
 			// if token is register
-			isReg, reg := isRegister(tokens[0].token)
+			isReg, reg := isRegister(tok.token)
 			if isReg {
 				return operand{
 					operandType: getRegisterOperandType(reg),
 					operand:     reg.globleIndex,
-				}
+				}, nil
 			}
 
 			// check token is imm
-			tokenVal, err := strconv.Atoi(tokens[0].token) // try to convert imm
+			tokenVal, err := strconv.Atoi(tok.token) // try to convert imm
 			if err == nil {
-				// is err is nil then token is imm
+				// if err is nil then token is imm
 				return operand{
 					operandType: imm,
 					operand:     tokenVal,
+				}, nil
+			}
+
+			// check token is hex
+			if strings.HasPrefix(tok.token, "0x") || strings.HasPrefix(tok.token, "0X") {
+
+				hexString := tok.token[2:] // hex string
+				if len(hexString)%2 != 0 {
+					// if hex string is Odd len then add 0 prefix
+					hexString = "0" + hexString
 				}
+
+				// token is start with 0x or 0X then hex
+				tokenHex, err := hex.DecodeString(hexString)
+				if err != nil {
+					// if err not nil then hex is not valid
+					return operand{}, fmt.Errorf("hex not valid")
+				}
+
+				tokenVal := big.NewInt(0).SetBytes(tokenHex).Uint64() // hex to int
+
+				return operand{
+					operandType: imm,
+					operand:     int(tokenVal),
+				}, nil
+
 			}
 
 		case tokenDoubleQuote:
@@ -153,13 +189,13 @@ func parseOperand(tokens []token) operand {
 			return operand{
 				operandType: imm,
 				operand:     0x00,
-			}
+			}, nil
 		}
 
 	} else {
-		fmt.Println("error: todo")
+		return operand{}, fmt.Errorf("to do")
 	}
 
-	return operand{}
+	return operand{}, fmt.Errorf("operand is not valid")
 
 }
