@@ -93,7 +93,7 @@ stringLoop:
 
 		switch t {
 		case ' ': // space
-			tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
+			addToken[rune](&tok, nil, tokenUnknow, &toks)
 		case '$': // label
 			// label is start with `$`
 			if tok == "" {
@@ -102,16 +102,16 @@ stringLoop:
 				return toks, fmt.Errorf("invalid syntax")
 			}
 		case ':': // colon
-			tokenPrint(&tok, &t, tokenColon, &toks)
+			addToken(&tok, &t, tokenColon, &toks)
 		case ';': // semicolon
-			tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
+			addToken[rune](&tok, nil, tokenUnknow, &toks)
 			break stringLoop
 		case '%':
-			tokenPrint(&tok, &t, tokenModulo, &toks)
+			addToken(&tok, &t, tokenModulo, &toks)
 		case ',': // comma
-			tokenPrint(&tok, &t, tokenComma, &toks)
+			addToken(&tok, &t, tokenComma, &toks)
 		case '"': // double quote
-			tokenPrint(&tok, &t, tokenDoubleQuote, &toks)
+			addToken(&tok, &t, tokenDoubleQuote, &toks)
 			isStr = !isStr
 		default: // other
 			return toks, fmt.Errorf("invalid char '%v'", string(t))
@@ -119,13 +119,13 @@ stringLoop:
 
 	}
 
-	tokenPrint[rune](&tok, nil, tokenUnknow, &toks)
+	addToken[rune](&tok, nil, tokenUnknow, &toks)
 
 	return toks, nil
 }
 
-// print tokne - tmp
-func tokenPrint[T string | rune](tok *string, newTok *T, newTokType tokenType, toks *[]token) {
+// add token to tokens
+func addToken[T string | rune](tok *string, newTok *T, newTokType tokenType, toks *[]token) {
 	if *tok != "" {
 
 		tokType := tokenUnknow // token type
