@@ -9,13 +9,17 @@ import "fmt"
 
 // instruction gen
 func instructionGen(inst instruction) error {
-	//fmt.Println(inst)
+	fmt.Println(inst)
 	validInstOpcde := findInstruction(&inst)
 	if len(validInstOpcde) == 0 {
 		return fmt.Errorf("invalid instruction")
 	}
 
-	//fmt.Println(validInstOpcde)
+	// print valid inst - tmp
+	for _, i := range validInstOpcde {
+		fmt.Println(i)
+	}
+	fmt.Println()
 
 	return nil
 }
@@ -27,8 +31,10 @@ func findInstruction(inst *instruction) []instructionOpcode {
 
 	// loop of instruction opcode
 	for _, instOpcode := range instOpcodes {
-		if instOpcode.mnemonic == inst.mnemonic {
+		if instOpcode.mnemonic == inst.mnemonic { // match mnemonic
+			// check operand
 			if validOperand(instOpcode.operandFirstType, &inst.operandFirst) && validOperand(instOpcode.operandSecondType, &inst.operandSecond) {
+				// inst is valid then append to stack
 				validInstsOpcode = append(validInstsOpcode, instOpcode)
 			}
 		}
