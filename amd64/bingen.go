@@ -7,7 +7,7 @@ package amd64
 
 import (
 	"fmt"
-	
+
 	"hellocomputers/casm/utils"
 )
 
@@ -36,13 +36,18 @@ func codeGen(lines []asmLine) []error {
 // code generation for instruction
 func genCodeInst(line asmLine) error {
 
-	toks, err := parseInst(line.tokens)
+	inst, err := parseInst(line.tokens)
 	if err != nil {
 		// inst parse err
 		return fmt.Errorf("%s %v:%v %v", utils.Error, *line.filePath, line.index+1, err)
 	}
-	fmt.Println(toks)
-	fmt.Println("")
+
+	//  instruction gen
+	err = instructionGen(inst)
+	if err != nil {
+		// inst gen error
+		return fmt.Errorf("%s %v:%v %v", utils.Error, *line.filePath, line.index+1, err)
+	}
 
 	return nil
 }
