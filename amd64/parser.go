@@ -150,19 +150,19 @@ func parseInst(tokens []token) (instruction, error) {
 				operand:     0,
 			},
 		}, nil
-		case 0:
-			// if on any operand
-			return instruction{
-				mnemonic:      instMnemonic,
-				operandFirst:  operand{
-					operandType: noneOperand,
-					operand:     0,
-				},
-				operandSecond: operand{
-					operandType: noneOperand,
-					operand:     0,
-				},
-			}, nil
+	case 0:
+		// if on any operand
+		return instruction{
+			mnemonic: instMnemonic,
+			operandFirst: operand{
+				operandType: noneOperand,
+				operand:     0,
+			},
+			operandSecond: operand{
+				operandType: noneOperand,
+				operand:     0,
+			},
+		}, nil
 	}
 
 	return instruction{}, fmt.Errorf("instruction error")
@@ -182,7 +182,7 @@ func parseOperand(tokens []token) (operand, error) {
 			if isReg {
 				return operand{
 					operandType: getRegisterOperandType(reg),
-					operand:     reg.globleIndex,
+					operand:     uint(reg.globleIndex),
 				}, nil
 			}
 
@@ -192,7 +192,7 @@ func parseOperand(tokens []token) (operand, error) {
 				// if err is nil then token is imm
 				return operand{
 					operandType: imm,
-					operand:     tokenVal,
+					operand:     uint(tokenVal),
 				}, nil
 			}
 
@@ -216,7 +216,7 @@ func parseOperand(tokens []token) (operand, error) {
 
 				return operand{
 					operandType: imm,
-					operand:     int(tokenVal),
+					operand:     uint(tokenVal),
 				}, nil
 
 			}

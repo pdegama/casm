@@ -2,7 +2,7 @@
 
 $start:
   mov rax, 1        ; write(
-  mov rdi, 0xfff        ;   STDOUT_FILENO,
+  mov rdi, 0xffffffffffffffff         ;   STDOUT_FILENO,
   mov rsi, $msg      ;   "Hello, world!\n",
   mov rdx, $msglen   ;   sizeof("Hello, world!\n")
   syscall           ; );
@@ -15,7 +15,7 @@ $start:
 
   mov rcx, rdx
 
-  mov al, cx
+  ;mov al, cx
 
   $msg:
     db "I ❤️  Computers!", 10

@@ -37,7 +37,7 @@ const ( // value is tmp
 // operand structure
 type operand struct {
 	operandType operandType // operand type
-	operand     int         // operand
+	operand     uint        // operand
 }
 
 // instruction structure
