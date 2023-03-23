@@ -236,3 +236,17 @@ func parseOperand(tokens []token) (operand, error) {
 	return operand{}, fmt.Errorf("operand is not valid")
 
 }
+
+// parse Imm
+func parseImmType(i uint) operandType {
+
+	if i <= 0xff {
+		return imm8
+	} else if i <= 0xffff {
+		return imm16
+	} else if i <= 0xffffffff {
+		return imm32
+	} else {
+		return imm64
+	}
+}
