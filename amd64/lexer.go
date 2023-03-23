@@ -101,6 +101,13 @@ stringLoop:
 			} else {
 				return toks, fmt.Errorf("invalid syntax")
 			}
+		case '-': // minus
+			// label is start with `$`
+			if tok == "" {
+				tok += "-"
+			} else {
+				return toks, fmt.Errorf("invalid syntax")
+			}
 		case ':': // colon
 			addToken(&tok, &t, tokenColon, &toks)
 		case ';': // semicolon

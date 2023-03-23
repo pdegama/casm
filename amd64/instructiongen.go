@@ -54,6 +54,7 @@ func validOperand(withOperand operandType, thisOperand *operand) bool {
 
 	if thisOperand.operandType == imm {
 
+		//fmt.Println(parseImmType(thisOperand.operand))	
 		if withOperand == parseImmType(thisOperand.operand) {
 			return true
 		}
