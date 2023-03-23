@@ -29,17 +29,30 @@ func instructionGen(inst instruction) error {
 // find insrtuction
 func findInstruction(inst *instruction) []instructionOpcode {
 
-	validInstsOpcode := []instructionOpcode{} // valid insts opcodes
+	validInstsOpcode := []instructionOpcode{} // valid insts opcodes stack
 
 	// loop of instruction opcode
 	for _, instOpcode := range instOpcodes {
+
 		if instOpcode.mnemonic == inst.mnemonic { // match mnemonic
+
+			operTypeMatch := true // operand type is match
+
 			// check operand
-			if validOperand(instOpcode.operandFirstType, &inst.operandFirst) && validOperand(instOpcode.operandSecondType, &inst.operandSecond) {
-				// inst is valid then append to stack
+			if len(instOpcode.operandsType) == len(inst.operands) {
+				for operTypeIndex, operType := range instOpcode.operandsType {
+					if !validOperand(operType, &inst.operands[operTypeIndex]) {
+						operTypeMatch = false
+					}
+				}
+			}
+			
+			// operand all type match then append to stack
+			if operTypeMatch {
 				validInstsOpcode = append(validInstsOpcode, instOpcode)
 			}
 		}
+
 	}
 
 	return validInstsOpcode // return
@@ -54,7 +67,7 @@ func validOperand(withOperand operandType, thisOperand *operand) bool {
 
 	if thisOperand.operandType == imm {
 
-		//fmt.Println(parseImmType(thisOperand.operand))	
+		//fmt.Println(parseImmType(thisOperand.operand))
 		if withOperand == parseImmType(thisOperand.operand) {
 			return true
 		}

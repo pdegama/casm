@@ -43,16 +43,14 @@ type operand struct {
 // instruction structure
 type instruction struct {
 	mnemonic      string  // instruction mnemonic
-	operandFirst  operand // first operand
-	operandSecond operand // second operand
+	operands  []operand // nstruction operand by order
 }
 
 // instruction opcode structure
 type instructionOpcode struct {
-	mnemonic          string      // instruction name
-	operandFirstType  operandType // first instruction operand type
-	operandSecondType operandType // second instruction operand type
-	opCode            []int       // instruction opcode
+	mnemonic     string        // instruction name
+	operandsType []operandType // instruction operand type by order
+	opCode       []int         // instruction opcode
 }
 
 // opcode syntax code

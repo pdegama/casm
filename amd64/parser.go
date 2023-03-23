@@ -132,40 +132,13 @@ func parseInst(tokens []token) (instruction, error) {
 		operands = append(operands, opr) // add to operands
 	}
 
-	switch len(operands) {
-	case 2:
-		// if two operand
-		return instruction{
-			mnemonic:      instMnemonic,
-			operandFirst:  operands[0],
-			operandSecond: operands[1],
-		}, nil
-	case 1:
-		// if only one operand
-		return instruction{
-			mnemonic:     instMnemonic,
-			operandFirst: operands[0],
-			operandSecond: operand{
-				operandType: noneOperand,
-				operand:     0,
-			},
-		}, nil
-	case 0:
-		// if on any operand
-		return instruction{
-			mnemonic: instMnemonic,
-			operandFirst: operand{
-				operandType: noneOperand,
-				operand:     0,
-			},
-			operandSecond: operand{
-				operandType: noneOperand,
-				operand:     0,
-			},
-		}, nil
-	}
+	// return instruction
+	return instruction{
+		mnemonic: instMnemonic,
+		operands: operands,
+	}, nil
 
-	return instruction{}, fmt.Errorf("instruction error")
+	// return instruction{}, fmt.Errorf("instruction error")
 }
 
 // parse operand
