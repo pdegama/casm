@@ -312,13 +312,21 @@ func parseOperand(tokens []token) (operand, error) {
 // parse imm type
 func parseImmType(i uint) operandType {
 
+	/*
+		get operand imm type (imm8, imm16, imm32, imm64)
+	*/
+
 	if i <= 0xff {
+		// operand is equal or smaller than 0xff
 		return imm8
 	} else if i <= 0xffff {
+		// operand is equal or smaller than 0xffff
 		return imm16
 	} else if i <= 0xffffffff {
+		// operand is equal or smaller than 0xffffffff
 		return imm32
 	} else {
+		// operand is equal or smaller than 0xffffffffffffffff
 		return imm64
 	}
 }
