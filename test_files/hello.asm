@@ -22,7 +22,12 @@ $start:
   mov rcx, rdx
 
   ;mov al, cx
-  
+
+$startto:
+  add rax, rdx
+  add dx,  0x74
+  add cx, byte  0x74
+
 
   $msg:
     db "I ❤️  Computers!", 10

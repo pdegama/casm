@@ -26,6 +26,13 @@ func instructionGen(inst instruction) error {
 	return nil
 }
 
+// operand match type
+const (
+	operandNotMatch     = iota // operand type not match
+	operandPerfectMatch        // operand type perfectly match
+	operandMatch               // operand type match
+)
+
 // find insrtuction
 func findInstruction(inst *instruction) []instructionOpcode {
 
@@ -36,21 +43,44 @@ func findInstruction(inst *instruction) []instructionOpcode {
 
 		if instOpcode.mnemonic == inst.mnemonic { // match mnemonic
 
-			operTypeMatch := true // operand type is match
+			operTypeMatch := true       // operand type is match
+			operTypePerfecMatch := true // operand type is match
 
-			// check operand
-			if len(instOpcode.operandsType) == len(inst.operands) {
+			// operands type
+			if len(instOpcode.operandsType) == len(inst.operands) { // if size of operands match
+				// loop of operands type
 				for operTypeIndex, operType := range instOpcode.operandsType {
-					if !validOperand(operType, &inst.operands[operTypeIndex]) {
+
+					// check operand is valid
+					switch validOperand(operType, &inst.operands[operTypeIndex]) {
+					case operandMatch:
+						/*
+							operand type match but not perfect then
+							this inst opcode is not perfect
+						*/
+						operTypePerfecMatch = false
+					case operandNotMatch:
+						/*
+							if any operand type is not match then
+							this inst id invalid and operTypeMatch
+							set false
+						*/
 						operTypeMatch = false
+						operTypePerfecMatch = false
 					}
 				}
 			}
-			
+
 			// operand all type match then append to stack
 			if operTypeMatch {
+				// if operTypeMatch is true then all type match
 				validInstsOpcode = append(validInstsOpcode, instOpcode)
+				// if operand type perfect match
+				if operTypePerfecMatch {
+					fmt.Println(">>>", instOpcode)
+				}
 			}
+
 		}
 
 	}
@@ -59,7 +89,12 @@ func findInstruction(inst *instruction) []instructionOpcode {
 }
 
 // check operand type is valid
-func validOperand(withOperand operandType, thisOperand *operand) bool {
+func validOperand(withOperand operandType, thisOperand *operand) int {
+
+	// if operand type not match then deep check
+	if withOperand == thisOperand.operandType {
+		return operandPerfectMatch
+	}
 
 	/*
 		check imm type
@@ -69,11 +104,11 @@ func validOperand(withOperand operandType, thisOperand *operand) bool {
 
 		//fmt.Println(parseImmType(thisOperand.operand))
 		if withOperand == parseImmType(thisOperand.operand) {
-			return true
+			return operandPerfectMatch
 		}
 
 		if withOperand == imm8 || withOperand == imm16 || withOperand == imm32 || withOperand == imm64 {
-			return true
+			return operandMatch
 		}
 	}
 
@@ -83,24 +118,24 @@ func validOperand(withOperand operandType, thisOperand *operand) bool {
 
 	// regMem8 is accept reg8
 	if withOperand == regMem8 && thisOperand.operandType == reg8 {
-		return true
+		return operandPerfectMatch
 	}
 
 	// regMem16 is accept reg16
 	if withOperand == regMem16 && thisOperand.operandType == reg16 {
-		return true
+		return operandPerfectMatch
 	}
 
 	// regMem32 is accept reg32
 	if withOperand == regMem32 && thisOperand.operandType == reg32 {
-		return true
+		return operandPerfectMatch
 	}
 
 	// regMem64 is accept reg64
 	if withOperand == regMem64 && thisOperand.operandType == reg64 {
-		return true
+		return operandPerfectMatch
 	}
 
-	// if operand type not match then deep check
-	return withOperand == thisOperand.operandType
+	// operand not match
+	return operandNotMatch
 }
