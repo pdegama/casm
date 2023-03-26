@@ -36,7 +36,8 @@ const (
 // find insrtuction
 func findInstruction(inst *instruction) []instructionOpcode {
 
-	validInstsOpcode := []instructionOpcode{} // valid insts opcodes stack
+	validInstsOpcode := []instructionOpcode{}        // valid insts opcodes stack
+	validPerfectInstsOpcode := []instructionOpcode{} // valid insts opcodes stack
 
 	// loop of instruction opcode
 	for _, instOpcode := range instOpcodes {
@@ -74,10 +75,14 @@ func findInstruction(inst *instruction) []instructionOpcode {
 			// operand all type match then append to stack
 			if operTypeMatch {
 				// if operTypeMatch is true then all type match
-				validInstsOpcode = append(validInstsOpcode, instOpcode)
-				// if operand type perfect match
+				//
 				if operTypePerfecMatch {
+					// if operand type perfect match
+					validPerfectInstsOpcode = append(validPerfectInstsOpcode, instOpcode)
 					fmt.Println(">>>", instOpcode)
+				} else {
+					validInstsOpcode = append(validInstsOpcode, instOpcode)
+					fmt.Println("---", instOpcode)
 				}
 			}
 
@@ -85,7 +90,10 @@ func findInstruction(inst *instruction) []instructionOpcode {
 
 	}
 
-	return validInstsOpcode // return
+	// append validInstsOpcode to validPerfectInstsOpcode
+	validPerfectInstsOpcode = append(validPerfectInstsOpcode, validInstsOpcode...)
+
+	return validPerfectInstsOpcode // return
 }
 
 // check operand type is valid
