@@ -104,7 +104,7 @@ func parseInst(tokens []token) (instruction, error) {
 		}
 
 		switch tok.tokenType {
-		case tokenUnknow, tokenLabel, tokenDoubleQuote:
+		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketReight, tokenDoubleQuote:
 			// if token is unknow, or label
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
@@ -144,15 +144,37 @@ func parseInst(tokens []token) (instruction, error) {
 // parse operand
 func parseOperand(tokens []token) (operand, error) {
 
-	if len(tokens) == 1 {
+	fmt.Println(tokens)
 
-		tok := tokens[0] // first token
+	nextImm := false           // next token chance to imm
+	nextImmType := noneOperand // next operand type
+	oper := operand{}          // operand
+	operandOver := false       // operand is over
+
+	// loop of token
+	for _, tok := range tokens {
+
+		if operandOver {
+			/*
+				if operand is over and token is
+				pandding then return error
+			*/
+			return operand{}, fmt.Errorf("invalid operand")
+		}
 
 		switch tok.tokenType {
 		case tokenUnknow:
+
 			// if token is register
 			isReg, reg := isRegister(tok.token)
 			if isReg {
+				if nextImm {
+					/* 
+						if register is not imm value and this 
+						is chance the imm then return error
+					*/
+					return operand{}, fmt.Errorf("invalid operand register is not imm")
+				}
 				return operand{
 					operandType: getRegisterOperandType(reg),
 					operand:     uint(reg.globleIndex),
@@ -163,10 +185,22 @@ func parseOperand(tokens []token) (operand, error) {
 			tokenVal, err := strconv.Atoi(tok.token) // try to convert imm
 			if err == nil {
 				// if err is nil then token is imm
-				return operand{
-					operandType: imm,
+
+				/*
+					parse and assign to oper, operand
+					over set true and continue
+				*/
+				oprType := imm
+				if nextImm {
+					oprType = nextImmType
+					nextImm = false
+				}
+				oper = operand{
+					operandType: oprType,
 					operand:     uint(tokenVal),
-				}, nil
+				}
+				operandOver = true
+				continue
 			}
 
 			// check token is hex
@@ -187,11 +221,43 @@ func parseOperand(tokens []token) (operand, error) {
 
 				tokenVal := big.NewInt(0).SetBytes(tokenHex).Uint64() // hex to int
 
-				return operand{
-					operandType: imm,
+				/*
+					parse hex and assign to oper,
+					operand over se true and continue
+				*/
+				oprType := imm
+				if nextImm {
+					oprType = nextImmType
+					nextImm = false
+				}
+				oper = operand{
+					operandType: oprType,
 					operand:     uint(tokenVal),
-				}, nil
+				}
+				operandOver = true
+				continue
 
+			}
+
+			// check this is type
+			switch tok.token {
+			case "byte", "word", "dword", "qword":
+				/*
+					set type true and set type
+				*/
+				nextImm = true
+				switch tok.token {
+				case "byte":
+					nextImmType = imm8
+				case "word":
+					nextImmType = imm16
+				case "dword":
+					nextImmType = imm32
+				case "qword":
+					nextImmType = imm64
+				}
+			default:
+				return operand{}, fmt.Errorf("invalid operand token '%v'", tok.token)
 			}
 
 		case tokenLabel:
@@ -200,112 +266,19 @@ func parseOperand(tokens []token) (operand, error) {
 				operandType: imm,
 				operand:     0x00,
 			}, nil
+
 		}
-
-	} else {
-
-		nextImm := false           // next token chance to imm
-		nextImmType := noneOperand // next operand type
-		oper := operand{}          // operand
-		operandOver := false       // operand is over
-
-		// loop of token
-		for _, tok := range tokens {
-
-			if operandOver {
-				/*
-					if operand is over and token is
-					pandding then return error
-				*/
-				return operand{}, fmt.Errorf("invalid operand")
-			}
-
-			if nextImm {
-
-				/*
-					if token is chance to imm
-				*/
-
-				// check token is imm
-				tokenVal, err := strconv.Atoi(tok.token) // try to convert imm
-				if err == nil {
-					// if err is nil then token is imm
-
-					/*
-						parse and assign to oper, operand
-						over set true and continue
-					*/
-					oper = operand{
-						operandType: nextImmType,
-						operand:     uint(tokenVal),
-					}
-					operandOver = true
-					continue
-				}
-
-				// check token is hex
-				if strings.HasPrefix(tok.token, "0x") || strings.HasPrefix(tok.token, "0X") {
-
-					hexString := tok.token[2:] // hex string
-					if len(hexString)%2 != 0 {
-						// if hex string is Odd len then add 0 prefix
-						hexString = "0" + hexString
-					}
-
-					// token is start with 0x or 0X then hex
-					tokenHex, err := hex.DecodeString(hexString)
-					if err != nil {
-						// if err not nil then hex is not valid
-						return operand{}, fmt.Errorf("hex not valid")
-					}
-
-					tokenVal := big.NewInt(0).SetBytes(tokenHex).Uint64() // hex to int
-
-					/*
-						parse hex and assign to oper,
-						operand over se true and continue
-					*/
-					oper = operand{
-						operandType: nextImmType,
-						operand:     uint(tokenVal),
-					}
-					operandOver = true
-					continue
-
-				}
-
-			}
-
-			if tok.tokenType == tokenUnknow { // token unknow
-				switch tok.token {
-				case "byte", "word", "dword", "qword":
-					nextImm = true
-					switch tok.token {
-					case "byte":
-						nextImmType = imm8
-					case "word":
-						nextImmType = imm16
-					case "dword":
-						nextImmType = imm32
-					case "qword":
-						nextImmType = imm64
-					}
-				}
-			}
-		}
-
-		if operandOver {
-			/*
-				parse and assign to oper, operand
-				over set true and continue
-			*/
-			return oper, nil
-		}
-
-		return operand{}, fmt.Errorf("todo")
 	}
 
-	return operand{}, fmt.Errorf("invalid operand")
+	if operandOver {
+		/*
+			parse and assign to oper, operand
+			over set true and continue
+		*/
+		return oper, nil
+	}
+
+	return operand{}, fmt.Errorf("invalid operand / todo")
 
 }
 

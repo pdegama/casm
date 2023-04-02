@@ -28,6 +28,8 @@ $startto:
   add dx,  0x74
   add cx, byte  0x74
 
+  mov rcx, [rax]
+  mov [ecx], rax
 
   $msg:
     db "I ❤️  Computers!", 10

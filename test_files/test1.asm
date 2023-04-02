@@ -1,3 +1,3 @@
 bits 64
 
-mov [eax], word 0x747474747
+mov eax,[ebx+8,ecx*4]

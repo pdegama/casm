@@ -117,6 +117,10 @@ stringLoop:
 			addToken(&tok, &t, tokenModulo, &toks)
 		case ',': // comma
 			addToken(&tok, &t, tokenComma, &toks)
+		case '[': // left bracket
+			addToken(&tok, &t, tokenBracketLeft, &toks)
+		case ']': // right bracket
+			addToken(&tok, &t, tokenBracketReight, &toks)
 		case '"': // double quote
 			addToken(&tok, &t, tokenDoubleQuote, &toks)
 			isStr = !isStr
@@ -127,6 +131,8 @@ stringLoop:
 	}
 
 	addToken[rune](&tok, nil, tokenUnknow, &toks)
+
+	//fmt.Println(toks)
 
 	return toks, nil
 }

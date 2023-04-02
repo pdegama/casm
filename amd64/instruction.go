@@ -18,6 +18,10 @@ const ( // value is tmp
 	reg16    operandType = "reg16"    // 16-bit register
 	reg32    operandType = "reg32"    // 32-bit register
 	reg64    operandType = "reg64"    // 64-bit register
+	mem8     operandType = "mem8"     // 8-bit memory
+	mem16    operandType = "mem16"    // 16-bit memory
+	mem32    operandType = "mem32"    // 32-bit memory
+	mem64    operandType = "mem64"    // 64-bit memory
 	regMem8  operandType = "regMem8"  // 8-bit register or memory
 	regMem16 operandType = "regMem16" // 16-bit register or memory
 	regMem32 operandType = "regMem32" // 32-bit register or memory
@@ -42,8 +46,8 @@ type operand struct {
 
 // instruction structure
 type instruction struct {
-	mnemonic      string  // instruction mnemonic
-	operands  []operand // nstruction operand by order
+	mnemonic string    // instruction mnemonic
+	operands []operand // nstruction operand by order
 }
 
 // instruction opcode structure
