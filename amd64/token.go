@@ -16,7 +16,7 @@ const ( // value is tmp
 	tokenComma         tokenType = "Comma"         // ,
 	tokenColon         tokenType = "Colon"         // :
 	tokenBracketLeft   tokenType = "Left Bracket"  // [
-	tokenBracketReight tokenType = "Right Bracket" // ]
+	tokenBracketRight tokenType = "Right Bracket" // ]
 	tokenDoubleQuote   tokenType = "Double Quote"  // "
 	tokenModulo        tokenType = "Modulo"        // %
 	tokenLabel         tokenType = "Label"         // $*

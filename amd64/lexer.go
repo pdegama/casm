@@ -120,7 +120,7 @@ stringLoop:
 		case '[': // left bracket
 			addToken(&tok, &t, tokenBracketLeft, &toks)
 		case ']': // right bracket
-			addToken(&tok, &t, tokenBracketReight, &toks)
+			addToken(&tok, &t, tokenBracketRight, &toks)
 		case '"': // double quote
 			addToken(&tok, &t, tokenDoubleQuote, &toks)
 			isStr = !isStr

@@ -13,7 +13,7 @@ func main() {
 
 	// mew amd64 program
 	asmProg := amd64.NewAMD64()
-	asmProg.SetAsmFile("./test_files/hello.asm") // set asm file
+	asmProg.SetAsmFile("/home/parth/casm/test_files/hello.asm") // set asm file
 	asmProg.Assemble()                         // assemble
 
 }

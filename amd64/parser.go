@@ -104,7 +104,7 @@ func parseInst(tokens []token) (instruction, error) {
 		}
 
 		switch tok.tokenType {
-		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketReight, tokenDoubleQuote:
+		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketRight, tokenDoubleQuote:
 			// if token is unknow, or label
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
@@ -151,6 +151,8 @@ func parseOperand(tokens []token) (operand, error) {
 	oper := operand{}          // operand
 	operandOver := false       // operand is over
 
+	bracketStart := false // bracket is strat or not
+
 	// loop of token
 	for _, tok := range tokens {
 
@@ -169,16 +171,18 @@ func parseOperand(tokens []token) (operand, error) {
 			isReg, reg := isRegister(tok.token)
 			if isReg {
 				if nextImm {
-					/* 
-						if register is not imm value and this 
+					/*
+						if register is not imm value and this
 						is chance the imm then return error
 					*/
 					return operand{}, fmt.Errorf("invalid operand register is not imm")
 				}
-				return operand{
+				oper = operand{
 					operandType: getRegisterOperandType(reg),
 					operand:     uint(reg.globleIndex),
-				}, nil
+				}
+				operandOver = true
+				continue
 			}
 
 			// check token is imm
@@ -258,6 +262,23 @@ func parseOperand(tokens []token) (operand, error) {
 				}
 			default:
 				return operand{}, fmt.Errorf("invalid operand token '%v'", tok.token)
+			}
+
+		case tokenBracketLeft:
+			if !bracketStart {
+				// if bracket is not start
+				bracketStart = true
+			} else {
+				return operand{}, fmt.Errorf("invalid bracket syntax")
+			}
+
+		case tokenBracketRight:
+			if bracketStart {
+				fmt.Println(123)
+				// if bracket is start
+				bracketStart = false
+			} else {
+				return operand{}, fmt.Errorf("invalid bracket syntax")
 			}
 
 		case tokenLabel:
