@@ -144,11 +144,16 @@ func parseInst(tokens []token) (instruction, error) {
 // parse operand
 func parseOperand(tokens []token) (operand, error) {
 
+	if len(tokens) == 0 {
+		/* tokens len is zero then error tokens is invalid */
+		return operand{}, fmt.Errorf("invalid syntax")
+	}
+
 	fmt.Println(tokens)
 
 	nextImm := false           // next token chance to imm
 	nextImmType := noneOperand // next operand type
-	oper := operand{}          // operand
+	opers := []operand{}       // operand
 	operandOver := false       // operand is over
 
 	bracketStart := false // bracket is strat or not
@@ -161,7 +166,7 @@ func parseOperand(tokens []token) (operand, error) {
 				if operand is over and token is
 				pandding then return error
 			*/
-			return operand{}, fmt.Errorf("invalid operand")
+			//return operand{}, fmt.Errorf("invalid operand")
 		}
 
 		switch tok.tokenType {
@@ -177,10 +182,11 @@ func parseOperand(tokens []token) (operand, error) {
 					*/
 					return operand{}, fmt.Errorf("invalid operand register is not imm")
 				}
-				oper = operand{
+				opers = append(opers, operand{
 					operandType: getRegisterOperandType(reg),
-					operand:     uint(reg.globleIndex),
-				}
+					operandVal:  uint(reg.globleIndex),
+					operandMem:  0x00,
+				})
 				operandOver = true
 				continue
 			}
@@ -199,10 +205,11 @@ func parseOperand(tokens []token) (operand, error) {
 					oprType = nextImmType
 					nextImm = false
 				}
-				oper = operand{
+				opers = append(opers, operand{
 					operandType: oprType,
-					operand:     uint(tokenVal),
-				}
+					operandVal:  uint(tokenVal),
+					operandMem:  0x00,
+				})
 				operandOver = true
 				continue
 			}
@@ -234,10 +241,11 @@ func parseOperand(tokens []token) (operand, error) {
 					oprType = nextImmType
 					nextImm = false
 				}
-				oper = operand{
+				opers = append(opers, operand{
 					operandType: oprType,
-					operand:     uint(tokenVal),
-				}
+					operandVal:  uint(tokenVal),
+					operandMem:  0x00,
+				})
 				operandOver = true
 				continue
 
@@ -266,6 +274,7 @@ func parseOperand(tokens []token) (operand, error) {
 
 		case tokenBracketLeft:
 			if !bracketStart {
+				fmt.Println("[ start")
 				// if bracket is not start
 				bracketStart = true
 			} else {
@@ -274,7 +283,7 @@ func parseOperand(tokens []token) (operand, error) {
 
 		case tokenBracketRight:
 			if bracketStart {
-				fmt.Println(123)
+				fmt.Println("end ]")
 				// if bracket is start
 				bracketStart = false
 			} else {
@@ -285,7 +294,8 @@ func parseOperand(tokens []token) (operand, error) {
 			// token is label
 			return operand{
 				operandType: imm,
-				operand:     0x00,
+				operandVal:  0x00,
+				operandMem:  0x00,
 			}, nil
 
 		}
@@ -296,7 +306,7 @@ func parseOperand(tokens []token) (operand, error) {
 			parse and assign to oper, operand
 			over set true and continue
 		*/
-		return oper, nil
+		return opers[0], nil
 	}
 
 	return operand{}, fmt.Errorf("invalid operand / todo")

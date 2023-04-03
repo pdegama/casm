@@ -70,20 +70,21 @@ func findInstruction(inst *instruction) []instructionOpcode {
 						operTypePerfecMatch = false
 					}
 				}
-			}
 
-			// operand all type match then append to stack
-			if operTypeMatch {
-				// if operTypeMatch is true then all type match
-				//
-				if operTypePerfecMatch {
-					// if operand type perfect match
-					validPerfectInstsOpcode = append(validPerfectInstsOpcode, instOpcode)
-					fmt.Println(">>>", instOpcode)
-				} else {
-					validInstsOpcode = append(validInstsOpcode, instOpcode)
-					fmt.Println("---", instOpcode)
+				// operand all type match then append to stack
+				if operTypeMatch {
+					// if operTypeMatch is true then all type match
+					//
+					if operTypePerfecMatch {
+						// if operand type perfect match
+						validPerfectInstsOpcode = append(validPerfectInstsOpcode, instOpcode)
+						fmt.Println(">>>", instOpcode)
+					} else {
+						validInstsOpcode = append(validInstsOpcode, instOpcode)
+						fmt.Println("---", instOpcode)
+					}
 				}
+
 			}
 
 		}
@@ -111,7 +112,7 @@ func validOperand(withOperand operandType, thisOperand *operand) int {
 	if thisOperand.operandType == imm {
 
 		//fmt.Println(parseImmType(thisOperand.operand))
-		if withOperand == parseImmType(thisOperand.operand) {
+		if withOperand == parseImmType(thisOperand.operandVal) {
 			return operandPerfectMatch
 		}
 
