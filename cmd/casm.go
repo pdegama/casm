@@ -7,13 +7,16 @@ package main
 
 import (
 	"hellocomputers/casm/amd64"
+	"os"
 )
 
 func main() {
 
+	asmFilePath := os.Args[1]
+
 	// mew amd64 program
 	asmProg := amd64.NewAMD64()
-	asmProg.SetAsmFile("/home/parth/casm/test_files/hello.asm") // set asm file
+	asmProg.SetAsmFile(asmFilePath) // set asm file
 	asmProg.Assemble()                         // assemble
 
 }
