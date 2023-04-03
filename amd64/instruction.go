@@ -38,9 +38,6 @@ const ( // value is tmp
 	//
 )
 
-type memory struct {
-}
-
 // operand structure
 type operand struct {
 	operandType operandType // operand type
