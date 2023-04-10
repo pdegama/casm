@@ -154,20 +154,12 @@ func parseOperand(tokens []token) (operand, error) {
 	nextImm := false           // next token chance to imm
 	nextImmType := noneOperand // next operand type
 	opers := []operand{}       // operand
-	operandOver := false       // operand is over
+	isMem := false // this operand is chance to mem
 
 	bracketStart := false // bracket is strat or not
 
 	// loop of token
 	for _, tok := range tokens {
-
-		if operandOver {
-			/*
-				if operand is over and token is
-				pandding then return error
-			*/
-			//return operand{}, fmt.Errorf("invalid operand")
-		}
 
 		switch tok.tokenType {
 		case tokenUnknow:
@@ -187,7 +179,6 @@ func parseOperand(tokens []token) (operand, error) {
 					operandVal:  uint(reg.globleIndex),
 					operandMem:  0x00,
 				})
-				operandOver = true
 				continue
 			}
 
@@ -210,7 +201,6 @@ func parseOperand(tokens []token) (operand, error) {
 					operandVal:  uint(tokenVal),
 					operandMem:  0x00,
 				})
-				operandOver = true
 				continue
 			}
 
@@ -246,7 +236,6 @@ func parseOperand(tokens []token) (operand, error) {
 					operandVal:  uint(tokenVal),
 					operandMem:  0x00,
 				})
-				operandOver = true
 				continue
 
 			}
@@ -273,8 +262,15 @@ func parseOperand(tokens []token) (operand, error) {
 			}
 
 		case tokenBracketLeft:
+			if isMem {
+				/*
+					if operand is aready start before
+					operand start then return error
+				*/
+				return operand{}, fmt.Errorf("invalid operand / syntax")
+			}
+
 			if !bracketStart {
-				fmt.Println("[ start")
 				// if bracket is not start
 				bracketStart = true
 			} else {
@@ -283,7 +279,13 @@ func parseOperand(tokens []token) (operand, error) {
 
 		case tokenBracketRight:
 			if bracketStart {
-				fmt.Println("end ]")
+				/*
+					Mem operand have a brackets,
+					if brackets is over then
+					confirm this operand is mem
+				*/
+				isMem = true
+
 				// if bracket is start
 				bracketStart = false
 			} else {
@@ -301,16 +303,32 @@ func parseOperand(tokens []token) (operand, error) {
 		}
 	}
 
-	if operandOver {
-		/*
-			parse and assign to oper, operand
-			over set true and continue
-		*/
-		return opers[0], nil
+	if bracketStart {
+		// if bracket is not over
+		return operand{}, fmt.Errorf("invalid bracket syntax")
 	}
 
-	return operand{}, fmt.Errorf("invalid operand / todo")
+	if isMem {
+		// operand is chance mem
 
+		oper := parseMem(&opers)
+		return oper, nil
+	}
+
+	if len(opers) == 0 {
+		// if opers len is 0 then return error
+		return operand{}, fmt.Errorf("invalid operand / syntax")
+	}
+
+	return opers[0], nil
+}
+
+// parse mem
+func parseMem(opers *[]operand) operand {
+
+	fmt.Println("memory operands:", opers)
+
+	return operand{}
 }
 
 // parse imm type
