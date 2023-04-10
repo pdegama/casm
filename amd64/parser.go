@@ -15,7 +15,7 @@ import (
 	"hellocomputers/casm/utils"
 )
 
-// parse lines
+// lines parser
 func parseLines(lines []asmLine) ([]asmLine, []error) {
 
 	linesX := []asmLine{} // parsed line
@@ -32,7 +32,7 @@ func parseLines(lines []asmLine) ([]asmLine, []error) {
 	return linesX, errs
 }
 
-// parse one line
+// one line parser
 func parseLine(line asmLine) (asmLine, error) {
 
 	if len(line.tokens) > 0 {
@@ -81,7 +81,7 @@ func parseLine(line asmLine) (asmLine, error) {
 	return line, nil
 }
 
-// parse instruction
+// instruction parser
 func parseInst(tokens []token) (instruction, error) {
 
 	operandTokens := []token{} // operand token queue
@@ -141,7 +141,7 @@ func parseInst(tokens []token) (instruction, error) {
 	// return instruction{}, fmt.Errorf("instruction error")
 }
 
-// parse operand
+// operand parser
 func parseOperand(tokens []token) (operand, error) {
 
 	if len(tokens) == 0 {
@@ -154,7 +154,7 @@ func parseOperand(tokens []token) (operand, error) {
 	nextImm := false           // next token chance to imm
 	nextImmType := noneOperand // next operand type
 	opers := []operand{}       // operand
-	isMem := false // this operand is chance to mem
+	isMem := false             // this operand is chance to mem
 
 	bracketStart := false // bracket is strat or not
 
@@ -317,13 +317,19 @@ func parseOperand(tokens []token) (operand, error) {
 
 	if len(opers) == 0 {
 		// if opers len is 0 then return error
-		return operand{}, fmt.Errorf("invalid operand / syntax")
+		return operand{}, fmt.Errorf("invalid operand/syntax")
+	}
+
+	if len(opers) > 1 {
+		// if oper len is more then 1 return error
+		// TODO
+		return operand{}, fmt.Errorf("invalid operand / todo")
 	}
 
 	return opers[0], nil
 }
 
-// parse mem
+// mem parser
 func parseMem(opers *[]operand) operand {
 
 	fmt.Println("memory operands:", opers)
@@ -331,7 +337,7 @@ func parseMem(opers *[]operand) operand {
 	return operand{}
 }
 
-// parse imm type
+// imm type parser
 func parseImmType(i uint) operandType {
 
 	/*
