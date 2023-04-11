@@ -100,8 +100,13 @@ func findInstruction(inst *instruction) []instructionOpcode {
 // check operand type is valid
 func validOperand(withOperand operandType, thisOperand *operand) int {
 
-	// if operand type not match then deep check
+	/*
+		thisOperand is operand, to be check with withOperand
+		withOperand is operand type
+	*/
+
 	if withOperand == thisOperand.operandType {
+		// if withOperand and thisOperand type is same
 		return operandPerfectMatch
 	}
 
@@ -116,32 +121,53 @@ func validOperand(withOperand operandType, thisOperand *operand) int {
 			return operandPerfectMatch
 		}
 
-		if withOperand == imm8 || withOperand == imm16 || withOperand == imm32 || withOperand == imm64 {
+		switch withOperand {
+		case imm8, imm16, imm32, imm64:
+			/*
+				if withOperand is imm8, imm16, imm32
+				or imm64, then accept imm
+			*/
 			return operandMatch
+		}
+
+	}
+
+	/*
+		check regMem
+	*/
+
+	if thisOperand.operandType == regMem {
+		switch withOperand {
+		case regMem8, regMem16, regMem32, regMem64:
+			/*
+				if withOperand is regMem8, regMem16,
+				regMem32 or regMem64, then accept regMem
+			*/
+			return operandPerfectMatch
 		}
 	}
 
 	/*
-		check register side
+		check register
 	*/
 
-	// regMem8 is accept reg8
 	if withOperand == regMem8 && thisOperand.operandType == reg8 {
+		// if withOperand is regMem8 then accept reg8
 		return operandPerfectMatch
 	}
 
-	// regMem16 is accept reg16
 	if withOperand == regMem16 && thisOperand.operandType == reg16 {
+		// if withOperand is regMem16 then accept reg16
 		return operandPerfectMatch
 	}
 
-	// regMem32 is accept reg32
 	if withOperand == regMem32 && thisOperand.operandType == reg32 {
+		// if withOperand is regMem32 then accept reg32
 		return operandPerfectMatch
 	}
 
-	// regMem64 is accept reg64
 	if withOperand == regMem64 && thisOperand.operandType == reg64 {
+		// if withOperand is regMem64 then accept reg64
 		return operandPerfectMatch
 	}
 
