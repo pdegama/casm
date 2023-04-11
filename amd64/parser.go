@@ -177,7 +177,7 @@ func parseOperand(tokens []token) (operand, error) {
 				opers = append(opers, operand{
 					operandType: getRegisterOperandType(reg),
 					operandVal:  uint(reg.globleIndex),
-					operandMem:  0x00,
+					operandMem:  nil,
 				})
 				continue
 			}
@@ -199,7 +199,7 @@ func parseOperand(tokens []token) (operand, error) {
 				opers = append(opers, operand{
 					operandType: oprType,
 					operandVal:  uint(tokenVal),
-					operandMem:  0x00,
+					operandMem:  nil,
 				})
 				continue
 			}
@@ -234,7 +234,7 @@ func parseOperand(tokens []token) (operand, error) {
 				opers = append(opers, operand{
 					operandType: oprType,
 					operandVal:  uint(tokenVal),
-					operandMem:  0x00,
+					operandMem:  nil,
 				})
 				continue
 
@@ -297,7 +297,7 @@ func parseOperand(tokens []token) (operand, error) {
 			return operand{
 				operandType: imm,
 				operandVal:  0x00,
-				operandMem:  0x00,
+				operandMem:  nil,
 			}, nil
 
 		}
@@ -311,7 +311,11 @@ func parseOperand(tokens []token) (operand, error) {
 	if isMem {
 		// operand is chance mem
 
-		oper := parseMem(&opers)
+		oper, err := parseMem(&opers)
+		if err != nil {
+			// if error
+			return operand{}, err
+		}
 		return oper, nil
 	}
 
@@ -322,7 +326,6 @@ func parseOperand(tokens []token) (operand, error) {
 
 	if len(opers) > 1 {
 		// if oper len is more then 1 return error
-		// TODO
 		return operand{}, fmt.Errorf("invalid operand / todo")
 	}
 
@@ -330,11 +333,45 @@ func parseOperand(tokens []token) (operand, error) {
 }
 
 // mem parser
-func parseMem(opers *[]operand) operand {
+func parseMem(opers *[]operand) (operand, error) {
 
-	fmt.Println("memory operands:", opers)
+	isOperation := true // if this operand is operation operand (init value is true)
 
-	return operand{}
+	memOpers := []operand{} // memory operands
+
+	// fmt.Println("memory operands:", opers)
+
+	// operands
+	for _, oper := range *opers {
+		switch oper.operandType {
+		case reg8, reg16, reg32, reg64:
+			// if operand is reg
+			if isOperation {
+				memOpers = append(memOpers, oper) // append to memory operands
+				isOperation = false
+			} else {
+				return operand{}, fmt.Errorf("invalid operand/syntax")
+			}
+		case imm, imm8, imm16, imm32, imm64:
+			// if operand id imm
+			if isOperation {
+				memOpers = append(memOpers, oper) // append to memory operands
+				isOperation = false
+			} else {
+				return operand{}, fmt.Errorf("invalid operand/syntax")
+			}
+		default:
+			// invalid or todo
+			return operand{}, fmt.Errorf("invalid operand / todo")
+		}
+	}
+
+	// return mem operand
+	return operand{
+		operandType: regMem,
+		operandVal:  0,
+		operandMem:  memOpers,
+	}, nil
 }
 
 // imm type parser

@@ -31,9 +31,9 @@ const ( // value is tmp
 	imm32    operandType = "imm32"    // 32-bit immediate value
 	imm64    operandType = "imm64"    // 64-bit immediate value
 
-	reg    operandType = "regGroup"    // group of Reg*
-	regMem operandType = "regMemGroup" // group of RegMem*
-	imm    operandType = "imm"         // group of imm*
+	reg    operandType = "reg"    // group of Reg*
+	regMem operandType = "regMem" // group of RegMem*
+	imm    operandType = "imm"    // group of imm*
 
 	//
 )
@@ -41,8 +41,8 @@ const ( // value is tmp
 // operand structure
 type operand struct {
 	operandType operandType // operand type
-	operandVal  uint        // operand
-	operandMem  uint        // operand
+	operandVal  uint        // operand value
+	operandMem  []operand   // mem operands
 }
 
 // instruction structure
