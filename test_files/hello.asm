@@ -31,6 +31,10 @@ $startto:
   mov rcx, [rax]
   mov [ecx], rax
 
+  mov [rax], word 0x74
+  mov [word 0x74], eax
+  mov [qword 0x70], 13
+
   $msg:
     db "I ❤️  Computers!", 10
   $myname: 
