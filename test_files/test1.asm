@@ -1,3 +1,3 @@
 bits 64
 
-mov eax,[ebx+8,ecx*4]
+mov [dword 0x74], eax
