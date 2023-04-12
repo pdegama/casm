@@ -3,6 +3,7 @@
 Documents And References for develop this assembler
 
 ### 1 \) AMD64 Architecture Programmer’s Manual
+
 | #             | Description                                                                                                                                                                                         |
 | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Name          | AMD64 Architecture Programmer’s Manual                                                                                                                                                              |
@@ -12,10 +13,11 @@ Documents And References for develop this assembler
 | File Path     | [PDF](https://www.amd.com/system/files/TechDocs/24594.pdf)                                                                                                                                          |
 
 ### 2 \) Intel® 64 and IA-32 Architectures Software Developer Manuals
-| #             | Description                                                                                    |
-| ------------- | ---------------------------------------------------------------------------------------------- |
-| Name          | Intel® 64 and IA-32 Architectures Software Developer’s Manual                                  |
-| Volume        | Combined Volumes: 1, 2A, 2B, 2C, 2D, 3A, 3B, 3C, 3D and 4                                      |
-| Copyright     | Intel Corporation.                                                                             |
-| Download Page | [Website](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html) |
-| File Path     | [PDF](https://cdrdv2.intel.com/v1/dl/getContent/671200)                                        |
+
+| #             | Description                                                                                                       |
+| ------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Name          | Intel® 64 and IA-32 Architectures Software Developer’s Manual                                                     |
+| Volume        | Combined Volumes: 1, 2A, 2B, 2C, 2D, 3A, 3B, 3C, 3D and 4                                                         |
+| Copyright     | Intel Corporation.                                                                                                |
+| Download Page | [Website](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)                    |
+| File Path     | [PDF](https://cdrdv2.intel.com/v1/dl/getContent/671200) [PDF 2](https://cdrdv2.intel.com/v1/dl/getContent/671110) |
