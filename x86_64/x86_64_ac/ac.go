@@ -7,6 +7,19 @@
 
 package main
 
+import (
+	"fmt"
+)
+
+// main function
 func main() {
-	
+
+	// read csv file
+	row := readCSV()
+
+	for i, v := range row {
+		fmt.Println(i, v)
+	}
+
+	//fmt.Println(row[0])
 }
