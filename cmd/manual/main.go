@@ -2,7 +2,7 @@
 // This code is licensed under MIT license
 
 /*
-	amd64 / x86_64 manual
+	x86_64 / amd64 manual
 	information and download
 */
 
