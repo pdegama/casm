@@ -3,7 +3,7 @@
 
 // parser
 
-package amd64
+package x86_64
 
 import (
 	"encoding/hex"

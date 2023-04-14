@@ -3,7 +3,7 @@
 
 // register table
 
-package amd64
+package x86_64
 
 // register globle index
 const (

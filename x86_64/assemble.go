@@ -3,14 +3,14 @@
 
 // assemble
 
-package amd64
+package x86_64
 
 import (
 	"fmt"
 )
 
 // assemble asm file
-func assemble(arch *amd64) {
+func assemble(arch *x86_64) {
 
 	// tokenization
 	lines, err := lexer(arch.asmFile)

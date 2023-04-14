@@ -3,7 +3,7 @@
 
 // instruction table
 
-package amd64
+package x86_64
 
 // instruction opcode
 var instOpcodes []instructionOpcode = []instructionOpcode{

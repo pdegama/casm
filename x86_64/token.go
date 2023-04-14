@@ -3,7 +3,7 @@
 
 // token
 
-package amd64
+package x86_64
 
 // token type
 type tokenType string

@@ -3,7 +3,7 @@
 
 // instruction
 
-package amd64
+package x86_64
 
 // operand type
 type operandType string

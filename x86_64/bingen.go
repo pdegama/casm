@@ -3,7 +3,7 @@
 
 // binary generation
 
-package amd64
+package x86_64
 
 import (
 	"fmt"

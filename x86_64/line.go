@@ -3,7 +3,7 @@
 
 // line
 
-package amd64
+package x86_64
 
 // line type
 type lineType string

@@ -6,7 +6,7 @@
 package main
 
 import (
-	"hellocomputers/casm/amd64"
+	"hellocomputers/casm/x86_64"
 	"os"
 )
 
@@ -14,9 +14,9 @@ func main() {
 
 	asmFilePath := os.Args[1]
 
-	// mew amd64 program
-	asmProg := amd64.NewAMD64()
+	// mew x86_64 program
+	asmProg := x86_64.NewX86_64()
 	asmProg.SetAsmFile(asmFilePath) // set asm file
-	asmProg.Assemble()                         // assemble
+	asmProg.Assemble()              // assemble
 
 }
