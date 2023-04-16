@@ -20,14 +20,16 @@ import (
 const (
 
 	// intel
-	intelManualName string = "Intel® 64 and IA-32 Architectures Software Developer's Manual"
+	intelManualName string = "x86"
 	intelManualWeb  string = "https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html"
 	intelManualURL  string = "https://cdrdv2.intel.com/v1/dl/getContent/671200"
+	intelManualURL2 string = "https://cdrdv2.intel.com/v1/dl/getContent/671110"
 
 	// amd
-	amdManualName string = "AMD64 Architecture Programmer's Manual"
+	amdManualName string = "amd64"
 	amdManualWeb  string = "https://www.amd.com/en/support/tech-docs?keyword=AMD64+Architecture+Programmer%27s+Manual"
 	amdManualURL  string = "https://www.amd.com/system/files/TechDocs/40332.pdf"
+	amdManualURL2 string = "https://www.amd.com/system/files/TechDocs/24594.pdf"
 )
 
 func main() {
@@ -71,12 +73,14 @@ func manualInfo(manualName string) {
 		fmt.Println(intelManualName)
 		fmt.Printf("    Website:\t%v\n", intelManualWeb)
 		fmt.Printf("    Link:\t%v\n", intelManualURL)
+		fmt.Printf("    Link:\t%v\n", intelManualURL2)
 	}
 
 	if manualName == "amd" || manualName == "both" {
 		fmt.Println(amdManualName)
 		fmt.Printf("    Website:\t%v\n", amdManualWeb)
 		fmt.Printf("    Link:\t%v\n", amdManualURL)
+		fmt.Printf("    Link:\t%v\n", amdManualURL2)
 	}
 }
 
@@ -84,10 +88,12 @@ func manualInfo(manualName string) {
 func manualDownload(manualName string) {
 	if manualName == "intel" || manualName == "both" {
 		downloadFile(intelManualURL, intelManualName)
+		downloadFile(intelManualURL2, intelManualName+"_instruction")
 	}
 
 	if manualName == "amd" || manualName == "both" {
 		downloadFile(amdManualURL, amdManualName)
+		downloadFile(amdManualURL2, amdManualName+"_instruction")
 	}
 }
 
