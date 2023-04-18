@@ -14,7 +14,7 @@ func main() {
 
 	asmFilePath := os.Args[1]
 
-	// mew x86_64 program
+	// new x86_64 program
 	asmProg := x86_64.NewX86_64()
 	asmProg.SetAsmFile(asmFilePath) // set asm file
 	asmProg.Assemble()              // assemble
