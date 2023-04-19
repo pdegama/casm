@@ -12,14 +12,14 @@ type tokenType string
 const ( // value is tmp
 
 	//
-	tokenUnknow        tokenType = "Unknow"        // unknow
-	tokenComma         tokenType = "Comma"         // ,
-	tokenColon         tokenType = "Colon"         // :
-	tokenBracketLeft   tokenType = "Left Bracket"  // [
+	tokenUnknow       tokenType = "Unknow"        // unknow
+	tokenComma        tokenType = "Comma"         // ,
+	tokenColon        tokenType = "Colon"         // :
+	tokenBracketLeft  tokenType = "Left Bracket"  // [
 	tokenBracketRight tokenType = "Right Bracket" // ]
-	tokenDoubleQuote   tokenType = "Double Quote"  // "
-	tokenModulo        tokenType = "Modulo"        // %
-	tokenLabel         tokenType = "Label"         // $*
+	tokenDoubleQuote  tokenType = "Double Quote"  // "
+	tokenModulo       tokenType = "Modulo"        // %
+	tokenLabel        tokenType = "Label"         // $*
 
 	//
 )
