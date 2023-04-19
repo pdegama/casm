@@ -18,7 +18,8 @@ func main() {
 	row := readCSV()
 
 	for i, v := range row {
-		fmt.Println(i, v)
+		fmt.Printf("%v ", i)
+		parseData(v)
 	}
 
 	//fmt.Println(row[0])

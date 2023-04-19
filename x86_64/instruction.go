@@ -58,6 +58,14 @@ type instructionOpcode struct {
 	opCode       []int         // instruction opcode
 }
 
+// instruction architecture opcode structure
+type instructionArchCode struct {
+	mnemonic string        // instruction mnemonic
+	operand  []operandType // instruction operand type by order
+	opcode   []int         // instruction opcode
+	bitsize  int           // instruction bit size
+}
+
 // opcode syntax code
 const (
 

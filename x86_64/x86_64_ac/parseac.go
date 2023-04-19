@@ -33,14 +33,36 @@
 
 
 	The complete line used for the above examples is:
-	"SHR r/m32, imm8","SHRL imm8, r/m32","shrl imm8, r/m32","C1 /5 ib","V","V","","operand32","rw,r","Y","32"
+	"SHR r/m32, imm8","SHRL imm8, r/m32","shrl imm8, r/m32","C1 /5 ib","V","V","","operand32","","Y","32"
 
 
 */
 
 package main
 
+import "fmt"
+
+type operandType string
+
+type instructionArchCode struct {
+	mnemonic string
+	operand  []operandType
+	opcode   []int
+	bitsize  int
+}
+
 // parse architecture code data
-func parseData() {
+func parseData(csvRow []string) {
+
+	if len(csvRow) != 11 {
+		// if csv row column is not equle 11 then return error
+		panic("invalid csv row")
+	}
+
+	instMnemonic := csvRow[0]
+	instOpcode := csvRow[3]
+	instBitsize := csvRow[10]
+
+	fmt.Println(instMnemonic, instOpcode, instBitsize)
 
 }
