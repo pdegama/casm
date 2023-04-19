@@ -18,11 +18,11 @@ import (
 // read csv file
 func readCSV() [][]string {
 
-	// remove comment in /x86_64/x86_64_ac/x86_64.csv and create new file /x86_64/x86_64_ac/x86_64_clear.csv
+	// remove comment in /x86_64/x86_64_ao/x86_64.csv and create new file /x86_64/x86_64_ao/x86_64_clear.csv
 	removeComment()
 
 	// open file
-	csvfile, err := os.Open("./x86_64/x86_64_ac/x86_64_clear.csv")
+	csvfile, err := os.Open("./x86_64/x86_64_ao/x86_64_clear.csv")
 	if err != nil {
 		panic(err)
 	}
@@ -49,24 +49,24 @@ func readCSV() [][]string {
 
 func removeComment() {
 
-	// ./x86_64/x86_64_ac/x86_64_clear.csv is already exist then delete file
-	fi, _ := os.Stat("./x86_64/x86_64_ac/x86_64_clear.csv")
+	// ./x86_64/x86_64_ao/x86_64_clear.csv is already exist then delete file
+	fi, _ := os.Stat("./x86_64/x86_64_ao/x86_64_clear.csv")
 	if fi != nil {
-		err := os.Remove("./x86_64/x86_64_ac/x86_64_clear.csv")
+		err := os.Remove("./x86_64/x86_64_ao/x86_64_clear.csv")
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	// create ./x86_64/x86_64_ac/x86_64_clear.csv
-	f, err := os.OpenFile("./x86_64/x86_64_ac/x86_64_clear.csv", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	// create ./x86_64/x86_64_ao/x86_64_clear.csv
+	f, err := os.OpenFile("./x86_64/x86_64_ao/x86_64_clear.csv", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
 
-	// read file "./x86_64/x86_64_ac/x86_64.csv"
-	readFile, err := os.Open("./x86_64/x86_64_ac/x86_64.csv")
+	// read file "./x86_64/x86_64_ao/x86_64.csv"
+	readFile, err := os.Open("./x86_64/x86_64_ao/x86_64.csv")
 	if err != nil {
 		fmt.Println(err)
 	}
