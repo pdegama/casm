@@ -2,7 +2,7 @@
 // This code is licensed under MIT license
 
 /*
-	parse architecture code data
+	parse architecture opcode data
 */
 
 /*
@@ -40,15 +40,19 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
-type operandType string
+type operandType string // tmp
 
-type instructionArchCode struct {
-	mnemonic string
-	operand  []operandType
-	opcode   []int
-	bitsize  int
+type archOpcode struct { // tmp
+	mnemonicName     string
+	mnemonicOperands []operandType
+	opcode           []int
+	valid32BitMode   bool
+	valid64BitMode   bool
 }
 
 // parse architecture code data
@@ -59,10 +63,37 @@ func parseData(csvRow []string) {
 		panic("invalid csv row")
 	}
 
-	instMnemonic := csvRow[0]
-	instOpcode := csvRow[3]
-	instBitsize := csvRow[10]
+	instMnemonic := csvRow[0]       // instruction mnemonic string
+	instOpcode := csvRow[3]         // instruction opcode string
+	instValid32bitMode := csvRow[4] // instruction is valid in 32 bit mode
+	instValid64bitMode := csvRow[5] // instruction is valid in 64 bit mode
 
-	fmt.Println(instMnemonic, instOpcode, instBitsize)
+	_ = instOpcode
+	_ = instValid32bitMode
+	_ = instValid64bitMode
 
+	parseMnemonic(instMnemonic)
+
+}
+
+// parse mnemonic
+func parseMnemonic(mnemonicStr string) string {
+
+	// split mnemonic string with " "
+	mnemonicArray := strings.Split(mnemonicStr, " ")
+
+	mnemonicName := mnemonicArray[0]      // mnemonic name
+	mnemonicOperands := mnemonicArray[1:] // mnemonic operands
+
+	for i, operand := range mnemonicOperands {
+		// if operand string is end with `,` then remove it
+		if operand[len(operand)-1] == ',' {
+			mnemonicOperands[i] = operand[:len(operand)-1]
+		}
+	}
+
+	fmt.Println(mnemonicName, mnemonicOperands)
+
+	// return
+	return mnemonicName
 }
