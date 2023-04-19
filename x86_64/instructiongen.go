@@ -42,7 +42,7 @@ func findInstruction(inst *instruction) []instructionOpcode {
 	// loop of instruction opcode
 	for _, instOpcode := range instOpcodes {
 
-		if instOpcode.mnemonic == inst.mnemonic { // match mnemonic
+		if instOpcode.mnemonic == inst.mnemonicName { // match mnemonic
 
 			operTypeMatch := true       // operand type is match
 			operTypePerfecMatch := true // operand type is match

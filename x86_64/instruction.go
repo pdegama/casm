@@ -7,8 +7,8 @@ package x86_64
 
 // instruction structure
 type instruction struct {
-	mnemonic string    // instruction mnemonic name
-	operands []operand // instruction operand by order
+	mnemonicName string    // instruction mnemonic name
+	operands     []operand // instruction operand by order
 }
 
 // instruction opcode structure tmp

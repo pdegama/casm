@@ -84,25 +84,24 @@ func parseLine(line asmLine) (asmLine, error) {
 // instruction parser
 func parseInst(tokens []token) (instruction, error) {
 
+	mnemonicName := "" // instruction mnemonic name
+
 	operandTokens := []token{} // operand token queue
 	operands := []operand{}    // operands queue
 
-	instMnemonic := "" // instruction mnemonic
+	mNameToken := tokens[0]      // mnemonic token
+	mOperandTokens := tokens[1:] // mnemonic operand
 
-	for tokIndex, tok := range tokens {
+	if mNameToken.tokenType == tokenUnknow {
+		// if mnemonic token type is unknow
+		mnemonicName = strings.ToUpper(mNameToken.token) // set inst mnemonic name
+	} else {
+		// invalid token
+		return instruction{}, fmt.Errorf("invalid token")
+	}
 
-		if tokIndex == 0 {
-			// if first token mnemonic
-			// first token is
-			if tok.tokenType == tokenUnknow {
-				instMnemonic = strings.ToUpper(tok.token) // set inst mnemonic
-				continue
-			} else {
-				// invalid token
-				return instruction{}, fmt.Errorf("invalid token")
-			}
-		}
-
+	// loop of opernad tokens
+	for _, tok := range mOperandTokens {
 		switch tok.tokenType {
 		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketRight, tokenDoubleQuote:
 			// if token is unknow, or label
@@ -134,11 +133,9 @@ func parseInst(tokens []token) (instruction, error) {
 
 	// return instruction
 	return instruction{
-		mnemonic: instMnemonic,
-		operands: operands,
+		mnemonicName: mnemonicName,
+		operands:     operands,
 	}, nil
-
-	// return instruction{}, fmt.Errorf("instruction error")
 }
 
 // operand parser
