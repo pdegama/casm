@@ -11,8 +11,6 @@ import (
 	"math/big"
 	"strconv"
 	"strings"
-
-	"hellocomputers/casm/utils"
 )
 
 // lines parser
@@ -62,7 +60,7 @@ func parseLine(line asmLine) (asmLine, error) {
 				line.lineType = lineLabel
 				return line, nil
 			} else {
-				return line, fmt.Errorf("%s %v:%v %v", utils.Error, *line.filePath, line.index+1, "invalid syntax")
+				return line, fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, "invalid syntax")
 			}
 		}
 	}
@@ -74,7 +72,7 @@ func parseLine(line asmLine) (asmLine, error) {
 		if line.tokens[0].tokenType == tokenUnknow {
 			line.lineType = lineInst
 		} else {
-			return line, fmt.Errorf("%s %v:%v %v", utils.Error, *line.filePath, line.index+1, "invalid syntax")
+			return line, fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, "invalid syntax")
 		}
 	}
 

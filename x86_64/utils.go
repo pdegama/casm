@@ -1,10 +1,11 @@
 // Copyright (c) 2023 Parth Degama
 // This code is licensed under MIT license
 
-// alert
+// utils
 
-package utils
+package x86_64
 
+// const
 const (
-	Error = "\033[1;91merror:\033[00m"
+	errorStr = "\033[1;91merror:\033[00m" // error string
 )

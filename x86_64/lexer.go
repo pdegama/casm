@@ -9,8 +9,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"hellocomputers/casm/utils"
 )
 
 // open file
@@ -21,7 +19,7 @@ func openFile(filePath string) ([]byte, error) {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, fmt.Errorf("%s file not found: %s", utils.Error, filePath)
+			return nil, fmt.Errorf("%s file not found: %s", errorStr, filePath)
 		} else {
 			return nil, fmt.Errorf("unknow")
 		}
@@ -49,7 +47,7 @@ func lexer(filePath string) ([]asmLine, error) {
 	for lineIndex, lineStr := range linesStr {
 		toks, err := lineLexer(lineStr)
 		if err != nil {
-			fmt.Printf("%s %v:%v %v\n", utils.Error, filePath, lineIndex+1, err)
+			fmt.Printf("%s %v:%v %v\n", errorStr, filePath, lineIndex+1, err)
 		}
 		//fmt.Println(toks)
 

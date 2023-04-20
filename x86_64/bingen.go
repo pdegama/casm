@@ -7,8 +7,6 @@ package x86_64
 
 import (
 	"fmt"
-
-	"hellocomputers/casm/utils"
 )
 
 // code generation
@@ -39,14 +37,14 @@ func genCodeInst(line asmLine) error {
 	inst, err := parseInst(line.tokens)
 	if err != nil {
 		// inst parse err
-		return fmt.Errorf("%s %v:%v %v", utils.Error, *line.filePath, line.index+1, err)
+		return fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 	}
 
 	//  instruction gen
 	err = instructionGen(inst)
 	if err != nil {
 		// inst gen error
-		return fmt.Errorf("%s %v:%v %v", utils.Error, *line.filePath, line.index+1, err)
+		return fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 	}
 
 	return nil
