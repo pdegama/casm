@@ -7,11 +7,17 @@ package x86_64
 
 // instruction architecture opcode structure
 type archOpcode struct {
-	mnemonicName     string        // instruction mnemonic
-	mnemonicOperands []operandType // instruction operand type by order
-	opcode           []int         // instruction opcode
-	valid32BitMode   bool          // instruction is valid in 32-bit mode
-	valid64BitMode   bool          // instruction is valid in 64-bit mode
+	name           string       // instruction mnemonic
+	operands       []archOpcode // instruction operand type by order
+	opcode         []int        // instruction opcode
+	valid32BitMode bool         // instruction is valid in 32-bit mode
+	valid64BitMode bool         // instruction is valid in 64-bit mode
+}
+
+// operand structure for arch opcode list
+type archOperand struct {
+	t operandType // operand type
+	v int         // operand value
 }
 
 // opcode syntax code
