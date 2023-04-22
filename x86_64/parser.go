@@ -131,8 +131,8 @@ func parseInst(tokens []token) (instruction, error) {
 
 	// return instruction
 	return instruction{
-		name: mnemonicName,
-		operands:     operands,
+		name:     mnemonicName,
+		operands: operands,
 	}, nil
 }
 
