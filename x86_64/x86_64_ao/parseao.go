@@ -43,21 +43,6 @@ import (
 	"strings"
 )
 
-type operandType string // tmp
-
-type archOpcode struct {
-	name           string
-	operands       []archOperand
-	opcode         []int
-	valid32BitMode bool
-	valid64BitMode bool
-}
-
-type archOperand struct {
-	t operandType
-	v int
-}
-
 // parse architecture code data
 func parseData(csvRow []string) (string, string, bool, bool, error) {
 
