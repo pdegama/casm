@@ -41,7 +41,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -61,7 +60,7 @@ type archOperand struct {
 }
 
 // parse architecture code data
-func parseData(csvRow []string) {
+func parseData(csvRow []string) (string, []string, bool, bool) {
 
 	if len(csvRow) != 11 {
 		// if csv row column is not equle 11 then return error
@@ -69,19 +68,22 @@ func parseData(csvRow []string) {
 	}
 
 	instMnemonic := csvRow[0]       // instruction mnemonic string
-	instOpcode := csvRow[3]         // instruction opcode string
+	// instOpcode := csvRow[3]         // instruction opcode string
 	instValid32bitMode := csvRow[4] // instruction is valid in 32 bit mode
 	instValid64bitMode := csvRow[5] // instruction is valid in 64 bit mode
 
+	// parse inst mnemonic name and operands
 	mnemonicName, mnemonicOperands, err := parseMnemonic(instMnemonic)
 	if err != nil {
 		panic(err)
 	}
 
+	// parse bit mode
 	valid32bitMode := parseValidMode(instValid32bitMode)
 	valid64bitMode := parseValidMode(instValid64bitMode)
 
-	fmt.Println(mnemonicName, mnemonicOperands, valid32bitMode, valid64bitMode, instOpcode)
+	// return
+	return mnemonicName, mnemonicOperands, valid32bitMode, valid64bitMode
 
 }
 
