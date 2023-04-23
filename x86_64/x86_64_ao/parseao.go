@@ -47,12 +47,17 @@ import (
 
 type operandType string // tmp
 
-type archOpcode struct { // tmp
-	mnemonicName     string
-	mnemonicOperands []operandType
-	opcode           []int
-	valid32BitMode   bool
-	valid64BitMode   bool
+type archOpcode struct {
+	name           string
+	operands       []archOpcode
+	opcode         []int
+	valid32BitMode bool
+	valid64BitMode bool
+}
+
+type archOperand struct {
+	t operandType
+	v int
 }
 
 // parse architecture code data
@@ -68,16 +73,20 @@ func parseData(csvRow []string) {
 	instValid32bitMode := csvRow[4] // instruction is valid in 32 bit mode
 	instValid64bitMode := csvRow[5] // instruction is valid in 64 bit mode
 
-	_ = instOpcode
-	_ = instValid32bitMode
-	_ = instValid64bitMode
+	mnemonicName, mnemonicOperands, err := parseMnemonic(instMnemonic)
+	if err != nil {
+		panic(err)
+	}
 
-	parseMnemonic(instMnemonic)
+	valid32bitMode := parseValidMode(instValid32bitMode)
+	valid64bitMode := parseValidMode(instValid64bitMode)
+
+	fmt.Println(mnemonicName, mnemonicOperands, valid32bitMode, valid64bitMode, instOpcode)
 
 }
 
 // parse mnemonic
-func parseMnemonic(mnemonicStr string) string {
+func parseMnemonic(mnemonicStr string) (string, []string, error) {
 
 	// split mnemonic string with " "
 	mnemonicArray := strings.Split(mnemonicStr, " ")
@@ -92,8 +101,22 @@ func parseMnemonic(mnemonicStr string) string {
 		}
 	}
 
-	fmt.Println(mnemonicName, mnemonicOperands)
-
 	// return
-	return mnemonicName
+	return mnemonicName, mnemonicOperands, nil
+}
+
+// parse valid on 32-bit or 64 bit mode
+func parseValidMode(validStr string) bool {
+
+	switch validStr {
+	case "V": // valid
+		return true
+	case "N.E.", "I": // invalid
+		return false
+	case "N.S.": // ?
+		return false
+	}
+
+	// str is not match ni switch-case then panic program
+	panic(validStr)
 }

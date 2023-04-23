@@ -7,18 +7,13 @@
 
 package main
 
-import (
-	"fmt"
-)
-
 // main function
 func main() {
 
 	// read csv file
 	row := readCSV()
 
-	for i, v := range row {
-		fmt.Printf("%v ", i)
+	for _, v := range row {
 		parseData(v)
 	}
 
