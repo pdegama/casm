@@ -58,7 +58,7 @@ type archOperand struct {
 }
 
 // parse architecture code data
-func parseData(csvRow []string) (string, []string, bool, bool) {
+func parseData(csvRow []string) (string, string, bool, bool) {
 
 	if len(csvRow) != 11 {
 		// if csv row column is not equle 11 then return error
@@ -71,10 +71,13 @@ func parseData(csvRow []string) (string, []string, bool, bool) {
 	instValid64bitMode := csvRow[5] // instruction is valid in 64 bit mode
 
 	// parse inst mnemonic name and operands
-	mnemonicName, mnemonicOperands, err := parseMnemonic(instMnemonic)
+	mnemonicName, mOperands, err := parseMnemonic(instMnemonic)
 	if err != nil {
 		panic(err)
 	}
+
+	// parse mnemonic operands
+	mnemonicOperands := parseMnemonicOperand(mOperands)
 
 	// parse bit mode
 	valid32bitMode := parseValidMode(instValid32bitMode)
@@ -119,4 +122,19 @@ func parseValidMode(validStr string) bool {
 
 	// str is not match ni switch-case then panic program
 	panic(validStr)
+}
+
+// parse mnemonic operands
+func parseMnemonicOperand(mOperands []string) string {
+
+	operandString := ""
+
+	for opeIndex, ope := range mOperands {
+		operandString += makeArchOperandStruct(ope, "1")
+		if len(mOperands)-1 != opeIndex {
+			operandString += ", "
+		}
+	}
+
+	return "[]archOperand{" + operandString + "}"
 }
