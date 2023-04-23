@@ -161,7 +161,7 @@ func checkOperand(opr string) (string, string, error) {
 	// replace string
 	opr = replaceOperand(opr)
 
-	return opr, "1", nil
+	return opr, "anyValue", nil
 }
 
 // replave operand string

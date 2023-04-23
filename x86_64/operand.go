@@ -8,6 +8,9 @@ package x86_64
 // operand type
 type operandType string
 
+// any operandValue
+const anyValue = -1
+
 // operand type
 const ( // value is tmp
 
