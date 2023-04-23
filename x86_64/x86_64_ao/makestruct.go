@@ -29,7 +29,7 @@ func makeArchOpcodeStruct(mName string, mOperands []string, valid32bit bool, val
 		Valid64BitMode: valid64bit,
 	}
 
-	structStrTemplate := `	{name: "{{.Name}}", operands: []archOpcode{}, opcode: []int{}, valid32BitMode: {{.Valid32BitMode}}, valid64BitMode: {{.Valid64BitMode}}},`
+	structStrTemplate := `	{name: "{{.Name}}", operands: []archOperand{}, opcode: []int{}, valid32BitMode: {{.Valid32BitMode}}, valid64BitMode: {{.Valid64BitMode}}},`
 
 	acTemplate := template.New("acTemplate")
 	acTemplate, err := acTemplate.Parse(structStrTemplate)

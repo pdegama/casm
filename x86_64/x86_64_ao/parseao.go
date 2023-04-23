@@ -48,7 +48,7 @@ type operandType string // tmp
 
 type archOpcode struct {
 	name           string
-	operands       []archOpcode
+	operands       []archOperand
 	opcode         []int
 	valid32BitMode bool
 	valid64BitMode bool
@@ -67,7 +67,7 @@ func parseData(csvRow []string) (string, []string, bool, bool) {
 		panic("invalid csv row")
 	}
 
-	instMnemonic := csvRow[0]       // instruction mnemonic string
+	instMnemonic := csvRow[0] // instruction mnemonic string
 	// instOpcode := csvRow[3]         // instruction opcode string
 	instValid32bitMode := csvRow[4] // instruction is valid in 32 bit mode
 	instValid64bitMode := csvRow[5] // instruction is valid in 64 bit mode
