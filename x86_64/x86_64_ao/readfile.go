@@ -1,9 +1,7 @@
 // Copyright (c) 2023 Parth Degama
 // This code is licensed under MIT license
 
-/*
-	read csv file
-*/
+// read csv file
 
 package main
 

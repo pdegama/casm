@@ -1,9 +1,7 @@
 // Copyright (c) 2023 Parth Degama
 // This code is licensed under MIT license
 
-/*
-	parse architecture opcode data
-*/
+// parse architecture opcode data
 
 /*
 
