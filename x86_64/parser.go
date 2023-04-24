@@ -170,9 +170,9 @@ func parseOperand(tokens []token) (operand, error) {
 					return operand{}, fmt.Errorf("invalid operand register is not imm")
 				}
 				opers = append(opers, operand{
-					operandType: getRegisterOperandType(reg),
-					operandVal:  uint(reg.globleIndex),
-					operandMem:  nil,
+					t: getRegisterOperandType(reg),
+					v:  uint(reg.globleIndex),
+					m:  nil,
 				})
 				continue
 			}
@@ -192,9 +192,9 @@ func parseOperand(tokens []token) (operand, error) {
 					nextImm = false
 				}
 				opers = append(opers, operand{
-					operandType: oprType,
-					operandVal:  uint(tokenVal),
-					operandMem:  nil,
+					t: oprType,
+					v:  uint(tokenVal),
+					m:  nil,
 				})
 				continue
 			}
@@ -227,9 +227,9 @@ func parseOperand(tokens []token) (operand, error) {
 					nextImm = false
 				}
 				opers = append(opers, operand{
-					operandType: oprType,
-					operandVal:  uint(tokenVal),
-					operandMem:  nil,
+					t: oprType,
+					v:  uint(tokenVal),
+					m:  nil,
 				})
 				continue
 
@@ -290,9 +290,9 @@ func parseOperand(tokens []token) (operand, error) {
 		case tokenLabel:
 			// token is label
 			return operand{
-				operandType: imm,
-				operandVal:  0x00,
-				operandMem:  nil,
+				t: imm,
+				v:  0x00,
+				m:  nil,
 			}, nil
 
 		}
@@ -338,7 +338,7 @@ func parseMem(opers *[]operand) (operand, error) {
 
 	// operands
 	for _, oper := range *opers {
-		switch oper.operandType {
+		switch oper.t {
 		case reg8, reg16, reg32, reg64:
 			// if operand is reg
 			if isOperation {
@@ -363,9 +363,9 @@ func parseMem(opers *[]operand) (operand, error) {
 
 	// return mem operand
 	return operand{
-		operandType: regMem,
-		operandVal:  0,
-		operandMem:  memOpers,
+		t: regMem,
+		v:  0,
+		m:  memOpers,
 	}, nil
 }
 

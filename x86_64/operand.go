@@ -93,7 +93,7 @@ const ( // value is tmp
 
 // operand structure
 type operand struct {
-	operandType operandType // operand type
-	operandVal  uint        // operand value
-	operandMem  []operand   // mem operands
+	t operandType // operand type
+	v uint        // operand value
+	m []operand   // mem operands
 }

@@ -29,7 +29,7 @@ func archOpcodeFind(inst *instruction) []archOpcode {
 				for opeIndex, opeType := range opcode.operands {
 
 					// check operand is valid or not valid
-					switch operandIsValid(opeType.t, &inst.operands[opeIndex]) {
+					switch operandIsValid(&opeType, &inst.operands[opeIndex]) {
 					case operandMatch:
 						/*
 							operand type match but not perfect then
@@ -87,14 +87,22 @@ const (
 )
 
 // check operand type is valid
-func operandIsValid(withOperand operandType, thisOperand *operand) int {
+func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 
 	/*
 		thisOperand is operand, to be check with withOperand
-		withOperand is operand type
+		withOperand is operand type and value
 	*/
 
-	if withOperand == thisOperand.operandType {
+	if withOperand.v != anyValue {
+		// if operand have fix value
+		if withOperand.v != int(thisOperand.v) {
+			// fix value not match return operandNotMatch
+			return operandNotMatch
+		}
+	}
+
+	if withOperand.t == thisOperand.t {
 		// if withOperand and thisOperand type is same
 		return operandPerfectMatch
 	}
@@ -103,14 +111,14 @@ func operandIsValid(withOperand operandType, thisOperand *operand) int {
 		check imm type
 	*/
 
-	if thisOperand.operandType == imm {
+	if thisOperand.t == imm {
 
 		//fmt.Println(parseImmType(thisOperand.operand))
-		if withOperand == parseImmType(thisOperand.operandVal) {
+		if withOperand.t == parseImmType(thisOperand.v) {
 			return operandPerfectMatch
 		}
 
-		switch withOperand {
+		switch withOperand.t {
 		case imm8, imm16, imm32, imm64:
 			/*
 				if withOperand is imm8, imm16, imm32
@@ -125,8 +133,8 @@ func operandIsValid(withOperand operandType, thisOperand *operand) int {
 		check regMem
 	*/
 
-	if thisOperand.operandType == regMem {
-		switch withOperand {
+	if thisOperand.t == regMem {
+		switch withOperand.t {
 		case regMem8, regMem16, regMem32, regMem64:
 			/*
 				if withOperand is regMem8, regMem16,
@@ -140,22 +148,22 @@ func operandIsValid(withOperand operandType, thisOperand *operand) int {
 		check register
 	*/
 
-	if withOperand == regMem8 && thisOperand.operandType == reg8 {
+	if withOperand.t == regMem8 && thisOperand.t == reg8 {
 		// if withOperand is regMem8 then accept reg8
 		return operandPerfectMatch
 	}
 
-	if withOperand == regMem16 && thisOperand.operandType == reg16 {
+	if withOperand.t == regMem16 && thisOperand.t == reg16 {
 		// if withOperand is regMem16 then accept reg16
 		return operandPerfectMatch
 	}
 
-	if withOperand == regMem32 && thisOperand.operandType == reg32 {
+	if withOperand.t == regMem32 && thisOperand.t == reg32 {
 		// if withOperand is regMem32 then accept reg32
 		return operandPerfectMatch
 	}
 
-	if withOperand == regMem64 && thisOperand.operandType == reg64 {
+	if withOperand.t == regMem64 && thisOperand.t == reg64 {
 		// if withOperand is regMem64 then accept reg64
 		return operandPerfectMatch
 	}
