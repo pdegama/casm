@@ -12,7 +12,19 @@ import (
 // instruction gen
 func instructionGen(inst instruction) error {
 	fmt.Println(inst)
-	validInstOpcde := findInstruction(&inst)
+	/*
+	   validInstOpcde := findInstruction(&inst)
+	   	if len(validInstOpcde) == 0 {
+	   		return fmt.Errorf("invalid instruction")
+	   	}
+
+	   	// print valid inst - tmp
+	   	for _, i := range validInstOpcde {
+	   		fmt.Println(i)
+	   	}
+	*/
+
+	validInstOpcde := archOpcodeFind(&inst)
 	if len(validInstOpcde) == 0 {
 		return fmt.Errorf("invalid instruction")
 	}
@@ -26,12 +38,7 @@ func instructionGen(inst instruction) error {
 	return nil
 }
 
-// operand match type
-const (
-	operandNotMatch     = iota // operand type not match
-	operandPerfectMatch        // operand type perfectly match
-	operandMatch               // operand type match
-)
+
 
 // find insrtuction
 func findInstruction(inst *instruction) []instructionOpcode {

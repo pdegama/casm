@@ -215,6 +215,7 @@ var replaceOperandList map[string]string = map[string]string{
 	"moffs16":  "memOffset16",
 	"moffs32":  "memOffset32",
 	"moffs64":  "memOffset64",
+	"imm8u":    "imm8",
 }
 
 // todo operands
@@ -262,7 +263,7 @@ var todoOperand = []string{
 	"m16int", "m32int", "m64int",
 	"r32/m16",
 	"m2byte",
-	"imm8u", "imm16u",
+	"imm16u",
 	"r16/r32/m16",
 	"CR0-CR7", "CR8",
 	"DR0-DR7",
