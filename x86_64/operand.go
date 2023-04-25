@@ -96,4 +96,5 @@ type operand struct {
 	t operandType // operand type
 	v uint        // operand value
 	m []operand   // mem operands
+	l bool        // is label
 }

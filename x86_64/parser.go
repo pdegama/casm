@@ -171,8 +171,9 @@ func parseOperand(tokens []token) (operand, error) {
 				}
 				opers = append(opers, operand{
 					t: getRegisterOperandType(reg),
-					v:  uint(reg.globleIndex),
-					m:  nil,
+					v: uint(reg.globleIndex),
+					m: nil,
+					l: false,
 				})
 				continue
 			}
@@ -193,8 +194,9 @@ func parseOperand(tokens []token) (operand, error) {
 				}
 				opers = append(opers, operand{
 					t: oprType,
-					v:  uint(tokenVal),
-					m:  nil,
+					v: uint(tokenVal),
+					m: nil,
+					l: false,
 				})
 				continue
 			}
@@ -228,8 +230,9 @@ func parseOperand(tokens []token) (operand, error) {
 				}
 				opers = append(opers, operand{
 					t: oprType,
-					v:  uint(tokenVal),
-					m:  nil,
+					v: uint(tokenVal),
+					m: nil,
+					l: false,
 				})
 				continue
 
@@ -291,8 +294,9 @@ func parseOperand(tokens []token) (operand, error) {
 			// token is label
 			return operand{
 				t: imm,
-				v:  0x00,
-				m:  nil,
+				v: 0x00,
+				m: nil,
+				l: true,
 			}, nil
 
 		}
@@ -364,8 +368,8 @@ func parseMem(opers *[]operand) (operand, error) {
 	// return mem operand
 	return operand{
 		t: regMem,
-		v:  0,
-		m:  memOpers,
+		v: 0,
+		m: memOpers,
 	}, nil
 }
 
