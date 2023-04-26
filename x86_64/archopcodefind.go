@@ -115,7 +115,12 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 
 		//fmt.Println(parseImmType(thisOperand.operand))
 		if withOperand.t == parseImmType(thisOperand.v) {
-			return operandPerfectMatch
+			if !thisOperand.l {
+				/*
+					if this operand is not lable
+				*/
+				return operandPerfectMatch
+			}
 		}
 
 		switch withOperand.t {

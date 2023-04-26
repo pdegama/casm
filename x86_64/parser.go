@@ -292,8 +292,13 @@ func parseOperand(tokens []token) (operand, error) {
 
 		case tokenLabel:
 			// token is label
+			oprType := imm
+			if nextImm {
+				oprType = nextImmType
+				nextImm = false
+			}
 			return operand{
-				t: imm,
+				t: oprType,
 				v: 0x00,
 				m: nil,
 				l: true,
@@ -370,6 +375,7 @@ func parseMem(opers *[]operand) (operand, error) {
 		t: regMem,
 		v: 0,
 		m: memOpers,
+		l: false,
 	}, nil
 }
 
