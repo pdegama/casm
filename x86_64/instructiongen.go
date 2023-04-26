@@ -12,7 +12,7 @@ import (
 // instruction gen
 func instructionGen(inst instruction) error {
 	fmt.Println(inst)
-	validInstOpcde := archOpcodeFind(&inst)
+	validInstOpcde := archOpcodeFind(&inst, 64)
 	if len(validInstOpcde) == 0 {
 		return fmt.Errorf("invalid instruction")
 	}

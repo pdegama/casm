@@ -8,7 +8,7 @@ package x86_64
 import "fmt"
 
 // find arch opcode
-func archOpcodeFind(inst *instruction) []archOpcode {
+func archOpcodeFind(inst *instruction, bitMode int) []archOpcode {
 
 	validOpcodes := []archOpcode{}        // valid insts opcodes stack
 	validPerfectOpcodes := []archOpcode{} // valid insts opcodes stack
@@ -18,6 +18,22 @@ func archOpcodeFind(inst *instruction) []archOpcode {
 
 		// match mnemonic
 		if opcode.name == inst.name {
+
+			if bitMode == 32 || bitMode == 16 {
+				// if bit mode is 32 or 16
+				if !opcode.valid32BitMode {
+					// this opcode is not valid in 32-bit or 16-bit mode
+					continue
+				}
+			}
+			
+			if bitMode == 64 {
+				// if bit mode is 64
+				if !opcode.valid64BitMode {
+					// this opcode is not valid in 64-bit mode
+					continue
+				}
+			}
 
 			operTypeMatch := true       // operand type is match
 			operTypePerfecMatch := true // operand type is match

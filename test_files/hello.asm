@@ -36,7 +36,10 @@ $startto:
   mov [qword 0x70], 13
 
   add rdx, 0x121231212
-  
+
+  add [rcx], 0x121231231
+  add [rcx], $qwe ; label shorting
+
   $msg:
     db "I ❤️  Computers!", 10
   $myname: 
