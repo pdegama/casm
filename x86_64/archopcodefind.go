@@ -26,7 +26,7 @@ func archOpcodeFind(inst *instruction, bitMode int) []archOpcode {
 					continue
 				}
 			}
-			
+
 			if bitMode == 64 {
 				// if bit mode is 64
 				if !opcode.valid64BitMode {
@@ -88,6 +88,9 @@ func archOpcodeFind(inst *instruction, bitMode int) []archOpcode {
 
 		}
 	}
+
+	// filter opcodes
+	filterOpcodeImm(inst)
 
 	// append valid arch opcode to valid perfect arch opcode
 	validPerfectOpcodes = append(validPerfectOpcodes, validOpcodes...)
@@ -191,4 +194,22 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 
 	// operand not match
 	return operandNotMatch
+}
+
+// filter opcodes according imm
+func filterOpcodeImm(inst *instruction) {
+
+	immPos := -1 // imm operand position
+	for operPos, oper := range inst.operands {
+		if oper.t == imm && oper.l {
+			immPos = operPos
+			break
+		}
+	}
+
+	if immPos == -1 {
+		return
+	}
+
+	fmt.Println(immPos)
 }
