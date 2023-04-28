@@ -223,11 +223,59 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 
 	fmt.Println("---------")
 
-	for i := 0; i < len(*opcodes)/2; i++ {
+	for i := 0; i < len(*opcodes); i++ {
 		fmt.Println((*opcodes)[i])
-		tmp := (*opcodes)[len(*opcodes)-i-1]
-		(*opcodes)[len(*opcodes)-i-1] = (*opcodes)[i]
-		(*opcodes)[i] = tmp
+		for j := 0; j < i; j++ {
+			if isSmallImm((*opcodes)[j].operands[immPos].t, (*opcodes)[i].operands[immPos].t) {
+				tmpOper := (*opcodes)[i]
+				(*opcodes)[i] = (*opcodes)[j]
+				(*opcodes)[j] = tmpOper
+			}
+		}
 	}
+
+	fmt.Println("---------")
+
+}
+
+// is smaller imm
+func isSmallImm(a operandType, b operandType) bool {
+
+	// a imm is smaller then b imm?
+
+	switch b {
+	case imm16:
+		// if b is imm16
+		if a == imm8 {
+			/*
+				and a is imm8 then return true
+				beacuse imm8 (a) is smaller
+				then imm16 (b)
+			*/
+			return true
+		}
+	case imm32:
+		// if b is imm32
+		if a == imm8 || a == imm16 {
+			/*
+				and a is imm8 or imm16 then return
+				true beacuse imm8 or imm16 (a) is
+				smaller then imm32 (b)
+			*/
+			return true
+		}
+	case imm64:
+		// if b is imm64
+		if a == imm8 || a == imm16 || a == imm32 {
+			/*
+				and a is imm8, imm16 or imm32 then
+				return true beacuse imm8, imm16 or
+				imm32 (a) is smaller then imm64 (b)
+			*/
+			return true
+		}
+	}
+
+	return false
 
 }
