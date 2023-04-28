@@ -90,7 +90,7 @@ func archOpcodeFind(inst *instruction, bitMode int) []archOpcode {
 	}
 
 	// filter opcodes
-	filterOpcodeImm(inst)
+	filterOpcodeImm(inst, &validOpcodes)
 
 	// append valid arch opcode to valid perfect arch opcode
 	validPerfectOpcodes = append(validPerfectOpcodes, validOpcodes...)
@@ -197,19 +197,37 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 }
 
 // filter opcodes according imm
-func filterOpcodeImm(inst *instruction) {
+func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 
-	immPos := -1 // imm operand position
-	for operPos, oper := range inst.operands {
+	immPos := -1                               // imm operand position
+	for operPos, oper := range inst.operands { // loop of instruction operands
 		if oper.t == imm && oper.l {
+			/*
+				if oprand is imm and label then set
+				immPos is operand posation (index)
+			*/
 			immPos = operPos
 			break
 		}
 	}
 
 	if immPos == -1 {
+		/*
+			if immPos is -1 then no any imm
+			operand in this instruction
+		*/
 		return
 	}
 
 	fmt.Println(immPos)
+
+	fmt.Println("---------")
+
+	for i := 0; i < len(*opcodes)/2; i++ {
+		fmt.Println((*opcodes)[i])
+		tmp := (*opcodes)[len(*opcodes)-i-1]
+		(*opcodes)[len(*opcodes)-i-1] = (*opcodes)[i]
+		(*opcodes)[i] = tmp
+	}
+
 }
