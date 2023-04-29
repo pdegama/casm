@@ -5,7 +5,9 @@
 
 package x86_64
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // find arch opcode
 func archOpcodeFind(inst *instruction, bitMode int) []archOpcode {
@@ -200,13 +202,22 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 
 	immPos := -1                               // imm operand position
+	immIsLabel := false                        // imm operand is label
 	for operPos, oper := range inst.operands { // loop of instruction operands
-		if oper.t == imm && oper.l {
+		if oper.t == imm {
 			/*
-				if oprand is imm and label then set
-				immPos is operand posation (index)
+				if oprand is imm set immPos
+				is operand posation (index)
 			*/
 			immPos = operPos
+
+			if oper.l {
+				/*
+					if operand is label then
+					immIsLabel set true
+				*/
+				immIsLabel = true
+			}
 			break
 		}
 	}
@@ -235,6 +246,17 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		}
 
 	}
+
+	if immIsLabel {
+		/*
+			if imm operand is lable then
+			no more sorting this opcodes
+		*/
+		return
+	}
+
+	fmt.Println("Sorting...")
+	_ = immIsLabel
 
 }
 
