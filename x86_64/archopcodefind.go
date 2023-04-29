@@ -219,22 +219,22 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		return
 	}
 
-	fmt.Println(immPos)
-
-	fmt.Println("---------")
-
+	// sorting opcodes
 	for i := 0; i < len(*opcodes); i++ {
-		fmt.Println((*opcodes)[i])
+
 		for j := 0; j < i; j++ {
+
 			if isSmallImm((*opcodes)[j].operands[immPos].t, (*opcodes)[i].operands[immPos].t) {
+
 				tmpOper := (*opcodes)[i]
 				(*opcodes)[i] = (*opcodes)[j]
 				(*opcodes)[j] = tmpOper
-			}
-		}
-	}
 
-	fmt.Println("---------")
+			}
+
+		}
+
+	}
 
 }
 
