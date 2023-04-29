@@ -2,6 +2,7 @@
 
 $start:
   mov rax, 1        ; write(
+  add rax, 0x2323121121        ; write(
   mov rdi, 0xffffff        ;   STDOUT_FILENO,
   mov rsi, $msg      ;   "Hello, world!\n",
   mov rdx, $msglen   ;   sizeof("Hello, world!\n")
