@@ -235,7 +235,7 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 
 		for j := 0; j < i; j++ {
 
-			if isSmallImm((*opcodes)[j].operands[immPos].t, (*opcodes)[i].operands[immPos].t) {
+			if isLessThanImm((*opcodes)[j].operands[immPos].t, (*opcodes)[i].operands[immPos].t) {
 
 				tmpOper := (*opcodes)[i]
 				(*opcodes)[i] = (*opcodes)[j]
@@ -255,15 +255,25 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		return
 	}
 
-	fmt.Println("Sorting...")
-	_ = immIsLabel
+	greatThanOpcodes := []archOpcode{}
+	lessThanOpcodes := []archOpcode{}
+
+	fmt.Println("-------------")
+	for _, opcode := range greatThanOpcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("-------------")
+	for _, opcode := range lessThanOpcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("-------------")
 
 }
 
-// is smaller imm
-func isSmallImm(a operandType, b operandType) bool {
+// is  imm
+func isLessThanImm(a operandType, b operandType) bool {
 
-	// a imm is smaller then b imm?
+	// a imm is less than b imm?
 
 	switch b {
 	case imm16:
