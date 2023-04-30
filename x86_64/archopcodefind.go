@@ -283,15 +283,16 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		}
 	}
 
-	fmt.Println("-------------")
-	for _, opcode := range greatThanOpcodes {
-		fmt.Println(opcode)
+	for i := 0; i < len(greatThanOpcodes)/2; i++ {
+		// reverse greatThanOpcodes
+		tmpOpcode := greatThanOpcodes[i]
+		greatThanOpcodes[i] = greatThanOpcodes[len(greatThanOpcodes)-1-i]
+		greatThanOpcodes[len(greatThanOpcodes)-1-i] = tmpOpcode
 	}
-	fmt.Println("-------------")
-	for _, opcode := range lessThanOpcodes {
-		fmt.Println(opcode)
-	}
-	fmt.Println("-------------")
+
+	// make temp opcodes map after assign opcodes
+	tmpOpcodes := append(greatThanOpcodes, lessThanOpcodes...)
+	copy(*opcodes, tmpOpcodes) // copy temp opcodes to *opcodes
 
 }
 
