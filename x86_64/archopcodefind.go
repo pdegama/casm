@@ -258,6 +258,31 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 	greatThanOpcodes := []archOpcode{}
 	lessThanOpcodes := []archOpcode{}
 
+	for _, opcode := range *opcodes {
+		// loop of opcodes
+
+		/*
+			parse imm value type and check
+			instruction imm is less then
+			opcode imm type
+		*/
+		if isLessThanImm(parseImmType(inst.operands[immPos].v), opcode.operands[immPos].t) {
+			/*
+				if instruction imm type is less
+				then opcode imm then opcode
+				append greatThanOpcode
+			*/
+			greatThanOpcodes = append(greatThanOpcodes, opcode)
+		} else {
+			/*
+				if instruction imm type is great
+				then opcode imm then opcode
+				append lessThanOpcodes
+			*/
+			lessThanOpcodes = append(lessThanOpcodes, opcode)
+		}
+	}
+
 	fmt.Println("-------------")
 	for _, opcode := range greatThanOpcodes {
 		fmt.Println(opcode)
