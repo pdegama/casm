@@ -39,20 +39,21 @@
 package main
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strings"
 )
 
 // parse architecture code data
-func parseData(csvRow []string) (string, string, bool, bool, error) {
+func parseData(csvRow []string) (string, string, string, bool, bool, error) {
 
 	if len(csvRow) != 11 {
 		// if csv row column is not equle 11 then return error
 		panic("invalid csv row")
 	}
 
-	instMnemonic := csvRow[0] // instruction mnemonic string
-	// instOpcode := csvRow[3]         // instruction opcode string
+	instMnemonic := csvRow[0]       // instruction mnemonic string
+	instOpcode := csvRow[3]         // instruction opcode string
 	instValid32bitMode := csvRow[4] // instruction is valid in 32 bit mode
 	instValid64bitMode := csvRow[5] // instruction is valid in 64 bit mode
 
@@ -65,7 +66,13 @@ func parseData(csvRow []string) (string, string, bool, bool, error) {
 	// parse mnemonic operands
 	mnemonicOperands, err := parseMnemonicOperand(mOperands)
 	if err != nil {
-		return "", "", false, false, err
+		return "", "", "", false, false, err
+	}
+
+	// parse opcode
+	mOpcode, err := parseOpcode(instOpcode)
+	if err != nil {
+		return "", "", "", false, false, err
 	}
 
 	// parse bit mode
@@ -73,7 +80,7 @@ func parseData(csvRow []string) (string, string, bool, bool, error) {
 	valid64bitMode := parseValidMode(instValid64bitMode)
 
 	// return
-	return mnemonicName, mnemonicOperands, valid32bitMode, valid64bitMode, nil
+	return mnemonicName, mnemonicOperands, mOpcode, valid32bitMode, valid64bitMode, nil
 
 }
 
@@ -96,22 +103,6 @@ func parseMnemonic(mnemonicStr string) (string, []string, error) {
 
 	// return
 	return mnemonicName, mnemonicOperands, nil
-}
-
-// parse valid on 32-bit or 64 bit mode
-func parseValidMode(validStr string) bool {
-
-	switch validStr {
-	case "V": // valid
-		return true
-	case "N.E.", "I": // invalid
-		return false
-	case "N.S.": // ?
-		return false
-	}
-
-	// str is not match ni switch-case then panic program
-	panic(validStr)
 }
 
 // parse mnemonic operands
@@ -274,6 +265,154 @@ var todoOperand = []string{
 	"xmm1/m32{er}",
 	"xmm1/m64{sae}",
 	"xmm1/m32{sae}",
+}
+
+// parse opcode
+func parseOpcode(instOpcode string) (string, error) {
+
+	fmt.Printf("\t")
+
+	instOpcodeStrs := strings.Split(instOpcode, " ")
+
+	opcodeStr := ""
+
+outofswitch:
+	for _, s := range instOpcodeStrs {
+		switch s {
+		// ?
+		case "NP", "NFx", "REX.W", "REX":
+			// todo
+			// ignore
+			// pass
+
+		// ?
+		case "/05":
+			// todo
+			// what is this? i don't know!
+			opcodeStr += "todoOpcode, "
+			break outofswitch
+
+		// ?
+		case "(mod=11)", "(mod!=11":
+			// todo
+			opcodeStr += "todoOpcode, "
+			break outofswitch
+
+		// ?
+		case "!(11):rrr:bbb":
+			// todo
+			opcodeStr += "todoOpcode, "
+			break outofswitch
+
+		// /r, /0, /1, /2, /3, /4, /5, /6, /7
+		case "/r":
+			opcodeStr += "modRM, "
+		case "/0":
+			opcodeStr += "modRM0, "
+		case "/1":
+			opcodeStr += "modRM1, "
+		case "/2":
+			opcodeStr += "modRM2, "
+		case "/3":
+			opcodeStr += "modRM3, "
+		case "/4":
+			opcodeStr += "modRM4, "
+		case "/5":
+			opcodeStr += "modRM5, "
+		case "/6":
+			opcodeStr += "modRM6, "
+		case "/7":
+			opcodeStr += "modRM7, "
+
+		// ib, iw, id, io
+		case "ib":
+			opcodeStr += "valIB, "
+		case "iw":
+			opcodeStr += "valIW, "
+		case "id":
+			opcodeStr += "valID, "
+		case "io":
+			opcodeStr += "valIQ, "
+
+		// cb, cw, cd, co
+		case "cb":
+			opcodeStr += "valCB, "
+		case "cw":
+			opcodeStr += "valCW, "
+		case "cd":
+			opcodeStr += "valCD, "
+		case "co":
+			opcodeStr += "valCQ, "
+
+		// cp, ct
+		case "cp", "ct":
+			// todo
+			opcodeStr += "todoOpcode, "
+			break outofswitch
+
+		default:
+			// opcode
+			if len(s) == 2 {
+				_, err := hex.DecodeString(s)
+				if err == nil {
+					opcodeStr += fmt.Sprintf("0x%v, ", s)
+					continue
+				}
+			}
+
+			// +rb, +rw, +rd, +ro
+			if strings.HasSuffix(s, "+rb") {
+				opcodeStr += fmt.Sprintf("0x%v, ", s[:len(s)-3])
+				opcodeStr += "plusRB, "
+				continue
+			}
+			if strings.HasSuffix(s, "+rw") {
+				opcodeStr += fmt.Sprintf("0x%v, ", s[:len(s)-3])
+				opcodeStr += "plusRW, "
+				continue
+			}
+			if strings.HasSuffix(s, "+rd") {
+				opcodeStr += fmt.Sprintf("0x%v, ", s[:len(s)-3])
+				opcodeStr += "plusRD, "
+				continue
+			}
+			if strings.HasSuffix(s, "+ro") {
+				opcodeStr += fmt.Sprintf("0x%v, ", s[:len(s)-3])
+				opcodeStr += "plusRQ, "
+				continue
+			}
+
+			// VEX.*
+			if strings.HasPrefix(s, "VEX.") {
+				opcodeStr += "todoOpcode, "
+				break outofswitch
+			}
+
+			opcodeStr += fmt.Sprintf("not: %v, ", s)
+		}
+	}
+
+	fmt.Println(opcodeStr)
+
+	opcodeStr = "[]int{" + opcodeStr[:len(opcodeStr)-2] + "}"
+
+	return opcodeStr, nil
+}
+
+// parse valid on 32-bit or 64 bit mode
+func parseValidMode(validStr string) bool {
+
+	switch validStr {
+	case "V": // valid
+		return true
+	case "N.E.", "I": // invalid
+		return false
+	case "N.S.": // ?
+		return false
+	}
+
+	// str is not match ni switch-case then panic program
+	panic(validStr)
 }
 
 // check is member in the list

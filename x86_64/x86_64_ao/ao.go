@@ -23,7 +23,7 @@ func main() {
 
 	for _, v := range row {
 
-		mName, mOperands, valid32Bit, valid64Bit, err := parseData(v)
+		mName, mOperands, mOpcode, valid32Bit, valid64Bit, err := parseData(v)
 		if err != nil {
 			tableFile.WriteString("\t// ")
 			tableFile.WriteString(err.Error())
@@ -31,7 +31,7 @@ func main() {
 			continue
 		}
 
-		archOpcodeStr := makeArchOpcodeStruct(mName, mOperands, valid32Bit, valid64Bit)
+		archOpcodeStr := makeArchOpcodeStruct(mName, mOperands, mOpcode, valid32Bit, valid64Bit)
 		tableFile.WriteString(archOpcodeStr)
 		tableFile.WriteString("\n")
 		//fmt.Println(mName, mOperands, mValid32, mValid64)

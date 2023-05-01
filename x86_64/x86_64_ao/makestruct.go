@@ -15,21 +15,23 @@ import (
 type archOpodeTemplateStrct struct {
 	Name           string // instruction mnemonic name
 	Operands       string // instruction mnemonic operands
+	Opcode         string // instruction opcode
 	Valid32BitMode bool   // instruction is valid in 32-bit mode
 	Valid64BitMode bool   // instruction is valid in 64-bit mode
 }
 
 // make arch opcode structure string
-func makeArchOpcodeStruct(mName string, mOperands string, valid32bit bool, valid64bit bool) string {
+func makeArchOpcodeStruct(mName string, mOperands string, mOpcode string, valid32bit bool, valid64bit bool) string {
 
 	templateContent := archOpodeTemplateStrct{
 		Name:           mName,
 		Operands:       mOperands,
+		Opcode:         mOpcode,
 		Valid32BitMode: valid32bit,
 		Valid64BitMode: valid64bit,
 	}
 
-	structStrTemplate := `	{name: "{{.Name}}", operands: {{.Operands}}, opcode: []int{}, valid32BitMode: {{.Valid32BitMode}}, valid64BitMode: {{.Valid64BitMode}}},`
+	structStrTemplate := `	{name: "{{.Name}}", operands: {{.Operands}}, opcode: {{.Opcode}}, valid32BitMode: {{.Valid32BitMode}}, valid64BitMode: {{.Valid64BitMode}}},`
 
 	aTemplate := template.New("archOpcodeTemplate")
 	aTemplate, err := aTemplate.Parse(structStrTemplate)
