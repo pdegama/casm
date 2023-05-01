@@ -49,6 +49,9 @@ const (
 	valCW  = -20 // code-offset value 16-bit
 	valCD  = -21 // code-offset value 32-bit
 	valCQ  = -22 // code-offset value 64-bit
+	np = -23 // 
+
+	todoOpcode = -100 // todo opcode
 
 	//
 )
