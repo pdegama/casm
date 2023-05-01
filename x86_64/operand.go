@@ -38,7 +38,7 @@ const ( // value is tmp
 	mem16       operandType = "mem16"    // 16-bit memory
 	mem32       operandType = "mem32"    // 32-bit memory
 	mem64       operandType = "mem64"    // 64-bit memory
-	mem128      operandType = "mem64"    // 128-bit memory
+	mem128      operandType = "mem128"   // 128-bit memory
 	mem16_16    operandType = "mem16:16"
 	mem16_32    operandType = "mem16:32"
 	mem16_64    operandType = "mem16:64"
