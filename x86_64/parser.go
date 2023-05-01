@@ -372,7 +372,7 @@ func parseMem(opers *[]operand) (operand, error) {
 
 	// return mem operand
 	return operand{
-		t: regMem,
+		t: mem,
 		v: 0,
 		m: memOpers,
 		l: false,

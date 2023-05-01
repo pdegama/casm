@@ -156,22 +156,22 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 	}
 
 	/*
-		check regMem
+		check mem
 	*/
 
-	if thisOperand.t == regMem {
+	if thisOperand.t == mem {
 		switch withOperand.t {
 		case regMem8, regMem16, regMem32, regMem64:
 			/*
 				if withOperand is regMem8, regMem16,
-				regMem32 or regMem64, then accept regMem
+				regMem32 or regMem64, then accept mem
 			*/
 			return operandPerfectMatch
 		}
 	}
 
 	/*
-		check register
+		check reg
 	*/
 
 	if withOperand.t == regMem8 && thisOperand.t == reg8 {
