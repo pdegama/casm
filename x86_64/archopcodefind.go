@@ -5,10 +5,6 @@
 
 package x86_64
 
-import (
-	"fmt"
-)
-
 // find arch opcode
 func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 
@@ -75,14 +71,14 @@ func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 							append to validPerfectOpcodes
 						*/
 						validPerfectOpcodes = append(validPerfectOpcodes, opcode)
-						fmt.Println(">>>", opcode)
+						// fmt.Println(">>>", opcode)
 					} else {
 						/*
 							if opecode is not perfect match then
 							append to validOpcodes
 						*/
 						validOpcodes = append(validOpcodes, opcode)
-						fmt.Println("---", opcode)
+						// fmt.Println("---", opcode)
 					}
 				}
 
