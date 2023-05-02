@@ -332,23 +332,21 @@ outofswitch:
 		case "id":
 			opcodeStr += "valID, "
 		case "io":
-			opcodeStr += "valIQ, "
+			opcodeStr += "valIO, "
 
-		// cb, cw, cd, co
+		// cb, cw, cd, cp, co, ct
 		case "cb":
 			opcodeStr += "valCB, "
 		case "cw":
 			opcodeStr += "valCW, "
 		case "cd":
 			opcodeStr += "valCD, "
+		case "cp":
+			opcodeStr += "valCP, "
 		case "co":
-			opcodeStr += "valCQ, "
-
-		// cp, ct
-		case "cp", "ct":
-			// todo
-			opcodeStr += "todoOpcode, "
-			break outofswitch
+			opcodeStr += "valCO, "
+		case "ct":
+			opcodeStr += "valCT, "
 
 		default:
 			// opcode
@@ -378,7 +376,7 @@ outofswitch:
 			}
 			if strings.HasSuffix(s, "+ro") {
 				opcodeStr += fmt.Sprintf("0x%v, ", s[:len(s)-3])
-				opcodeStr += "plusRQ, "
+				opcodeStr += "plusRO, "
 				continue
 			}
 

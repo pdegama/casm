@@ -34,7 +34,10 @@ func instructionGen(line asmLine, bitMode int) error {
 
 	// print valid inst - tmp
 	for _, opcode := range validInstOpcde {
-		genInsrtuction(opcode, inst)
+		err := genInsrtuction(opcode, inst, bitMode)
+		if err != nil {
+			return err
+		}
 		break
 	}
 	fmt.Println()
