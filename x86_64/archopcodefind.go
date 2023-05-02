@@ -10,7 +10,7 @@ import (
 )
 
 // find arch opcode
-func archOpcodeFind(inst *instruction, bitMode int) []archOpcode {
+func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 
 	validOpcodes := []archOpcode{}        // valid insts opcodes stack
 	validPerfectOpcodes := []archOpcode{} // valid insts opcodes stack
