@@ -33,7 +33,10 @@ func assemble(arch *x86_64) {
 		return
 	}
 
-	errs = codeGen(lines)
+	binGen := binaryGen{}
+	binGen.setBitMode(64)     // set bit mode
+	binGen.setAsmLines(lines) // set asm lines
+	errs = binGen.gen()       // gen binary
 	if len(errs) != 0 {
 		for _, err := range errs {
 			fmt.Println(err)

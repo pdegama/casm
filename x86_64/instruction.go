@@ -14,8 +14,8 @@ type instruction struct {
 }
 
 // instruction gen
-func instructionGen(line asmLine) error {
-
+func instructionGen(line asmLine, bitMode int) error {
+	
 	// parse instruction from tokens
 	inst, err := parseInst(line.tokens)
 	if err != nil {
@@ -24,7 +24,7 @@ func instructionGen(line asmLine) error {
 	}
 
 	fmt.Println(inst)
-	validInstOpcde := findArchOpcode(&inst, 64) // find valid opcode(s)
+	validInstOpcde := findArchOpcode(&inst, bitMode) // find valid opcode(s)
 	if len(validInstOpcde) == 0 {
 		// if opcode len is zero then return error
 		return fmt.Errorf("invalid instruction")
