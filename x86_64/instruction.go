@@ -15,7 +15,7 @@ type instruction struct {
 
 // instruction gen
 func instructionGen(line asmLine, bitMode int) error {
-	
+
 	// parse instruction from tokens
 	inst, err := parseInst(line.tokens)
 	if err != nil {
@@ -24,6 +24,8 @@ func instructionGen(line asmLine, bitMode int) error {
 	}
 
 	fmt.Println(inst)
+	fmt.Println("-----------------------------------------------------------------------")
+
 	validInstOpcde := findArchOpcode(&inst, bitMode) // find valid opcode(s)
 	if len(validInstOpcde) == 0 {
 		// if opcode len is zero then return error
@@ -31,8 +33,9 @@ func instructionGen(line asmLine, bitMode int) error {
 	}
 
 	// print valid inst - tmp
-	for _, i := range validInstOpcde {
-		fmt.Println(i)
+	for _, opcode := range validInstOpcde {
+		genInsrtuction(opcode, inst)
+		break
 	}
 	fmt.Println()
 

@@ -144,7 +144,7 @@ func parseOperand(tokens []token) (operand, error) {
 		return operand{}, fmt.Errorf("invalid syntax")
 	}
 
-	fmt.Println(tokens)
+	// fmt.Println(tokens)
 
 	nextImm := false           // next token chance to imm
 	nextImmType := noneOperand // next operand type
