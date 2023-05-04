@@ -23,6 +23,7 @@ func instructionGen(line asmLine, bitMode int) error {
 		return fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 	}
 
+	fmt.Println()
 	fmt.Println(inst)
 	fmt.Println("-----------------------------------------------------------------------")
 
@@ -31,7 +32,7 @@ func instructionGen(line asmLine, bitMode int) error {
 		// if opcode len is zero then return error
 		return fmt.Errorf("invalid instruction")
 	}
-
+	
 	// print valid inst - tmp
 	for _, opcode := range validInstOpcde {
 		err := genInsrtuction(opcode, inst, bitMode)
