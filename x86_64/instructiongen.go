@@ -18,7 +18,20 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 	for _, i := range opcode.opcode {
 		switch i {
 		case modRM:
-			addModRM()
+
+			// calculate modrm
+			if len(inst.operands) == 2 {
+				// if two operand
+				_, err := calcModRM(inst.operands...)
+				if err != nil {
+					// if error then return error
+					return err
+				}
+			} else {
+				// not two operand
+				return fmt.Errorf("todo: modrm 3 operand")
+			}
+
 		case modRM0:
 			return fmt.Errorf("todo modRM0") // todo
 		case modRM1:
@@ -73,10 +86,4 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 	fmt.Printf("%x", instBinCode)
 
 	return nil
-}
-
-// add modRM
-func addModRM() uint16 {
-
-	return 0x00
 }
