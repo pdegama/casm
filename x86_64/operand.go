@@ -15,7 +15,8 @@ const anyValue = -1
 const ( // value is tmp
 
 	//
-	noneOperand operandType = "None" // none
+	noneOperand      operandType = "None"             // none
+	undefinedOperand operandType = "undefinedOperand" // undefined operand
 
 	rel8        operandType = "rel8"
 	rel16       operandType = "rel16"

@@ -8,12 +8,68 @@ package x86_64
 import "fmt"
 
 // calculate modRM
-func calcModRM(opers ...operand) (uint16, error) {
+func calcModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 
 	// calculate modRM and return
-	if len(opers) != 2 {
+	if len(inst.operands) != 2 {
 		return 0x00, fmt.Errorf("internal error: todo: operand size is not two")
 	}
 
+	modRMrmOper := &operand{t: undefinedOperand}  // modrm r/m operand
+	modRMregOper := &operand{t: undefinedOperand} // modrm reg operand
+
+	for aOperIndex, aOper := range opcode.operands {
+		if isMemoryOperand(aOper.t) {
+			modRMrmOper = &inst.operands[aOperIndex]
+		}
+		if isRegOperand(aOper.t) {
+			modRMregOper = &inst.operands[aOperIndex]
+		}
+	}
+
+	fmt.Println(modRMrmOper, modRMregOper)
+
 	return 0x00, nil
+}
+
+// is memory operand type
+func isMemoryOperand(operType operandType) bool {
+
+	switch operType {
+	case mem, mem8, mem16, mem32, mem64, mem128:
+		/*
+			retrun true because mem, mem8, mem16,
+			mem32, mem64, mem128:
+		*/
+		return true
+	case regMem, regMem8, regMem16, regMem32, regMem64:
+		/*
+			return true bacause regMem, regMem8,
+			regMem16, regMem32, regMem64
+		*/
+		return true
+	}
+
+	/*
+		other return false
+	*/
+	return false
+}
+
+// is reg operand type
+func isRegOperand(operType operandType) bool {
+
+	switch operType {
+	case reg, reg8, reg16, reg32, reg64:
+		/*
+			retrun true because reg, reg8, reg16,
+			reg32, reg64
+		*/
+		return true
+	}
+
+	/*
+		other return false
+	*/
+	return false
 }

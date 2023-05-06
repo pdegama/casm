@@ -10,7 +10,7 @@ import "fmt"
 // generation instruction
 func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 
-	instBinCode := []uint16{}
+	instBinCode := []uint8{}
 
 	fmt.Println(inst)
 	fmt.Println(opcode)
@@ -22,11 +22,12 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			// calculate modrm
 			if len(inst.operands) == 2 {
 				// if two operand
-				_, err := calcModRM(inst.operands...)
+				modrmByte, err := calcModRM(&opcode, &inst)
 				if err != nil {
 					// if error then return error
 					return err
 				}
+				instBinCode = append(instBinCode, modrmByte)
 			} else {
 				// not two operand
 				return fmt.Errorf("todo: modrm 3 operand")
@@ -79,11 +80,14 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		case np:
 			return fmt.Errorf("todo np") // todo
 		default:
-			instBinCode = append(instBinCode, uint16(i))
+			instBinCode = append(instBinCode, uint8(i))
 		}
 	}
 
-	fmt.Printf("%x", instBinCode)
+	for _, b := range instBinCode {
+		fmt.Printf("%x ", b)
+	}
+
 
 	return nil
 }
