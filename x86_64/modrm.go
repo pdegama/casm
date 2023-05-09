@@ -18,11 +18,20 @@ func calcModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 	modRMrmOper := &operand{t: undefinedOperand}  // modrm r/m operand
 	modRMregOper := &operand{t: undefinedOperand} // modrm reg operand
 
+	// loop of arch operands
 	for aOperIndex, aOper := range opcode.operands {
 		if isMemoryOperand(aOper.t) {
+			/*
+				if arch operand is memory operand then
+				assign inst operand to modRMrmOper
+			*/
 			modRMrmOper = &inst.operands[aOperIndex]
 		}
 		if isRegOperand(aOper.t) {
+			/*
+				if arch operand is register operand then
+				assign inst operand to modRMregOper
+			*/
 			modRMregOper = &inst.operands[aOperIndex]
 		}
 	}
