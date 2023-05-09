@@ -5,4 +5,7 @@
 
 package x86_64
 
-
+// modrm byte table
+var archModrmList map[*archOperand][]uint8 = map[*archOperand][]uint8{
+	{t: "", v: 0}: []uint8{},
+}

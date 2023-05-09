@@ -32,11 +32,38 @@ func calcModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 		return 0x00, fmt.Errorf("internal error: modrm support only register not memory todo: memory support")
 	}
 
-	
+	// get reg field
+	regField, err := modRMregField(*modRMregOper)
+	if err != nil {
+		return 0x00, err
+	}
 
-	fmt.Println(modRMrmOper, modRMregOper)
+	fmt.Println(modRMrmOper, modRMregOper, regField)
 
 	return 0x00, nil
+}
+
+// modrm reg field
+func modRMregField(oper operand) (int, error) {
+
+	if !isRegOperand(oper.t) {
+		// if opernad is not register then return error
+		return 0, fmt.Errorf("is not modrm reg type")
+	}
+
+	// get register info
+	regInfo, err := registerInfo(int(oper.v))
+	if err != nil {
+		// if error then return error
+		return 0, nil
+	}
+
+	/*
+		return register base offset because
+		register base offset is modrm reg field
+	*/
+
+	return regInfo.baseOffset, nil
 }
 
 // is memory operand type

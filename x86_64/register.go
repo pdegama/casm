@@ -6,6 +6,7 @@
 package x86_64
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -15,7 +16,7 @@ type register struct {
 	globleIndex int    // register globle index for this assembler
 	bitSize     int    // register bit size 8, 16, 32, or 64-bit
 	index       int    // register index
-	baseOffset  int    // register base offset +rb, +rw, +rd, or +rq value
+	baseOffset  int    // register base offset according to modrm reg field and +rb, +rw, +rd, or +rq value
 }
 
 // check or get register form register name
@@ -23,7 +24,7 @@ func isRegister(regName string) (bool, register) {
 
 	regName = strings.ToUpper(regName) // convert uppercase
 
-	// loop of register
+	// loop of registers
 	for _, reg := range registers {
 		if reg.name == regName {
 			// if register is match
@@ -33,6 +34,20 @@ func isRegister(regName string) (bool, register) {
 
 	// if register not found
 	return false, register{}
+}
+
+// get register info
+func registerInfo(reg int) (register, error) {
+
+	// loop of register
+	for _, r := range registers {
+		if r.globleIndex == reg {
+			// if register is match
+			return r, nil
+		}
+	}
+
+	return register{}, fmt.Errorf("modrm is not register")
 }
 
 // get register operand type
