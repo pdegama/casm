@@ -36,11 +36,6 @@ func calcModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 		}
 	}
 
-	if !(isRegOperand(modRMrmOper.t) && isRegOperand(modRMregOper.t)) {
-		// todo: modrm mem support
-		return 0x00, fmt.Errorf("internal error: modrm support only register not memory todo: memory support")
-	}
-
 	// get reg field
 	regField, err := modRMregField(*modRMregOper)
 	if err != nil {
