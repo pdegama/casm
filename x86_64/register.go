@@ -16,7 +16,7 @@ type register struct {
 	globleIndex int    // register globle index for this assembler
 	bitSize     int    // register bit size 8, 16, 32, or 64-bit
 	index       int    // register index
-	baseOffset  int    // register base offset according to modrm reg field and +rb, +rw, +rd, or +rq value
+	baseOffset  int    // register base offset according to modrm reg field, modrm r/m field and +rb, +rw, +rd, or +rq value
 }
 
 // check or get register form register name

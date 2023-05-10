@@ -19,10 +19,10 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		switch i {
 		case modRM:
 
-			// calculate modrm
+			// add modrm
 			if len(inst.operands) == 2 {
 				// if two operand
-				modrmByte, err := calcModRM(&opcode, &inst)
+				modrmByte, err := addModRM(&opcode, &inst)
 				if err != nil {
 					// if error then return error
 					return err

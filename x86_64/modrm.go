@@ -7,8 +7,8 @@ package x86_64
 
 import "fmt"
 
-// calculate modRM
-func calcModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
+// add modRM byte
+func addModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 
 	// calculate modRM and return
 	if len(inst.operands) != 2 {
@@ -42,7 +42,48 @@ func calcModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 		return 0x00, err
 	}
 
+	// calc modrm
+	modRMByte, err := calcModRM(modRMrmOper, regField)
+	if err != nil {
+		return 0x00, err
+	}
+
 	fmt.Println(modRMrmOper, modRMregOper, regField)
+
+	return modRMByte, nil
+}
+
+// calc modrm
+func calcModRM(rmOper *operand, regField int) (uint8, error) {
+
+	if rmOper.t == mem {
+		// todo: modrm mem operand support
+		return 0x00, fmt.Errorf("todo: modrm mem opernad not support")
+	}
+
+	if isRegOperand(rmOper.t) {
+		// if rm operand is register
+
+		// get r/m register info
+		regInfo, err := registerInfo(int(rmOper.v))
+		if err != nil {
+			// if error then return error
+			return 0, nil
+		}
+
+		/*
+			register base offset is r  
+		*/
+
+		modField := 0b11              // modrm mod field
+		rmField := regInfo.baseOffset // modrm r/m field
+		regField := regField          // modrm reg field
+
+		modRMByte := modField<<6 | rmField<<3 | regField<<0
+
+		return uint8(modRMByte), nil
+
+	}
 
 	return 0x00, nil
 }
