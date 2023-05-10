@@ -8,11 +8,11 @@ package x86_64
 import "fmt"
 
 // add modRM byte
-func addModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
+func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, error) {
 
 	// calculate modRM and return
 	if len(inst.operands) != 2 {
-		return 0x00, fmt.Errorf("internal error: todo: operand size is not two")
+		return nil, fmt.Errorf("internal error: todo: operand size is not two")
 	}
 
 	modRMrmOper := &operand{t: undefinedOperand}  // modrm r/m operand
@@ -39,13 +39,13 @@ func addModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 	// get reg field
 	regField, err := modRMregField(*modRMregOper)
 	if err != nil {
-		return 0x00, err
+		return nil, err
 	}
 
 	// calc modrm
 	modRMByte, err := calcModRM(modRMrmOper, regField)
 	if err != nil {
-		return 0x00, err
+		return nil, err
 	}
 
 	fmt.Println(modRMrmOper, modRMregOper, regField)
@@ -54,11 +54,13 @@ func addModRM(opcode *archOpcode, inst *instruction) (uint8, error) {
 }
 
 // calc modrm
-func calcModRM(rmOper *operand, regField int) (uint8, error) {
+func calcModRM(rmOper *operand, regField int) ([]uint8, error) {
+
+	modrmBytes := []uint8{} // modrm bytes
 
 	if rmOper.t == mem {
 		// todo: modrm mem operand support
-		return 0x00, fmt.Errorf("todo: modrm mem opernad not support")
+		return nil, fmt.Errorf("todo: modrm mem opernad not support")
 	}
 
 	if isRegOperand(rmOper.t) {
@@ -68,11 +70,11 @@ func calcModRM(rmOper *operand, regField int) (uint8, error) {
 		regInfo, err := registerInfo(int(rmOper.v))
 		if err != nil {
 			// if error then return error
-			return 0, nil
+			return nil, err
 		}
 
 		/*
-			register base offset is r  
+			register base offset is r
 		*/
 
 		modField := 0b11              // modrm mod field
@@ -81,11 +83,13 @@ func calcModRM(rmOper *operand, regField int) (uint8, error) {
 
 		modRMByte := modField<<6 | regField<<3 | rmField<<0
 
-		return uint8(modRMByte), nil
+		modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+		return modrmBytes, nil
 
 	}
 
-	return 0x00, nil
+	return nil, nil
 }
 
 // modrm reg field

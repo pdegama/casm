@@ -22,12 +22,12 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			// add modrm
 			if len(inst.operands) == 2 {
 				// if two operand
-				modrmByte, err := addModRM(&opcode, &inst)
+				modrmByte, err := addModRM(&opcode, &inst, bitMode)
 				if err != nil {
 					// if error then return error
 					return err
 				}
-				instBinCode = append(instBinCode, modrmByte)
+				instBinCode = append(instBinCode, modrmByte...)
 			} else {
 				// not two operand
 				return fmt.Errorf("todo: modrm 3 operand")
