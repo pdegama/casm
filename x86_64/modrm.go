@@ -79,7 +79,7 @@ func calcModRM(rmOper *operand, regField int) (uint8, error) {
 		rmField := regInfo.baseOffset // modrm r/m field
 		regField := regField          // modrm reg field
 
-		modRMByte := modField<<6 | rmField<<3 | regField<<0
+		modRMByte := modField<<6 | regField<<3 | rmField<<0
 
 		return uint8(modRMByte), nil
 
