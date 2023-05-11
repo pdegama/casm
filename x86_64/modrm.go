@@ -60,6 +60,7 @@ func calcModRM(rmOper *operand, regField int) ([]uint8, error) {
 
 	if rmOper.t == mem {
 		// todo: modrm mem operand support
+		fmt.Println(rmOper.m)
 		return nil, fmt.Errorf("todo: modrm mem opernad not support")
 	}
 
