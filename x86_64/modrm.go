@@ -43,7 +43,7 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 	}
 
 	// calc modrm
-	modRMByte, err := calcModRM(modRMrmOper, regField)
+	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 }
 
 // calc modrm
-func calcModRM(rmOper *operand, regField int) ([]uint8, error) {
+func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 
 	modrmBytes := []uint8{} // modrm bytes
 
