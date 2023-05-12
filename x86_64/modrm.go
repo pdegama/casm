@@ -41,14 +41,15 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 	if err != nil {
 		return nil, err
 	}
-
+	
+	fmt.Println(modRMrmOper, modRMregOper, regField)
+	
 	// calc modrm
 	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode)
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(modRMrmOper, modRMregOper, regField)
 
 	return modRMByte, nil
 }
