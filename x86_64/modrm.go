@@ -41,15 +41,14 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 	if err != nil {
 		return nil, err
 	}
-	
+
 	fmt.Println(modRMrmOper, modRMregOper, regField)
-	
+
 	// calc modrm
 	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode)
 	if err != nil {
 		return nil, err
 	}
-
 
 	return modRMByte, nil
 }
@@ -61,8 +60,17 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 
 	if rmOper.t == mem {
 		// todo: modrm mem operand support
-		fmt.Println(rmOper.m)
-		return nil, fmt.Errorf("todo: modrm mem opernad not support")
+		//fmt.Println(rmOper.m)
+
+		switch len(rmOper.m) {
+		case 1:
+			// if only one operand in memory operand
+			return nil, fmt.Errorf("todo: todo: modrm mem operand")
+		default:
+			// 
+			return nil, fmt.Errorf("todo: modrm mem opernad not support")
+		}
+
 	}
 
 	if isRegOperand(rmOper.t) {

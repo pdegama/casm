@@ -20,7 +20,7 @@ func instructionGen(line asmLine, bitMode int) error {
 	inst, err := parseInst(line.tokens)
 	if err != nil {
 		// inst parse err
-		return fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
+		return err
 	}
 
 	fmt.Println()

@@ -101,7 +101,7 @@ func parseInst(tokens []token) (instruction, error) {
 	// loop of opernad tokens
 	for _, tok := range mOperandTokens {
 		switch tok.tokenType {
-		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketRight, tokenDoubleQuote:
+		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketRight, tokenDoubleQuote, tokenPlus:
 			// if token is unknow, or label
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
@@ -256,7 +256,7 @@ func parseOperand(tokens []token) (operand, error) {
 					nextImmType = imm64
 				}
 			default:
-				return operand{}, fmt.Errorf("invalid operand token '%v'", tok.token)
+				return operand{}, fmt.Errorf("invalid token '%v'", tok.token)
 			}
 
 		case tokenBracketLeft:
@@ -289,6 +289,14 @@ func parseOperand(tokens []token) (operand, error) {
 			} else {
 				return operand{}, fmt.Errorf("invalid bracket syntax")
 			}
+
+		case tokenPlus:
+			opers = append(opers, operand{
+				t: operPrePlus,
+				v: 0x00,
+				m: nil,
+				l: false,
+			})
 
 		case tokenLabel:
 			// token is label
@@ -354,7 +362,7 @@ func parseMem(opers *[]operand) (operand, error) {
 				memOpers = append(memOpers, oper) // append to memory operands
 				isOperation = false
 			} else {
-				return operand{}, fmt.Errorf("invalid operand/syntax")
+				return operand{}, fmt.Errorf("invalid memory operand/syntax")
 			}
 		case imm, imm8, imm16, imm32, imm64:
 			// if operand id imm
@@ -362,8 +370,12 @@ func parseMem(opers *[]operand) (operand, error) {
 				memOpers = append(memOpers, oper) // append to memory operands
 				isOperation = false
 			} else {
-				return operand{}, fmt.Errorf("invalid operand/syntax")
+				return operand{}, fmt.Errorf("invalid memory operand/syntax")
 			}
+		case operPrePlus:
+			// is pre pluse
+			memOpers = append(memOpers, oper) // append to memory operands
+			isOperation = true                // this operand is operation operand then set true
 		default:
 			// invalid or todo
 			return operand{}, fmt.Errorf("invalid operand / todo")

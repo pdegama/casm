@@ -47,7 +47,7 @@ func lexer(filePath string) ([]asmLine, error) {
 	for lineIndex, lineStr := range linesStr {
 		toks, err := lineLexer(lineStr)
 		if err != nil {
-			fmt.Printf("%s %v:%v %v\n", errorStr, filePath, lineIndex+1, err)
+			return nil, fmt.Errorf("%s %v:%v %v", errorStr, filePath, lineIndex+1, err)
 		}
 		//fmt.Println(toks)
 
@@ -100,12 +100,13 @@ stringLoop:
 				return toks, fmt.Errorf("invalid syntax")
 			}
 		case '-': // minus
-			// label is start with `$`
 			if tok == "" {
 				tok += "-"
 			} else {
 				return toks, fmt.Errorf("invalid syntax")
 			}
+		case '+': // plus
+			addToken(&tok, &t, tokenPlus, &toks)
 		case ':': // colon
 			addToken(&tok, &t, tokenColon, &toks)
 		case ';': // semicolon

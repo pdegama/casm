@@ -14,10 +14,11 @@ const anyValue = -1
 // operand type
 const ( // value is tmp
 
-	//
-	noneOperand      operandType = "None"             // none
+	// none - undefined operand
+	noneOperand      operandType = "none"             // none
 	undefinedOperand operandType = "undefinedOperand" // undefined operand
 
+	// instraction operand
 	rel8        operandType = "rel8"
 	rel16       operandType = "rel16"
 	rel32       operandType = "rel32"
@@ -84,10 +85,14 @@ const ( // value is tmp
 	zmmMem512   operandType = "zmmMem512"
 	// TODO: <XXM0>, <YMM0>, {k1}{z}, {k1}, k1, mv, vm32{x,y, z}, vm64{x,y, z}, zmm/m512/m32bcst, zmm/m512/m64bcst, <ZMM0>, {er}, {sae}, SRC1, SRC2, SRC3, SRC, DST
 
+	// instraction operand group
 	reg    operandType = "reg"    // group of reg*
 	mem    operandType = "mem"    // group of mem*
 	regMem operandType = "regMem" // group of regMem*
 	imm    operandType = "imm"    // group of imm*
+
+	// other pre-porcess operand
+	operPrePlus operandType = "operandPrePlus"
 
 	//
 )
