@@ -44,9 +44,17 @@ func (s *binaryGen) gen() []error {
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				}
+				
+			case lineModulo:
+				
+				// if line is modulo
+				err := parseModulo(line, s.bitMode)
+				if err != nil {
+					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
+					errs = append(errs, tErr)
+				}
 
 			}
-
 		}
 	}
 

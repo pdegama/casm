@@ -412,3 +412,29 @@ func parseImmType(i uint) operandType {
 		return imm64
 	}
 }
+
+// modulo parse
+func parseModulo(line asmLine, bitMode int) error {
+
+	if len(line.tokens) < 2 {
+		return fmt.Errorf("invalid modulo instraction")
+	}
+
+	// loop of token
+	for tokIndex, tok := range line.tokens {
+
+		switch tokIndex {
+		case 0:
+			// if token index is zero (first token)
+			if tok.tokenType != tokenUnknow {
+				// this token is not modulo token then return error
+				return fmt.Errorf("invalid modulo instraction")
+			}
+
+		case 1:
+
+		}
+	}
+
+	return nil
+}
