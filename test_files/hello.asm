@@ -1,4 +1,4 @@
-% bits 32
+%bits 64
 
 $start:
   mov rax, 1        ; write(

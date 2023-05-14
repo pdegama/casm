@@ -34,7 +34,7 @@ func assemble(arch *x86_64) {
 	}
 
 	binGen := binaryGen{}
-	binGen.setBitMode(64)     // set bit mode
+	binGen.setBitMode(16)     // set bit mode
 	binGen.setAsmLines(lines) // set asm lines
 	
 	errs = binGen.gen()       // gen binary

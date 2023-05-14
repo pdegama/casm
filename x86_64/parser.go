@@ -414,7 +414,7 @@ func parseImmType(i uint) operandType {
 }
 
 // modulo parse
-func parseModulo(line asmLine, bitMode int) error {
+func parseModulo(line asmLine, b *binaryGen) error {
 
 	if len(line.tokens) < 2 {
 		return fmt.Errorf("invalid modulo instraction")
@@ -425,15 +425,64 @@ func parseModulo(line asmLine, bitMode int) error {
 
 		switch tokIndex {
 		case 0:
-			// if token index is zero (first token)
-			if tok.tokenType != tokenUnknow {
+			// if token index is zero (first token) and
+			if tok.tokenType != tokenModulo {
 				// this token is not modulo token then return error
 				return fmt.Errorf("invalid modulo instraction")
 			}
 
 		case 1:
+			// second token
+			switch tok.token {
+			case "bits", "bitmode":
+				/*
+					if modulo token i bits and bitmode
+					then require three token
+					% bitmod <bit>
+				*/
+				if len(line.tokens) == 3 {
+
+					// third token is bits token
+					bitsToken := line.tokens[2]
+
+					switch bitsToken.token {
+					case "16":
+						/*
+							if bitsToken value is 16 then
+							set 16 in binaryGen
+						*/
+						b.bitMode = 16
+					case "32":
+						/*
+							if bitsToken value is 32 then
+							set 32 in binaryGen
+						*/
+						b.bitMode = 32
+					case "64":
+						/*
+							if bitsToken value is 64 then
+							set 64 in binaryGen
+						*/
+						b.bitMode = 64
+					default:
+						/*
+							if other bitToken value then
+							return error
+						*/
+						return fmt.Errorf("invalid bits token `%v`, only support 16, 32 and 64", bitsToken.token)
+					}
+
+				} else {
+					// not three token avaible
+					return fmt.Errorf("invalid modulo tokens for `%v`", tok.token)
+				}
+
+			default:
+				return fmt.Errorf("invalid modulo operation `%v`", tok.token)
+			}
 
 		}
+
 	}
 
 	return nil

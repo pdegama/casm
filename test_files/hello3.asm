@@ -1,4 +1,4 @@
-%bitmod 123 youtube
+%bitmode 32
 
 add rdx, rax
 
