@@ -104,3 +104,45 @@ type operand struct {
 	m []operand   // mem operands
 	l bool        // is label
 }
+
+// is memory operand type
+func isMemoryOperand(operType operandType) bool {
+
+	switch operType {
+	case mem, mem8, mem16, mem32, mem64, mem128:
+		/*
+			retrun true because mem, mem8, mem16,
+			mem32, mem64, mem128:
+		*/
+		return true
+	case regMem, regMem8, regMem16, regMem32, regMem64:
+		/*
+			return true bacause regMem, regMem8,
+			regMem16, regMem32, regMem64
+		*/
+		return true
+	}
+
+	/*
+		other return false
+	*/
+	return false
+}
+
+// is reg operand type
+func isRegOperand(operType operandType) bool {
+
+	switch operType {
+	case reg, reg8, reg16, reg32, reg64:
+		/*
+			retrun true because reg, reg8, reg16,
+			reg32, reg64
+		*/
+		return true
+	}
+
+	/*
+		other return false
+	*/
+	return false
+}

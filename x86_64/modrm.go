@@ -42,6 +42,12 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 		return nil, err
 	}
 
+	// check modRMreg is valid or not
+	err = registerIsValidIn(*modRMregOper, bitMode)
+	if err != nil {
+		return nil, err
+	}
+
 	fmt.Println(modRMrmOper, modRMregOper, regField)
 
 	// calc modrm
@@ -67,7 +73,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 			// if only one operand in memory operand
 			return nil, fmt.Errorf("todo: todo: modrm mem operand")
 		default:
-			// 
+			//
 			return nil, fmt.Errorf("todo: modrm mem opernad not support")
 		}
 
@@ -123,46 +129,4 @@ func modRMregField(oper operand) (int, error) {
 	*/
 
 	return regInfo.baseOffset, nil
-}
-
-// is memory operand type
-func isMemoryOperand(operType operandType) bool {
-
-	switch operType {
-	case mem, mem8, mem16, mem32, mem64, mem128:
-		/*
-			retrun true because mem, mem8, mem16,
-			mem32, mem64, mem128:
-		*/
-		return true
-	case regMem, regMem8, regMem16, regMem32, regMem64:
-		/*
-			return true bacause regMem, regMem8,
-			regMem16, regMem32, regMem64
-		*/
-		return true
-	}
-
-	/*
-		other return false
-	*/
-	return false
-}
-
-// is reg operand type
-func isRegOperand(operType operandType) bool {
-
-	switch operType {
-	case reg, reg8, reg16, reg32, reg64:
-		/*
-			retrun true because reg, reg8, reg16,
-			reg32, reg64
-		*/
-		return true
-	}
-
-	/*
-		other return false
-	*/
-	return false
 }

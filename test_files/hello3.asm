@@ -1,6 +1,8 @@
-%bitmode 32
+%bitmode 64
 
-add rdx, rax
+;add rdx, rax
+
+add r12d, ecx
 
 add edx, ecx
 

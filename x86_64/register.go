@@ -12,11 +12,12 @@ import (
 
 // register structure
 type register struct {
-	name        string // register name
-	globleIndex int    // register globle index for this assembler
-	bitSize     int    // register bit size 8, 16, 32, or 64-bit
-	index       int    // register index
-	baseOffset  int    // register base offset according to modrm reg field, modrm r/m field and +rb, +rw, +rd, or +rq value
+	name             string // register name
+	globleIndex      int    // register globle index for this assembler
+	bitSize          int    // register bit size 8, 16, 32, or 64-bit
+	index            int    // register index
+	baseOffset       int    // register base offset according to modrm reg field, modrm r/m field and +rb, +rw, +rd, or +rq value
+	onlyValidIn64Bit bool   // register is only valid in 64-bit mode
 }
 
 // check or get register form register name
@@ -69,4 +70,39 @@ func getRegisterOperandType(reg register) operandType {
 		// if register bit size is invalid
 		panic("invalid register")
 	}
+}
+
+// register is valid in ...
+func registerIsValidIn(r operand, bitMode int) error {
+
+	if !isRegOperand(r.t) {
+		/*
+			if operand is not register
+			then return error
+		*/
+		return fmt.Errorf("this is not register")
+	}
+
+	// get register info
+	regInfo, err := registerInfo(int(r.v))
+	if err != nil {
+		// if error then return error
+		return err
+	}
+
+	if regInfo.onlyValidIn64Bit {
+		/*
+			register is only valid
+			in 64-bit mode
+		*/
+		if bitMode != 64 {
+			/*
+				and bit mode is not 64
+				then return error
+			*/
+			return fmt.Errorf("this is only support in 64-bit mode")
+		}
+	}
+
+	return nil
 }
