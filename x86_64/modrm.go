@@ -36,14 +36,20 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 		}
 	}
 
-	// get reg field
-	regField, err := modRMregField(*modRMregOper)
+	// modRMreg info
+	modRMregInfo, err := registerInfo(int(modRMregOper.v))
 	if err != nil {
 		return nil, err
 	}
 
 	// check modRMreg is valid or not
-	err = registerIsValidIn(*modRMregOper, bitMode)
+	err = registerIsValid(modRMregInfo, bitMode)
+	if err != nil {
+		return nil, err
+	}
+
+	// get reg field
+	regField, err := modRMregField(*modRMregOper)
 	if err != nil {
 		return nil, err
 	}
@@ -71,10 +77,25 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 		switch len(rmOper.m) {
 		case 1:
 			// if only one operand in memory operand
-			return nil, fmt.Errorf("todo: todo: modrm mem operand")
+			memOper := rmOper.m[0]
+
+			if isRegOperand(memOper.t) {
+
+				// get mem register info
+				regInfo, err := registerInfo(int(memOper.v))
+				if err != nil {
+					return nil, err
+				}
+
+				_ = regInfo
+
+			}
+
+			return nil, fmt.Errorf("todo: modrm disp mem opernad not support")
+
 		default:
 			//
-			return nil, fmt.Errorf("todo: modrm mem opernad not support")
+			return nil, fmt.Errorf("todo: modrm more then one mem opernad not support")
 		}
 
 	}
@@ -83,9 +104,15 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 		// if rm operand is register
 
 		// get r/m register info
-		regInfo, err := registerInfo(int(rmOper.v))
+		modRMrmRegInfo, err := registerInfo(int(rmOper.v))
 		if err != nil {
 			// if error then return error
+			return nil, err
+		}
+
+		// check modRMreg is valid or not
+		err = registerIsValid(modRMrmRegInfo, bitMode)
+		if err != nil {
 			return nil, err
 		}
 
@@ -94,7 +121,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 		*/
 
 		modField := 0b11              // modrm mod field
-		rmField := regInfo.baseOffset // modrm r/m field
+		rmField := modRMrmRegInfo.baseOffset // modrm r/m field
 		regField := regField          // modrm reg field
 
 		modRMByte := modField<<6 | regField<<3 | rmField<<0

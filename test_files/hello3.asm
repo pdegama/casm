@@ -11,5 +11,5 @@ add dx, [eax]
 
 add [rdx + 0x02], eax
 
-add [eax ], dx
+add [0x11], dx
 add dx, [eax]

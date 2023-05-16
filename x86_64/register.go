@@ -72,25 +72,10 @@ func getRegisterOperandType(reg register) operandType {
 	}
 }
 
-// register is valid in ...
-func registerIsValidIn(r operand, bitMode int) error {
+// register is valid...
+func registerIsValid(r register, bitMode int) error {
 
-	if !isRegOperand(r.t) {
-		/*
-			if operand is not register
-			then return error
-		*/
-		return fmt.Errorf("this is not register")
-	}
-
-	// get register info
-	regInfo, err := registerInfo(int(r.v))
-	if err != nil {
-		// if error then return error
-		return err
-	}
-
-	if regInfo.onlyValidIn64Bit {
+	if r.onlyValidIn64Bit {
 		/*
 			register is only valid
 			in 64-bit mode
@@ -100,7 +85,7 @@ func registerIsValidIn(r operand, bitMode int) error {
 				and bit mode is not 64
 				then return error
 			*/
-			return fmt.Errorf("this is only support in 64-bit mode")
+			return fmt.Errorf("%v register is only support in 64-bit mode", r.name)
 		}
 	}
 
