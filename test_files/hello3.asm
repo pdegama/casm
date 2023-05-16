@@ -2,12 +2,16 @@
 
 ;add rdx, rax
 
-add r12d, ecx
+add [r12d], ecx
 
-add edx, ecx
+add [edx], cx
 
-add [rdx], eax
+add [edx], rax
 add dx, [eax]
+
+add dx, [rax]
+
+add [rbx], rdx
 
 add [rdx + 0x02], eax
 

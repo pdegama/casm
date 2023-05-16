@@ -87,7 +87,11 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 					return nil, err
 				}
 
-				_ = regInfo
+				// check register is valid in mem or not
+				err = registerIsValidInMem(regInfo, bitMode)
+				if err != nil {
+					return nil, err
+				}
 
 			}
 
@@ -120,9 +124,9 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 			register base offset is r
 		*/
 
-		modField := 0b11              // modrm mod field
+		modField := 0b11                     // modrm mod field
 		rmField := modRMrmRegInfo.baseOffset // modrm r/m field
-		regField := regField          // modrm reg field
+		regField := regField                 // modrm reg field
 
 		modRMByte := modField<<6 | regField<<3 | rmField<<0
 
