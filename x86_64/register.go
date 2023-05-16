@@ -91,3 +91,58 @@ func registerIsValid(r register, bitMode int) error {
 
 	return nil
 }
+
+// register is valide in mem...
+func registerIsValidInMem(r register, bitMode int) error {
+
+	if r.onlyValidIn64Bit {
+		// if register is only valid in 64-bit mode
+		if bitMode != 64 {
+			/*
+				and current bit mode is not
+				64 then return error
+			*/
+			return fmt.Errorf("%v register is only valid in 64-bit mode", r.name)
+		}
+	}
+
+	switch r.bitSize {
+	case 8:
+		/*
+			if register is 8-bit register then
+			8-bit register is not addressable
+			in any bit mode then return error
+		*/
+		return fmt.Errorf("%v register is not addressable in any bit mode", r.name)
+	case 16:
+		/*
+			if register is 16-bit register then
+			this register is addressable in
+			16 and 32 bit mode, is not addressable
+			in 64-bit mode
+		*/
+		if bitMode == 64 {
+			// if bit mode is 64 then return error
+			return fmt.Errorf("%v register is not addressable in 64-bit mode", r.name)
+		}
+
+	case 32:
+		/*
+			if register is 32-bit register then
+			this register is addressable in
+			any (16, 32 and 64) bit mode
+		*/
+	case 64:
+		/*
+			if register is 64-bit register then
+			this register is addressable in
+			only 64 bit mode
+		*/
+		if bitMode != 64 {
+			// if bit mode is not 64 then return error
+			return fmt.Errorf("%v register is only addressable in 64-bit mode", r.name)
+		}
+	}
+
+	return nil
+}
