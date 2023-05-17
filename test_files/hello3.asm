@@ -2,7 +2,7 @@
 
 ;add rdx, rax
 
-add [r12d], ecx
+add [r14], ecx
 
 add [edx], cx
 

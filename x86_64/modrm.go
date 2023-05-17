@@ -196,13 +196,9 @@ func modRMmemRegField(r register) (int, error) {
 }
 
 // get modrm byte
-func modRMbyte(mod int, rm int, reg int) int {
+func modRMbyte(mod int, reg int, rm int) int {
 
-	modField := 0b11 // modrm mod field
-	rmField := rm    // modrm r/m field
-	regField := reg  // modrm reg field
-
-	modRMByte := modField<<6 | regField<<3 | rmField<<0
+	modRMByte := mod<<6 | reg<<3 | rm<<0
 
 	return modRMByte
 
