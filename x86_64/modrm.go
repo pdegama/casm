@@ -100,7 +100,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 				}
 
 				// gen modrm byte
-				modRMByte := modRMbyte(0b00, modrmMemField, regField)
+				modRMByte := modRMbyte(0b00, regField, modrmMemField)
 				modrmBytes = append(modrmBytes, uint8(modRMByte))
 
 				return modrmBytes, nil // return modrm byte
@@ -133,7 +133,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 		}
 
 		// gen modrm byte
-		modRMByte := modRMbyte(0b11, modRMrmRegInfo.baseOffset, regField)
+		modRMByte := modRMbyte(0b11, regField, modRMrmRegInfo.baseOffset)
 		modrmBytes = append(modrmBytes, uint8(modRMByte))
 
 		return modrmBytes, nil // return modrm byte
