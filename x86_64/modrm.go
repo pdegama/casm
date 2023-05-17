@@ -176,8 +176,17 @@ func modRMmemRegField(r register) (int, error) {
 		return 0, fmt.Errorf("todo: 16-bit register")
 
 	case 32, 64:
-
 		// if register is 32 or 64 bit
+
+		switch r.baseOffset {
+		case 4, 5:
+			/*
+				if register is esp, ebp, rsp or rbp
+				this not support single reg mem
+			*/
+			return 0, fmt.Errorf("todo: %v register modrm byte", r.name)
+		}
+
 		return r.baseOffset, nil
 
 	}
