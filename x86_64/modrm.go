@@ -93,6 +93,18 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 					return nil, err
 				}
 
+				// get mem field
+				modrmMemField, err := modRMmemRegField(regInfo)
+				if err != nil {
+					return nil, err
+				}
+
+				// gen modrm byte
+				modRMByte := modRMbyte(0b00, modrmMemField, regField)
+				modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+				return modrmBytes, nil // return modrm byte
+
 			}
 
 			return nil, fmt.Errorf("todo: modrm disp mem opernad not support")
@@ -120,19 +132,11 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 			return nil, err
 		}
 
-		/*
-			register base offset is r
-		*/
-
-		modField := 0b11                     // modrm mod field
-		rmField := modRMrmRegInfo.baseOffset // modrm r/m field
-		regField := regField                 // modrm reg field
-
-		modRMByte := modField<<6 | regField<<3 | rmField<<0
-
+		// gen modrm byte
+		modRMByte := modRMbyte(0b11, modRMrmRegInfo.baseOffset, regField)
 		modrmBytes = append(modrmBytes, uint8(modRMByte))
 
-		return modrmBytes, nil
+		return modrmBytes, nil // return modrm byte
 
 	}
 
@@ -160,4 +164,37 @@ func modRMregField(oper operand) (int, error) {
 	*/
 
 	return regInfo.baseOffset, nil
+}
+
+// modRM mem field
+func modRMmemRegField(r register) (int, error) {
+
+	switch r.bitSize {
+	case 16:
+
+		// if register is 16 bit
+		return 0, fmt.Errorf("todo: 16-bit register")
+
+	case 32, 64:
+
+		// if register is 32 or 64 bit
+		return r.baseOffset, nil
+
+	}
+
+	return 0, fmt.Errorf("invalid modrm reg mem")
+
+}
+
+// get modrm byte
+func modRMbyte(mod int, rm int, reg int) int {
+
+	modField := 0b11 // modrm mod field
+	rmField := rm    // modrm r/m field
+	regField := reg  // modrm reg field
+
+	modRMByte := modField<<6 | regField<<3 | rmField<<0
+
+	return modRMByte
+
 }
