@@ -180,14 +180,6 @@ func checkREXbPrexif(ope *operand, bitSize int, pf *prefix) error {
 			return err
 		}
 
-		if regInfo.bitSize == 64 {
-			/*
-				if register is 64 bit
-				then set rex.w
-			*/
-			pf.rex.w = true
-		}
-
 		if regInfo.onlyValidIn64Bit && regInfo.index > 7 {
 			/*
 				if register is only support
