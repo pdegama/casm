@@ -74,7 +74,7 @@ func checkOperandOverride(ope *operand, bitMode int, pf *prefix) error {
 
 }
 
-// check address  override prefix
+// check address override prefix
 func checkAddressOverride(ope *operand, bitMode int, pf *prefix) error {
 
 	effectiveBits, err := effectiveBitSize(ope) // effective bit size
@@ -116,6 +116,96 @@ func checkAddressOverride(ope *operand, bitMode int, pf *prefix) error {
 
 }
 
+// check rex.r prefix
+func checkREXrPrexif(ope *operand, bitSize int, pf *prefix) error {
+
+	if bitSize != 64 {
+		/*
+			if bit mode is not 64 then return
+			beacuse rex prefix only support
+			in 64-bit mode
+		*/
+		return nil
+	}
+
+	if isRegOperand(ope.t) {
+		// if operand is register
+		regInfo, err := registerInfo(int(ope.v))
+		if err != nil {
+			return err
+		}
+
+		if regInfo.bitSize == 64 {
+			/*
+				if register is 64 bit
+				then set rex.w
+			*/
+			pf.rex.w = true
+		}
+
+		if regInfo.onlyValidIn64Bit && regInfo.index > 7 {
+			/*
+				if register is only support
+				in 64-bit mode and register
+				index is greter then 7 then
+				set pf.rex.r
+			*/
+			pf.rex.r = true
+		}
+
+	} else {
+		// if operand is not register
+		return fmt.Errorf("todo: rex.w other operand")
+	}
+
+	return nil
+}
+
+// check rex.b prefix
+func checkREXbPrexif(ope *operand, bitSize int, pf *prefix) error {
+
+	if bitSize != 64 {
+		/*
+			if bit mode is not 64 then return
+			beacuse rex prefix only support
+			in 64-bit mode
+		*/
+		return nil
+	}
+
+	if isRegOperand(ope.t) {
+		// if operand is register
+		regInfo, err := registerInfo(int(ope.v))
+		if err != nil {
+			return err
+		}
+
+		if regInfo.bitSize == 64 {
+			/*
+				if register is 64 bit
+				then set rex.w
+			*/
+			pf.rex.w = true
+		}
+
+		if regInfo.onlyValidIn64Bit && regInfo.index > 7 {
+			/*
+				if register is only support
+				in 64-bit mode and register
+				index is greter then 7 then
+				set pf.rex.b
+			*/
+			pf.rex.b = true
+		}
+
+	} else {
+		// if operand is not register
+		return fmt.Errorf("todo: rex.w other operand")
+	}
+
+	return nil
+}
+
 // get effective bit size
 func effectiveBitSize(ope *operand) (int, error) {
 	if isRegOperand(ope.t) {
@@ -144,6 +234,41 @@ func genPrefix(p *prefix) []uint8 {
 	if p.override.address {
 		// if operand size override
 		prefixByte = append(prefixByte, 0x67)
+	}
+
+	if p.rex.a || p.rex.w || p.rex.r || p.rex.x || p.rex.b {
+
+		/*
+			if any rex prefix is true
+			then get rex prefix
+		*/
+
+		w, r, x, b := 0, 0, 0, 0 // rex prefix field
+
+		if p.rex.w {
+			// if rex.w is true
+			w = 1
+		}
+
+		if p.rex.r {
+			// if rex.r is true
+			r = 1
+		}
+
+		if p.rex.x {
+			// if rex.x is true
+			x = 1
+		}
+
+		if p.rex.b {
+			// if rex.b is true
+			b = 1
+		}
+
+		rexPrefix := 0b_0100_0000 | (w << 3) | (r << 2) | (x << 1) | b
+
+		prefixByte = append(prefixByte, uint8(rexPrefix))
+
 	}
 
 	return prefixByte

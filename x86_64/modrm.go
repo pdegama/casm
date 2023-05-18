@@ -54,6 +54,12 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([
 		return nil, err
 	}
 
+	// check rex.r prefix
+	err = checkREXrPrexif(modRMregOper, bitMode, pf)
+	if err != nil {
+		return nil, err
+	}
+
 	// get reg field
 	regField, err := modRMregField(*modRMregOper)
 	if err != nil {
@@ -101,6 +107,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 				// check address override prefix
 				err = checkAddressOverride(&memOper, bitMode, pf)
+				if err != nil {
+					return nil, err
+				}
+
+				// check rex.b prefix
+				err = checkREXbPrexif(&memOper, bitMode, pf)
 				if err != nil {
 					return nil, err
 				}
