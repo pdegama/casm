@@ -11,6 +11,7 @@ import "fmt"
 func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 
 	instBinCode := []uint8{}
+	instPrefix := prefix{}
 
 	fmt.Println(inst)
 	fmt.Println(opcode)
@@ -22,7 +23,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			// add modrm
 			if len(inst.operands) == 2 {
 				// if two operand
-				modrmByte, err := addModRM(&opcode, &inst, bitMode)
+				modrmByte, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
 				if err != nil {
 					// if error then return error
 					return err
@@ -84,10 +85,12 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		}
 	}
 
+	prefixByte := genPrefix(&instPrefix)
+	instBinCode = append(prefixByte, instBinCode...)
+
 	for _, b := range instBinCode {
 		fmt.Printf("%x ", b)
 	}
-
 
 	return nil
 }

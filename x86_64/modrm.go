@@ -8,7 +8,7 @@ package x86_64
 import "fmt"
 
 // add modRM byte
-func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, error) {
+func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([]uint8, error) {
 
 	// calculate modRM and return
 	if len(inst.operands) != 2 {
@@ -48,6 +48,12 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 		return nil, err
 	}
 
+	// check operand override prefix
+	err = checkOperandOverride(modRMregOper, bitMode, pf)
+	if err != nil {
+		return nil, err
+	}
+
 	// get reg field
 	regField, err := modRMregField(*modRMregOper)
 	if err != nil {
@@ -57,7 +63,7 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 	fmt.Println(modRMrmOper, modRMregOper, regField)
 
 	// calc modrm
-	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode)
+	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode, pf)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +72,7 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int) ([]uint8, erro
 }
 
 // calc modrm
-func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
+func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8, error) {
 
 	modrmBytes := []uint8{} // modrm bytes
 
@@ -89,6 +95,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int) ([]uint8, error) {
 
 				// check register is valid in mem or not
 				err = registerIsValidInMem(regInfo, bitMode)
+				if err != nil {
+					return nil, err
+				}
+
+				// check address override prefix
+				err = checkAddressOverride(&memOper, bitMode, pf)
 				if err != nil {
 					return nil, err
 				}
