@@ -156,6 +156,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 			return nil, err
 		}
 
+		// check rex.b prefix
+		err = checkREXbPrexif(rmOper, bitMode, pf)
+		if err != nil {
+			return nil, err
+		}
+
 		// gen modrm byte
 		modRMByte := modRMbyte(0b11, regField, modRMrmRegInfo.baseOffset)
 		modrmBytes = append(modrmBytes, uint8(modRMByte))
