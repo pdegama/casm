@@ -129,9 +129,17 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 				return modrmBytes, nil // return modrm byte
 
+			} else if isImmOperand(memOper.t) {
+
+				if memOper.l {
+					// if this is label then todo error
+					return nil, fmt.Errorf("todo: modrm label disp mem opernad not support")
+				}
+
+				return modrmBytes, nil
 			}
 
-			return nil, fmt.Errorf("todo: modrm disp mem opernad not support")
+			return nil, fmt.Errorf("internal error: modrm")
 
 		default:
 			//
