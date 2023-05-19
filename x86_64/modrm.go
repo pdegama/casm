@@ -20,7 +20,7 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([
 
 	// loop of arch operands
 	for aOperIndex, aOper := range opcode.operands {
-		if isMemoryOperand(aOper.t) {
+		if isMemOperand(aOper.t) {
 			/*
 				if arch operand is memory operand then
 				assign inst operand to modRMrmOper
