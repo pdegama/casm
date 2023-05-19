@@ -321,7 +321,15 @@ func parseOperand(tokens []token) (operand, error) {
 	}
 
 	if isMem {
-		// operand is chance mem
+		// operand is mem
+
+		if len(opers) == 0 {
+			/*
+				if memory operand length is
+				zero then return error
+			*/
+			return operand{}, fmt.Errorf("invalid memory operand/syntax")
+		}
 
 		oper, err := parseMem(&opers)
 		if err != nil {
