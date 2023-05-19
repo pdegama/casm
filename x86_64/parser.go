@@ -305,12 +305,12 @@ func parseOperand(tokens []token) (operand, error) {
 				oprType = nextImmType
 				nextImm = false
 			}
-			return operand{
+			opers = append(opers, operand{
 				t: oprType,
 				v: 0x00,
 				m: nil,
 				l: true,
-			}, nil
+			})
 
 		}
 	}
