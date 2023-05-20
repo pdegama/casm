@@ -17,3 +17,5 @@ add [rdx + 0x02], eax
 
 add edx, [0x114]
 add si, [rdx]
+
+add edx, [qword 0x1114]
