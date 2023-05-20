@@ -142,11 +142,63 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 					switch bitMode {
 					case 16:
+						// if bit mode is 16-bit
+
+						immVal := uint16(memOper.v) // imm value
+
+						immLeByte := uint16le(immVal) // convert imm value to little endian
+
+						modrmMemField := 6 // modrm r/m field is 6 is 16-bit mode
+
+						// gen modrm byte
+						modRMByte := modRMbyte(0b00, regField, modrmMemField)
+						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+						// and append disp imm bytes
+						modrmBytes = append(modrmBytes, immLeByte...)
 
 					case 32:
-						
+						// if bit mode is 32-bit
+
+						immVal := uint32(memOper.v) // imm value
+
+						immLeByte := uint32le(immVal) // convert imm value to little endian
+
+						modrmMemField := 5 // modrm r/m field is 5 in 32-bit mode
+
+						// gen modrm byte
+						modRMByte := modRMbyte(0b00, regField, modrmMemField)
+						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+						// and append disp imm bytes
+						modrmBytes = append(modrmBytes, immLeByte...)
+
 					case 64:
-						
+						// if bit mode is 64-bit
+
+						/*
+							64-bit mode support 32-bit (dword)
+							disp imm address then convert
+							imm value convert to 32-bit value
+						*/
+
+						immVal := uint32(memOper.v) // imm value
+
+						immLeByte := uint32le(immVal) // convert imm value to little endian
+
+						// 64-bit direct disp imm address is require SIB
+						modrmMemField := 4 // SIB modrm r/m field is 4 in 64-bit mode
+
+						// gen modrm byte
+						modRMByte := modRMbyte(0b00, regField, modrmMemField)
+						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+						// append 25 SIB byte because 0x25 is base disp
+						modrmBytes = append(modrmBytes, 0x25)
+
+						// and append disp imm bytes
+						modrmBytes = append(modrmBytes, immLeByte...)
+
 					}
 
 				case imm8, imm16, imm32, imm64:
