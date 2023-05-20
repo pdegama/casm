@@ -210,7 +210,26 @@ func effectiveBitSize(ope *operand) (int, error) {
 		return regInfo.bitSize, nil
 	}
 
-	return 0, fmt.Errorf("todo: imm")
+	if isImmOperand(ope.t) {
+		// if operand is imm
+
+		switch ope.t {
+		case imm8:
+			// imm8 is 8-bit
+			return 8, nil
+		case imm16:
+			// imm16 is 16-bit
+			return 16, nil
+		case imm32:
+			// imm32 is 32-bit
+			return 32, nil
+		case imm64:
+			// imm64 is 64-bit
+			return 64, nil
+		}
+	}
+
+	return 0, fmt.Errorf("internal error: modrm")
 }
 
 // gen prefix

@@ -216,6 +216,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 					immLeByte := uint16le(immVal) // convert imm value to little endian
 
+					// check address override prefix
+					err := checkAddressOverride(&operand{t: imm16}, bitMode, pf)
+					if err != nil {
+						return nil, err
+					}
+
 					modrmMemField := 6 // modrm r/m field is 6 is 16-bit modrm
 
 					// gen modrm byte
@@ -254,6 +260,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 						modrmBytes = append(modrmBytes, 0x25)
 
 					} else if bitMode == 32 || bitMode == 16 {
+
+						// check address override prefix
+						err := checkAddressOverride(&operand{t: imm32}, bitMode, pf)
+						if err != nil {
+							return nil, err
+						}
 
 						modrmMemField := 5 // modrm r/m field is 5 in 32-bit or 64-bit modrm
 
