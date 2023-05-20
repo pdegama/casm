@@ -148,7 +148,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 						immLeByte := uint16le(immVal) // convert imm value to little endian
 
-						modrmMemField := 6 // modrm r/m field is 6 is 16-bit mode
+						modrmMemField := 6 // modrm r/m field is 6 is 16-bit modrm
 
 						// gen modrm byte
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
@@ -164,7 +164,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 						immLeByte := uint32le(immVal) // convert imm value to little endian
 
-						modrmMemField := 5 // modrm r/m field is 5 in 32-bit mode
+						modrmMemField := 5 // modrm r/m field is 5 in 32-bit modrm
 
 						// gen modrm byte
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
@@ -187,7 +187,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 						immLeByte := uint32le(immVal) // convert imm value to little endian
 
 						// 64-bit direct disp imm address is require SIB
-						modrmMemField := 4 // SIB modrm r/m field is 4 in 64-bit mode
+						modrmMemField := 4 // SIB modrm r/m field is 4 in 64-bit modrm
 
 						// gen modrm byte
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
@@ -201,9 +201,70 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 					}
 
-				case imm8, imm16, imm32, imm64:
-					// this operand is fix imm
-					return nil, fmt.Errorf("todo: modrm fix imm")
+				case imm8, imm16:
+
+					if bitMode == 64 {
+						/*
+							if bit mode is 64 then return
+							error because 64 bit is not support
+							16-bit bisp imm value
+						*/
+						return nil, fmt.Errorf("disp imm64 is not support in 16-bit")
+					}
+
+					immVal := uint16(memOper.v) // convert imm value to 16-bit value
+
+					immLeByte := uint16le(immVal) // convert imm value to little endian
+
+					modrmMemField := 6 // modrm r/m field is 6 is 16-bit modrm
+
+					// gen modrm byte
+					modRMByte := modRMbyte(0b00, regField, modrmMemField)
+					modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+					// and append disp imm bytes
+					modrmBytes = append(modrmBytes, immLeByte...)
+
+				case imm32, imm64:
+
+					if memOper.t == imm64 && bitMode != 64 {
+						/*
+							if bit mode is not 64 amnd imm is
+							64-bit then return error because
+							64-bit is not support 16-bit bisp
+							imm value
+						*/
+						return nil, fmt.Errorf("disp imm64 is only support in 64-bit")
+					}
+
+					immVal := uint32(memOper.v) // convert imm value to 32-bit value
+
+					immLeByte := uint32le(immVal) // convert imm value to little endian
+
+					if bitMode == 64 {
+
+						// 64-bit direct disp imm address is require SIB
+						modrmMemField := 4 // SIB modrm r/m field is 4 in 64-bit modrm
+
+						// gen modrm byte
+						modRMByte := modRMbyte(0b00, regField, modrmMemField)
+						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+						// append 25 SIB byte because 0x25 is base disp
+						modrmBytes = append(modrmBytes, 0x25)
+
+					} else if bitMode == 32 || bitMode == 16 {
+
+						modrmMemField := 5 // modrm r/m field is 5 in 32-bit or 64-bit modrm
+
+						// gen modrm byte
+						modRMByte := modRMbyte(0b00, regField, modrmMemField)
+						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+					}
+
+					// and append disp imm bytes
+					modrmBytes = append(modrmBytes, immLeByte...)
 
 				default:
 					// if this is label then todo error
