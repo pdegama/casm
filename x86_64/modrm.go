@@ -209,7 +209,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 							error because 64 bit is not support
 							16-bit bisp imm value
 						*/
-						return nil, fmt.Errorf("disp imm64 is not support in 16-bit")
+						return nil, fmt.Errorf("disp imm16 is not support in 64-bit")
 					}
 
 					immVal := uint16(memOper.v) // convert imm value to 16-bit value
