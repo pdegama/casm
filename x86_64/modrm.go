@@ -126,6 +126,13 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 				// if bitmode
 				if regInfo.bitSize == 16 {
 					if modrmMemField == 6 {
+						/* 
+							if modrmMemField reg is 6
+							but 6 is disp16 field in 
+							single mem operand then pass
+							to three mem operand
+						 */
+
 						return threeMemOperModRM(
 							[]operand{
 								memOper,
@@ -139,6 +146,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 					}
 				} else if regInfo.bitSize == 32 || regInfo.bitSize == 64 {
 					if modrmMemField == 5 {
+
+						/* 
+							if modrmMemField reg is 5
+							but 5 is disp32 field ...
+						 */
+
 						return threeMemOperModRM(
 							[]operand{
 								memOper,
@@ -150,6 +163,11 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 							pf,
 						)
 					} else if modrmMemField == 4 {
+
+						/* 
+							if modrmMemField reg is 4
+							but 4 is SIB field ...
+						 */
 
 						// 4 field is SIB field
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
