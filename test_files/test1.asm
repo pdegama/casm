@@ -1,3 +1,3 @@
-bits 64
+bits 16
 
-add  [ecx], r14
+add [edx + 0x0201], eax

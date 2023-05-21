@@ -301,6 +301,11 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 		case 3:
 
+			modrmBytes, err := threeMemOperModRM(rmOper.m, regField, bitMode, pf)
+			if err != nil {
+				return nil, err
+			}
+			return modrmBytes, nil
 
 		default:
 			//
@@ -339,7 +344,122 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 	}
 
-	return nil, nil
+	return nil, fmt.Errorf("internal error: modrm")
+}
+
+// 3 mem operand modrm
+func threeMemOperModRM(opers []operand, regField int, bitMode int, pf *prefix) ([]uint8, error) {
+
+	modrmBytes := []uint8{} // modrm bytes
+
+	regOper := opers[0]        // reg operand firest operand
+	operantionOper := opers[1] // operation opernad
+	immOper := opers[2]        // imm operand
+
+	if !isRegOperand(regOper.t) {
+		// if first operand is not register
+		return nil, fmt.Errorf("invalid mem operand")
+	}
+
+	switch operantionOper.t {
+	case operPrePlus, operPreMinus:
+		// pass
+	default:
+		// if seconde operand os not operation operand
+		return nil, fmt.Errorf("invalid mem operand")
+	}
+
+	if !isImmOperand(immOper.t) {
+		// if third operand is not imm operand
+		return nil, fmt.Errorf("invalid mem operand")
+
+	}
+
+	regOperInfo, err := registerInfo(int(regOper.v))
+	if err != nil {
+		return nil, err
+	}
+
+	// check register is valid in mem or not
+	err = registerIsValidInMem(regOperInfo, bitMode)
+	if err != nil {
+		return nil, err
+	}
+
+	// check address override prefix
+	err = checkAddressOverride(&regOper, bitMode, pf)
+	if err != nil {
+		return nil, err
+	}
+
+	// check rex.b prefix
+	err = checkREXbPrexif(&regOper, bitMode, pf)
+	if err != nil {
+		return nil, err
+	}
+
+	// get mem field
+	modrmMemField, err := modRMmemRegField(regOperInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	modRMmode := 0b10
+	immLeByte := []uint8{}
+
+	if immOper.v <= 0xff {
+		// if imm value is 8-bit
+		modRMmode = 0b01
+		immVal := uint8(immOper.v)
+
+		if operantionOper.t == operPreMinus {
+			// if operation is minus
+			immVal = 0xff - immVal + 1
+		}
+
+		immLeByte = uint8le(immVal)
+
+	} else {
+
+		switch regOperInfo.bitSize {
+		case 16:
+			// if register is 16-bit register
+			modRMmode = 0b10
+
+			immVal := uint16(immOper.v)
+
+			if operantionOper.t == operPreMinus {
+				// if operation is minus
+				immVal = 0xffff - immVal + 1
+			}
+
+			immLeByte = uint16le(immVal)
+
+		case 32, 64:
+			// if register is 16-bit or 64-bit register
+			modRMmode = 0b10
+
+			immVal := uint32(immOper.v)
+
+			if operantionOper.t == operPreMinus {
+				// if operation is minus
+				immVal = 0xffffffff - immVal + 1
+			}
+
+			immLeByte = uint32le(immVal)
+		default:
+			return nil, fmt.Errorf("internal error: modrm")
+		}
+
+	}
+
+	// gen modrm byte
+	modRMByte := modRMbyte(modRMmode, regField, modrmMemField)
+	modrmBytes = append(modrmBytes, uint8(modRMByte))
+	modrmBytes = append(modrmBytes, immLeByte...)
+
+	return modrmBytes, nil
+
 }
 
 // modrm reg field
