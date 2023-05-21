@@ -405,7 +405,12 @@ func threeMemOperModRM(opers []operand, regField int, bitMode int, pf *prefix) (
 	}
 
 	modRMmode := 0b10
-	immLeByte := []uint8{}
+	var immLeByte []uint8
+
+	if immOper.l {
+		// if this is label then todo error
+		return nil, fmt.Errorf("todo: modrm label disp mem opernad not support")
+	}
 
 	if immOper.v <= 0xff {
 		// if imm value is 8-bit
