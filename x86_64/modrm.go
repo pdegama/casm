@@ -123,6 +123,17 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 					return nil, err
 				}
 
+				// if bitmode
+				if regInfo.bitSize == 16 {
+					if modrmMemField == 6 {
+						return nil, fmt.Errorf("todo: bp register in address")
+					}
+				} else if regInfo.bitSize == 32 || regInfo.bitSize == 64 {
+					if modrmMemField == 4 || modrmMemField == 5 {
+						return nil, fmt.Errorf("todo: %v register in address", regInfo.name)
+					}
+				}
+
 				// gen modrm byte
 				modRMByte := modRMbyte(0b00, regField, modrmMemField)
 				modrmBytes = append(modrmBytes, uint8(modRMByte))
@@ -356,21 +367,23 @@ func modRMmemRegField(r register) (int, error) {
 
 	switch r.bitSize {
 	case 16:
-
 		// if register is 16 bit
-		return 0, fmt.Errorf("todo: 16-bit register")
+
+		switch r.globleIndex {
+		case si:
+			return 4, nil
+		case di:
+			return 5, nil
+		case bp:
+			return 6, nil
+		case bx:
+			return 7, nil
+		default:
+			return 0, fmt.Errorf("%v register is not support in modrm address", r.name)
+		}
 
 	case 32, 64:
 		// if register is 32 or 64 bit
-
-		switch r.baseOffset {
-		case 4, 5:
-			/*
-				if register is esp, ebp, rsp or rbp
-				this not support single reg mem
-			*/
-			return 0, fmt.Errorf("todo: %v register modrm byte", r.name)
-		}
 
 		return r.baseOffset, nil
 

@@ -1,4 +1,4 @@
-%bitmode 16
+%bitmode 64
 
 add rdx, rax
 
@@ -18,4 +18,4 @@ add [rdx + 0x02], eax
 add edx, [0x114]
 add si, [rdx]
 
-add edx, [qword 0x1114]
+add  [ecx], r14

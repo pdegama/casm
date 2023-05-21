@@ -1,3 +1,3 @@
 bits 64
 
-mov [dword 0x74], eax
+add  [ecx], r14
