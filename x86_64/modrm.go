@@ -299,9 +299,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 			return nil, fmt.Errorf("internal error: modrm")
 
+		case 3:
+
+
 		default:
 			//
-			return nil, fmt.Errorf("todo: modrm more then one mem opernad not support")
+			return nil, fmt.Errorf("invalid syntax memory operand")
 		}
 
 	}

@@ -92,7 +92,8 @@ const ( // value is tmp
 	imm    operandType = "imm"    // group of imm*
 
 	// other pre-porcess operand
-	operPrePlus operandType = "operandPrePlus"
+	operPrePlus  operandType = "operandPrePlus"
+	operPreMinus operandType = "operandPreMinus"
 
 	//
 )

@@ -21,8 +21,8 @@ const ( // value is tmp
 	tokenModulo       tokenType = "Modulo"        // %
 	tokenLabel        tokenType = "Label"         // $*
 
-	tokenPlus  tokenType = "TokenPlus"  // +
-	TokenMinus tokenType = "TokenMinus" // -
+	tokenPlus  tokenType = "Plus"  // +
+	tokenMinus tokenType = "Minus" // -
 
 	//
 )

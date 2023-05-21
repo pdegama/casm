@@ -101,7 +101,7 @@ func parseInst(tokens []token) (instruction, error) {
 	// loop of opernad tokens
 	for _, tok := range mOperandTokens {
 		switch tok.tokenType {
-		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketRight, tokenDoubleQuote, tokenPlus:
+		case tokenUnknow, tokenLabel, tokenBracketLeft, tokenBracketRight, tokenDoubleQuote, tokenPlus, tokenMinus:
 			// if token is unknow, or label
 			operandTokens = append(operandTokens, tok)
 		case tokenComma:
@@ -298,6 +298,14 @@ func parseOperand(tokens []token) (operand, error) {
 				l: false,
 			})
 
+		case tokenMinus:
+			opers = append(opers, operand{
+				t: operPreMinus,
+				v: 0x00,
+				m: nil,
+				l: false,
+			})
+
 		case tokenLabel:
 			// token is label
 			oprType := imm
@@ -380,7 +388,7 @@ func parseMem(opers *[]operand) (operand, error) {
 			} else {
 				return operand{}, fmt.Errorf("invalid memory operand/syntax")
 			}
-		case operPrePlus:
+		case operPrePlus, operPreMinus:
 			// is pre pluse
 			memOpers = append(memOpers, oper) // append to memory operands
 			isOperation = true                // this operand is operation operand then set true

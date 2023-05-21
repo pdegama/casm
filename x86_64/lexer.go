@@ -100,11 +100,7 @@ stringLoop:
 				return toks, fmt.Errorf("invalid syntax")
 			}
 		case '-': // minus
-			if tok == "" {
-				tok += "-"
-			} else {
-				return toks, fmt.Errorf("invalid syntax")
-			}
+			addToken(&tok, &t, tokenMinus, &toks)
 		case '+': // plus
 			addToken(&tok, &t, tokenPlus, &toks)
 		case ':': // colon
