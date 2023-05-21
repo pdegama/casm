@@ -13,7 +13,7 @@ add dx, [rax]
 
 add [rbx], rdx
 
-add [r14 + $qwe], eax
+add [r12d + 0x74], eax
 
 add edx, [0x114]
 add si, [rdx]

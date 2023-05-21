@@ -126,10 +126,30 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 				// if bitmode
 				if regInfo.bitSize == 16 {
 					if modrmMemField == 6 {
-						return nil, fmt.Errorf("todo: bp register in address")
+						return threeMemOperModRM(
+							[]operand{
+								memOper,
+								{t: operPrePlus, v: 0, m: nil, l: false},
+								{t: imm, v: 0, m: nil, l: false},
+							},
+							regField,
+							bitMode,
+							pf,
+						)
 					}
 				} else if regInfo.bitSize == 32 || regInfo.bitSize == 64 {
-					if modrmMemField == 4 || modrmMemField == 5 {
+					if modrmMemField == 5 {
+						return threeMemOperModRM(
+							[]operand{
+								memOper,
+								{t: operPrePlus, v: 0, m: nil, l: false},
+								{t: imm, v: 0, m: nil, l: false},
+							},
+							regField,
+							bitMode,
+							pf,
+						)
+					} else if modrmMemField == 4 {
 						return nil, fmt.Errorf("todo: %v register in address", regInfo.name)
 					}
 				}
