@@ -150,7 +150,17 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 							pf,
 						)
 					} else if modrmMemField == 4 {
-						return nil, fmt.Errorf("todo: %v register in address", regInfo.name)
+
+						// 4 field is SIB field
+						modRMByte := modRMbyte(0b00, regField, modrmMemField)
+						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+						// if register field is 4 then SIB base field is 4
+						sib := 00<<6 | 100<<3 | modrmMemField<<0
+
+						modrmBytes = append(modrmBytes, uint8(sib))
+
+						return modrmBytes, nil // return modrm byte
 					}
 				}
 
@@ -481,6 +491,25 @@ func threeMemOperModRM(opers []operand, regField int, bitMode int, pf *prefix) (
 	// gen modrm byte
 	modRMByte := modRMbyte(modRMmode, regField, modrmMemField)
 	modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+	if regOperInfo.bitSize == 32 || regOperInfo.bitSize == 64 {
+		// if register bit size is 32-bit or 64-bit
+
+		if modrmMemField == 4 {
+
+			/*
+				modrm r/m fireld is 4, but
+				4 is SIB field then add SIB
+				byte (base index 4 because )
+			*/
+
+			sib := 00<<6 | 100<<3 | modrmMemField<<0
+
+			modrmBytes = append(modrmBytes, uint8(sib))
+			
+		}
+	}
+
 	modrmBytes = append(modrmBytes, immLeByte...)
 
 	return modrmBytes, nil

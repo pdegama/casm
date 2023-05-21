@@ -1,3 +1,3 @@
 bits 64
 
-add [r12d], eax
+add rdx, [esp + 0x1]

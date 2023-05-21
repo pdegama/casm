@@ -13,9 +13,9 @@ add dx, [rax]
 
 add [rbx], rdx
 
-add [r12d + 0x74], eax
+add rdx, [esp + 0x1]
 
 add edx, [0x114]
 add si, [rdx]
 
-add  [ecx], r14
+add  [rsp], r14
