@@ -66,8 +66,6 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([
 		return nil, err
 	}
 
-	fmt.Println(modRMrmOper, modRMregOper, regField)
-
 	// calc modrm
 	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode, pf)
 	if err != nil {
@@ -378,6 +376,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 			return nil, err
 		}
 
+		// check operand override prefix
+		err = checkOperandOverride(rmOper, bitMode, pf)
+		if err != nil {
+			return nil, err
+		}
+
 		// check rex.b prefix
 		err = checkREXbPrexif(rmOper, bitMode, pf)
 		if err != nil {
@@ -535,9 +539,29 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 }
 
 // add modrm byte fix reg field
-func addModRMfixRegField(opcode *archOpcode, inst *instruction, regField int, bitMode int, pf *prefix) ([]uint8, error) {
+func addModRMfixRegField(opcode *archOpcode, inst *instruction, modRMregField int, bitMode int, pf *prefix) ([]uint8, error) {
 
 	var modRMrmOper *operand // r/m operand
+	var regField int         // modrm reg field
+
+	switch modRMregField {
+	case modRM0:
+		regField = 0
+	case modRM1:
+		regField = 1
+	case modRM2:
+		regField = 2
+	case modRM3:
+		regField = 3
+	case modRM4:
+		regField = 4
+	case modRM5:
+		regField = 5
+	case modRM6:
+		regField = 6
+	case modRM7:
+		regField = 7
+	}
 
 	// loop of arch operands
 	for aOperIndex, aOper := range opcode.operands {

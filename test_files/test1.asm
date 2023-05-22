@@ -1,3 +1,3 @@
 bits 64
 
-mov [dword 0x74], esi
+add [r14], dword 0x7474

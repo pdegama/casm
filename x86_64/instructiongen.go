@@ -28,30 +28,16 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			}
 			instBinCode = append(instBinCode, modrmByte...)
 
-		case modRM0:
+		case modRM0, modRM1, modRM2, modRM3, modRM4, modRM5, modRM6, modRM7:
 
 			// add modrm reg field 0
-			modrmByte, err := addModRMfixRegField(&opcode, &inst, 0, bitMode, &instPrefix)
+			modrmByte, err := addModRMfixRegField(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
 				return err
 			}
 			instBinCode = append(instBinCode, modrmByte...)
 
-		case modRM1:
-			return fmt.Errorf("todo modRM1") // todo
-		case modRM2:
-			return fmt.Errorf("todo modRM2") // todo
-		case modRM3:
-			return fmt.Errorf("todo modRM3") // todo
-		case modRM4:
-			return fmt.Errorf("todo modRM4") // todo
-		case modRM5:
-			return fmt.Errorf("todo modRM5") // todo
-		case modRM6:
-			return fmt.Errorf("todo modRM6") // todo
-		case modRM7:
-			return fmt.Errorf("todo modRM7") // todo
 		case plusRB:
 			return fmt.Errorf("todo plusRB") // todo
 		case plusRW:
