@@ -90,6 +90,8 @@ const (
 	//
 )
 
+const _ = noneReg
+
 var registers []register = []register{
 
 	// 64 bit registers

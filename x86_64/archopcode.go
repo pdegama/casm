@@ -57,3 +57,5 @@ const (
 
 	//
 )
+
+const _ = noneOpcode
