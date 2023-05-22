@@ -1,3 +1,3 @@
 bits 64
 
-add rdx, [esp + 0x1]
+mov [dword 0x74], esi
