@@ -38,44 +38,22 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			}
 			instBinCode = append(instBinCode, modrmByte...)
 
-		case plusRB:
-			return fmt.Errorf("todo plusRB") // todo
-		case plusRW:
-			return fmt.Errorf("todo plusRW") // todo
-		case plusRD:
-			return fmt.Errorf("todo plusRD") // todo
-		case plusRO:
-			return fmt.Errorf("todo plusRO") // todo
-		case valIB:
+		case plusRB, plusRW, plusRD, plusRO:
 
-			immBytes, err := addImmIB(&opcode, &inst, imm8, bitMode, &instPrefix)
+			// add plus byte
+
+			plusByte, err := plusRbyte(&opcode, &inst, bitMode, &instPrefix)
 			if err != nil {
-				// if error then return error
 				return err
 			}
-			instBinCode = append(instBinCode, immBytes...)
 
-		case valIW:
+			instBinCode[len(instBinCode)-1] = instBinCode[len(instBinCode)-1] + plusByte
 
-			immBytes, err := addImmIB(&opcode, &inst, imm16, bitMode, &instPrefix)
-			if err != nil {
-				// if error then return error
-				return err
-			}
-			instBinCode = append(instBinCode, immBytes...)
+		case valIB, valIW, valID, valIO:
 
-		case valID:
+			// imm bytes
 
-			immBytes, err := addImmIB(&opcode, &inst, imm32, bitMode, &instPrefix)
-			if err != nil {
-				// if error then return error
-				return err
-			}
-			instBinCode = append(instBinCode, immBytes...)
-
-		case valIO:
-
-			immBytes, err := addImmIB(&opcode, &inst, imm64, bitMode, &instPrefix)
+			immBytes, err := addImmIB(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
 				return err
@@ -109,4 +87,50 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 	}
 
 	return nil
+}
+
+// plus +r* byte
+func plusRbyte(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) (uint8, error) {
+
+	var regPos int // reg pos
+
+	// loop off opcode operands
+	for operPos, oper := range opcode.operands {
+		if isRegOperand(oper.t) {
+			/*
+				if operans is register then
+				set regPos is operPos
+			*/
+			regPos = operPos
+		}
+	}
+
+	regOper := inst.operands[regPos] // register operand
+
+	// register info
+	regInfo, err := registerInfo(int(regOper.v))
+	if err != nil {
+		return 0, err
+	}
+
+	// check is valid or not
+	err = registerIsValid(regInfo, bitMode)
+	if err != nil {
+		return 0, err
+	}
+
+	// check operand override prefix
+	err = checkOperandOverride(&regOper, bitMode, pf)
+	if err != nil {
+		return 0, err
+	}
+
+	err = checkREXbPrexif(&regOper, bitMode, pf)
+	if err != nil {
+		return 0, err
+	}
+
+	// plus byte is register base offset
+	return uint8(regInfo.baseOffset), nil
+
 }

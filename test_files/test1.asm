@@ -1,3 +1,3 @@
 bits 64
 
-add [r14], dword 0x7474
+mov bx, 0x74747474747

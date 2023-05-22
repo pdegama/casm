@@ -8,7 +8,20 @@ package x86_64
 import "fmt"
 
 // add imm byte
-func addImmIB(opcode *archOpcode, inst *instruction, immType operandType, bitMode int, pf *prefix) ([]uint8, error) {
+func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, error) {
+
+	var immType operandType // imm type
+
+	switch immOperType {
+	case valIB:
+		immType = imm8
+	case valIW:
+		immType = imm16
+	case valID:
+		immType = imm32
+	case valIO:
+		immType = imm64
+	}
 
 	var immOperand *operand // imm operand
 
