@@ -79,6 +79,12 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		}
 	}
 
+	// check register operands
+	err := checkRegisterOperand(&opcode, &inst, bitMode, &instPrefix)
+	if err != nil {
+		return err
+	}
+
 	prefixByte := genPrefix(&instPrefix)
 	instBinCode = append(prefixByte, instBinCode...)
 
@@ -125,6 +131,7 @@ func plusRbyte(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) (
 		return 0, err
 	}
 
+	// check rex.b prefix
 	err = checkREXbPrexif(&regOper, bitMode, pf)
 	if err != nil {
 		return 0, err
@@ -132,5 +139,59 @@ func plusRbyte(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) (
 
 	// plus byte is register base offset
 	return uint8(regInfo.baseOffset), nil
+
+}
+
+// check register operand...
+func checkRegisterOperand(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) error {
+
+	r := 0 // register operand count
+	m := 0 // memory operand count
+
+	for _, oper := range opcode.operands {
+		// loop of opcode operands
+
+		if isRegOperand(oper.t) {
+			r++ // if operand is register oper
+		}
+
+		if isMemOperand(oper.t) {
+			m++ // if operand is memory oper
+		}
+	}
+
+	if r != 0 {
+
+		// register is not zero in this opcode
+
+		for operIndex, oper := range opcode.operands {
+			// loop of opcode operands
+
+			if isRegOperand(oper.t) {
+				// if operand is register
+
+				regOperand := inst.operands[operIndex] // register operand
+
+				// check operand override prefix
+				err := checkOperandOverride(&regOperand, bitMode, pf)
+				if err != nil {
+					return err
+				}
+
+				if m == 0 {
+					// if no memory operand
+					err := checkREXbPrexif(&regOperand, bitMode, pf)
+					if err != nil {
+						return err
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	return nil
 
 }

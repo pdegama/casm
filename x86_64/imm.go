@@ -38,7 +38,7 @@ func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode in
 
 	if immOperand.l {
 		// todo: lable is not support
-		return nil, fmt.Errorf("imm8 label not support")
+		return nil, fmt.Errorf("%v label not support", immType)
 	}
 
 	// check override prefix

@@ -1,3 +1,3 @@
 %bits 64
 
-mov bx, 0x74747474747
+mov r14,  qword 0x7474747747
