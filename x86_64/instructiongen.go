@@ -20,35 +20,23 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		switch i {
 		case modRM:
 
-			// add modrm
-			if len(inst.operands) == 2 {
-				// if two operand
-				modrmByte, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
-				if err != nil {
-					// if error then return error
-					return err
-				}
-				instBinCode = append(instBinCode, modrmByte...)
-			} else {
-				// not two operand
-				return fmt.Errorf("todo: modrm 3 operand")
+			// add modrm bytes
+			modrmByte, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return err
 			}
+			instBinCode = append(instBinCode, modrmByte...)
 
 		case modRM0:
 
 			// add modrm reg field 0
-			if len(inst.operands) == 2 {
-				// if two operand
-				modrmByte, err := addModRMfixRegField(&opcode, &inst, 0, bitMode, &instPrefix)
-				if err != nil {
-					// if error then return error
-					return err
-				}
-				instBinCode = append(instBinCode, modrmByte...)
-			} else {
-				// not two operand
-				return fmt.Errorf("todo: modrm 3 operand")
+			modrmByte, err := addModRMfixRegField(&opcode, &inst, 0, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return err
 			}
+			instBinCode = append(instBinCode, modrmByte...)
 
 		case modRM1:
 			return fmt.Errorf("todo modRM1") // todo
@@ -73,13 +61,41 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		case plusRO:
 			return fmt.Errorf("todo plusRO") // todo
 		case valIB:
-			return fmt.Errorf("todo valIB") // todo
+
+			immBytes, err := addImmIB(&opcode, &inst, imm8, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return err
+			}
+			instBinCode = append(instBinCode, immBytes...)
+
 		case valIW:
-			return fmt.Errorf("todo valIW") // todo
+
+			immBytes, err := addImmIB(&opcode, &inst, imm16, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return err
+			}
+			instBinCode = append(instBinCode, immBytes...)
+
 		case valID:
-			return fmt.Errorf("todo valID") // todo
+
+			immBytes, err := addImmIB(&opcode, &inst, imm32, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return err
+			}
+			instBinCode = append(instBinCode, immBytes...)
+
 		case valIO:
-			return fmt.Errorf("todo valIO") // todo
+
+			immBytes, err := addImmIB(&opcode, &inst, imm64, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return err
+			}
+			instBinCode = append(instBinCode, immBytes...)
+
 		case valCB:
 			return fmt.Errorf("todo valCB") // todo
 		case valCW:
