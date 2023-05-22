@@ -35,7 +35,21 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			}
 
 		case modRM0:
-			return fmt.Errorf("todo modRM0") // todo
+
+			// add modrm reg field 0
+			if len(inst.operands) == 2 {
+				// if two operand
+				modrmByte, err := addModRMfixRegField(&opcode, &inst, 0, bitMode, &instPrefix)
+				if err != nil {
+					// if error then return error
+					return err
+				}
+				instBinCode = append(instBinCode, modrmByte...)
+			} else {
+				// not two operand
+				return fmt.Errorf("todo: modrm 3 operand")
+			}
+
 		case modRM1:
 			return fmt.Errorf("todo modRM1") // todo
 		case modRM2:

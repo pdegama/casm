@@ -126,14 +126,14 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 				// if bitmode
 				if regInfo.bitSize == 16 {
 					if modrmMemField == 6 {
-						/* 
+						/*
 							if modrmMemField reg is 6
-							but 6 is disp16 field in 
+							but 6 is disp16 field in
 							single mem operand then pass
 							to three mem operand
-						 */
+						*/
 
-						return threeMemOperModRM(
+						return threeMemOperModRMrm(
 							[]operand{
 								memOper,
 								{t: operPrePlus, v: 0, m: nil, l: false},
@@ -147,12 +147,12 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 				} else if regInfo.bitSize == 32 || regInfo.bitSize == 64 {
 					if modrmMemField == 5 {
 
-						/* 
+						/*
 							if modrmMemField reg is 5
 							but 5 is disp32 field ...
-						 */
+						*/
 
-						return threeMemOperModRM(
+						return threeMemOperModRMrm(
 							[]operand{
 								memOper,
 								{t: operPrePlus, v: 0, m: nil, l: false},
@@ -164,10 +164,10 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 						)
 					} else if modrmMemField == 4 {
 
-						/* 
+						/*
 							if modrmMemField reg is 4
 							but 4 is SIB field ...
-						 */
+						*/
 
 						// 4 field is SIB field
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
@@ -349,7 +349,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 		case 3:
 
-			modrmBytes, err := threeMemOperModRM(rmOper.m, regField, bitMode, pf)
+			modrmBytes, err := threeMemOperModRMrm(rmOper.m, regField, bitMode, pf)
 			if err != nil {
 				return nil, err
 			}
@@ -396,7 +396,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 }
 
 // 3 mem operand modrm
-func threeMemOperModRM(opers []operand, regField int, bitMode int, pf *prefix) ([]uint8, error) {
+func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix) ([]uint8, error) {
 
 	modrmBytes := []uint8{} // modrm bytes
 
@@ -524,7 +524,7 @@ func threeMemOperModRM(opers []operand, regField int, bitMode int, pf *prefix) (
 			sib := 00<<6 | 100<<3 | modrmMemField<<0
 
 			modrmBytes = append(modrmBytes, uint8(sib))
-			
+
 		}
 	}
 
@@ -532,6 +532,25 @@ func threeMemOperModRM(opers []operand, regField int, bitMode int, pf *prefix) (
 
 	return modrmBytes, nil
 
+}
+
+// add modrm byte fix reg field
+func addModRMfixRegField(opcode *archOpcode, inst *instruction, regField int, bitMode int, pf *prefix) ([]uint8, error) {
+
+	var modRMrmOper *operand // r/m operand
+
+	// loop of arch operands
+	for aOperIndex, aOper := range opcode.operands {
+		if isMemOperand(aOper.t) {
+			/*
+				if arch operand is memory operand then
+				assign inst operand to modRMrmOper
+			*/
+			modRMrmOper = &inst.operands[aOperIndex]
+		}
+	}
+
+	return calcModRM(modRMrmOper, regField, bitMode, pf)
 }
 
 // modrm reg field
