@@ -44,7 +44,7 @@ func parseLine(line asmLine) (asmLine, error) {
 
 		if line.tokens[0].tokenType == tokenUnknow {
 			switch line.tokens[0].token {
-			case "db", "dw", "dd", "dq": // if token is d* then line is token
+			case "db", "dw", "dd", "dq", "str": // if token is d* then line is token
 				line.lineType = lineData
 				return line, nil
 			}

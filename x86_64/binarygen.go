@@ -62,6 +62,13 @@ func (s *binaryGen) gen() []error {
 					s.binCode = append(s.binCode, instByteCode...)
 				}
 
+			case lineData:
+				_, err := dataBytes(line)
+				if err != nil {
+					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
+					errs = append(errs, tErr)
+				}
+
 			case lineModulo:
 
 				// if line is modulo

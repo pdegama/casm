@@ -19,7 +19,7 @@ $start:
   mov rdi, qword 0xfffff0      ;   STDOUT_FILENO,
 
   mov rdi, 90
-
+  
   mov rcx, rdx
 
   ;mov al, cx
@@ -42,8 +42,10 @@ $startto:
  ; add [rcx], $qwe ; label shorting
 
   $msg:
-    db "I ❤️  Computers!", 10
+    str "I ❤️  Computers!"
+    dw 10 0x15265
   $myname: 
-    db "Parth Degama", 10
+    str "Parth Degama"
+    dq 10, 20
   msglen: 
-    db 0x17
+    dq 0x12345
