@@ -14,13 +14,13 @@ type instruction struct {
 }
 
 // instruction gen
-func instructionGen(line asmLine, bitMode int) error {
+func instructionGen(line asmLine, bitMode int) ([]uint8, error) {
 
 	// parse instruction from tokens
 	inst, err := parseInst(line.tokens)
 	if err != nil {
 		// inst parse err
-		return err
+		return nil, err
 	}
 
 	fmt.Println()
@@ -30,18 +30,20 @@ func instructionGen(line asmLine, bitMode int) error {
 	validInstOpcde := findArchOpcode(&inst, bitMode) // find valid opcode(s)
 	if len(validInstOpcde) == 0 {
 		// if opcode len is zero then return error
-		return fmt.Errorf("invalid instruction")
+		return nil, fmt.Errorf("invalid instruction")
 	}
-	
+
+	var instBinCode []uint8
+
 	// print valid inst - tmp
 	for _, opcode := range validInstOpcde {
-		err := genInsrtuction(opcode, inst, bitMode)
+		instBinCode, err = genInsrtuction(opcode, inst, bitMode)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		break
 	}
 	fmt.Println()
 
-	return nil
+	return instBinCode, nil
 }

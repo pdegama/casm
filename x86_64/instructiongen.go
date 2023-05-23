@@ -8,7 +8,7 @@ package x86_64
 import "fmt"
 
 // generation instruction
-func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
+func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) ([]uint8, error) {
 
 	instBinCode := []uint8{}
 	instPrefix := prefix{}
@@ -24,7 +24,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			modrmByte, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
-				return err
+				return nil, err
 			}
 			instBinCode = append(instBinCode, modrmByte...)
 
@@ -34,7 +34,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			modrmByte, err := addModRMfixRegField(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
-				return err
+				return nil, err
 			}
 			instBinCode = append(instBinCode, modrmByte...)
 
@@ -44,7 +44,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 
 			plusByte, err := plusRbyte(&opcode, &inst, bitMode, &instPrefix)
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			instBinCode[len(instBinCode)-1] = instBinCode[len(instBinCode)-1] + plusByte
@@ -56,24 +56,24 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 			immBytes, err := addImmIB(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
-				return err
+				return nil, err
 			}
 			instBinCode = append(instBinCode, immBytes...)
 
 		case valCB:
-			return fmt.Errorf("todo valCB") // todo
+			return nil, fmt.Errorf("todo valCB") // todo
 		case valCW:
-			return fmt.Errorf("todo valCW") // todo
+			return nil, fmt.Errorf("todo valCW") // todo
 		case valCD:
-			return fmt.Errorf("todo valCD") // todo
+			return nil, fmt.Errorf("todo valCD") // todo
 		case valCP:
-			return fmt.Errorf("todo valCP") // todo
+			return nil, fmt.Errorf("todo valCP") // todo
 		case valCO:
-			return fmt.Errorf("todo valCO") // todo
+			return nil, fmt.Errorf("todo valCO") // todo
 		case valCT:
-			return fmt.Errorf("todo valCT") // todo
+			return nil, fmt.Errorf("todo valCT") // todo
 		case np:
-			return fmt.Errorf("todo np") // todo
+			return nil, fmt.Errorf("todo np") // todo
 		default:
 			instBinCode = append(instBinCode, uint8(i))
 		}
@@ -82,7 +82,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 	// check register operands
 	err := checkRegisterOperand(&opcode, &inst, bitMode, &instPrefix)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	prefixByte := genPrefix(&instPrefix)
@@ -92,7 +92,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) error {
 		fmt.Printf("%x ", b)
 	}
 
-	return nil
+	return instBinCode, nil
 }
 
 // plus +r* byte

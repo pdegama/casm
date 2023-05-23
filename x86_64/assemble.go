@@ -45,6 +45,11 @@ func assemble(arch *x86_64) {
 		return
 	}
 
+	elfGen := elf{}
+	elfGen.buildELF(&binGen)
+	elfGen.saveBinFile()
+
+
 	// tmp
 	/* for _, line := range lines {
 		fmt.Println(line)
