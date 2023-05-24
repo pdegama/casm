@@ -504,3 +504,24 @@ func parseModulo(line asmLine, b *binaryGen) error {
 
 	return nil
 }
+
+// parse label line
+func parseLabel(line asmLine) (bytesStructure, error) {
+
+	if line.lineType != lineLabel {
+		// if line is not label
+		return bytesStructure{}, fmt.Errorf("this is not label")
+	}
+
+	labelName := line.tokens[0].token // label name
+
+	return bytesStructure{
+		pos:    0,
+		label:  true,
+		name:   labelName,
+		bytes:  nil,
+		len:    0,
+		labels: []label{},
+	}, nil
+
+}

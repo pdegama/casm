@@ -70,31 +70,46 @@ func (s *binaryGen) gen() []error {
 			switch line.lineType {
 			case lineInst:
 
-				// if line type is insrtuction
+				// if line is insrtuction
 				instBytes, err := instructionGen(line, s.bitMode) // gen code for instruction
 				if err != nil {
 					// if error
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				} else {
+					// if not error then append to bytes struct
 					s.bytesStruct = append(s.bytesStruct, instBytes)
+				}
+
+			case lineLabel:
+
+				// if line is label line
+
+				labelStruct, err := parseLabel(line) // parse label
+				if err != nil {                      // if error
+					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
+					errs = append(errs, tErr)
+				} else {
+					// if not error then append to bytes struct
+					s.bytesStruct = append(s.bytesStruct, labelStruct)
 				}
 
 			case lineData:
 
-				// if line type is data line
-				dataBytes, err := dataBytes(line)
-				if err != nil {
+				// if line is data line
+				dataBytes, err := dataBytes(line) // get data byte
+				if err != nil {                   // if error
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				} else {
+					// if not error then append to bytes struct
 					s.bytesStruct = append(s.bytesStruct, dataBytes)
 				}
 
 			case lineModulo:
 
 				// if line is modulo
-				err := parseModulo(line, s)
+				err := parseModulo(line, s) // parse modulo
 				if err != nil {
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
