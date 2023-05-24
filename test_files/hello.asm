@@ -47,7 +47,7 @@ $startto:
   mov [$msg], rdx
   mov [rdx + $myname], rdx
 
-  mov [rsi + $myname], $msg
+  mov [rsi + $myname], word $msg
   mov [r14 + $myname], $msg
 
   $msg:

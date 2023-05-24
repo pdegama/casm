@@ -19,7 +19,7 @@ type binaryGen struct {
 
 // bytes structure
 type bytesStructure struct {
-	pos    int     // postion
+	pos    uint    // postion
 	label  bool    // is lable
 	name   string  // if label then name
 	bytes  []uint8 // bytes
@@ -40,12 +40,13 @@ func (s *binaryGen) setBitMode(bitMode int) {
 // set position
 func (s *binaryGen) setPos() {
 
-	cPos := 0 // current pos
+	var cPos uint // current pos
+	cPos = 0
 
 	// loop of bytes structure
 	for bsIndex, bs := range s.bytesStruct {
 		s.bytesStruct[bsIndex].pos = cPos // set curren position
-		cPos += bs.len                    // byte len add to current position
+		cPos += uint(bs.len)              // byte len add to current position
 	}
 
 }
