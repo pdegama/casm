@@ -25,22 +25,24 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 		case modRM:
 
 			// add modrm bytes
-			modrmByte, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
+			modrmByte, modrmLabels, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
 				return instBytesStruct, err
 			}
 			instBytes = append(instBytes, modrmByte...)
+			instLabels = append(instLabels, modrmLabels...)
 
 		case modRM0, modRM1, modRM2, modRM3, modRM4, modRM5, modRM6, modRM7:
 
 			// add modrm reg field 0
-			modrmByte, err := addModRMfixRegField(&opcode, &inst, i, bitMode, &instPrefix)
+			modrmByte, modrmLabels, err := addModRMfixRegField(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
 				return instBytesStruct, err
 			}
 			instBytes = append(instBytes, modrmByte...)
+			instLabels = append(instLabels, modrmLabels...)
 
 		case plusRB, plusRW, plusRD, plusRO:
 

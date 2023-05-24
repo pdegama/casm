@@ -191,7 +191,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 				if memOper.l {
 					// if this is label then todo error
-					return nil, fmt.Errorf("todo: modrm label disp mem opernad not support")
+					return nil, labels, fmt.Errorf("todo: modrm label disp mem opernad not support")
 				}
 
 				switch memOper.t {
