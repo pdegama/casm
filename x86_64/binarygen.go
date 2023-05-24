@@ -11,10 +11,16 @@ import (
 
 // binary gen structure
 type binaryGen struct {
-	lines   []asmLine          // asm lines
-	bitMode int                // bit mode 16, 32 or 64
-	insts   []instructionBytes // insts
-	bianry  []uint8            // binary
+	lines   []asmLine        // asm lines
+	bitMode int              // bit mode 16, 32 or 64
+	insts   []bytesStructure // bytes
+	bianry  []uint8          // binary
+}
+
+// bytes structure
+type bytesStructure struct {
+	bytes []uint8 // instraction bytes
+	len   int     // instraction length
 }
 
 // set asm lines
@@ -28,7 +34,7 @@ func (s *binaryGen) setBitMode(bitMode int) {
 }
 
 // get insts
-func (s *binaryGen) getInstBytes() []instructionBytes {
+func (s *binaryGen) getInstBytes() []bytesStructure {
 	return s.insts
 }
 
@@ -42,7 +48,7 @@ func (s *binaryGen) genBinary() {
 		// loop of inst bytes
 		// append inst bytes to array
 		s.bianry = append(s.bianry, instBytes.bytes...)
-	
+
 	}
 
 }

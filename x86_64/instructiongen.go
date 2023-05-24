@@ -7,19 +7,13 @@ package x86_64
 
 import "fmt"
 
-// instruction gen
-type instructionBytes struct {
-	bytes []uint8 // instraction bytes
-	len   int     // instraction length
-}
-
 // generation instruction
-func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (instructionBytes, error) {
+func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStructure, error) {
 
 	instBytes := []uint8{} // inst bytes
 	instPrefix := prefix{} // inst prefix
 
-	instBytesStruct := instructionBytes{} // inst bytes struct
+	instBytesStruct := bytesStructure{} // inst bytes struct
 
 	fmt.Println(inst)
 	fmt.Println(opcode)
@@ -101,6 +95,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (instructi
 	}
 
 	instBytesStruct.bytes = instBytes
+	instBytesStruct.len = len(instBytes)
 
 	return instBytesStruct, nil
 }
