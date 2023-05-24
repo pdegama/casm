@@ -15,6 +15,8 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 
 	instBytesStruct := bytesStructure{} // inst bytes struct
 
+	instLabels := []label{} // inst labels
+
 	fmt.Println(inst)
 	fmt.Println(opcode)
 
@@ -55,12 +57,13 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 
 			// imm bytes
 
-			immBytes, err := addImmIB(&opcode, &inst, i, bitMode, &instPrefix)
+			immBytes, immLabels, err := addImmIB(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
 				return instBytesStruct, err
 			}
 			instBytes = append(instBytes, immBytes...)
+			instLabels = append(instLabels, immLabels...)
 
 		case valCB:
 			return instBytesStruct, fmt.Errorf("todo valCB") // todo
@@ -96,6 +99,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 
 	instBytesStruct.bytes = instBytes
 	instBytesStruct.len = len(instBytes)
+	instBytesStruct.labels = instLabels
 
 	return instBytesStruct, nil
 }

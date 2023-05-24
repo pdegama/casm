@@ -4,11 +4,11 @@ $start:
   mov rax, 1        ; write(
   add rax, 0x2323121121        ; write(
   mov rdi, 0xffffff        ;   STDOUT_FILENO,
- ; mov rsi, $msg      ;   "Hello, world!\n",
- ; mov rdx, $msglen   ;   sizeof("Hello, world!\n")
+  mov rsi, $msg      ;   "Hello, world!\n",
   syscall           ; );
 
     mov rdx, 0xffffff        ;   STDOUT_FILENO,
+  add rdx, $qwe ; label shorting
 
   hello:
 
@@ -16,6 +16,8 @@ $start:
   mov rdi, 0x2          ;   EXIT_SUCCESS
   syscall           ; );
 
+  mov rdx, $msglen   ;   sizeof("Hello, world!\n")
+  
   mov rdi, qword 0xfffff0      ;   STDOUT_FILENO,
 
   mov rdi, 90
@@ -39,7 +41,7 @@ $startto:
   add rdx, 0x121231212
 
   add [rcx], 0x121231231
- ; add [rcx], $qwe ; label shorting
+  add [rcx], $qwe ; label shorting
 
   $msg:
     str "I ❤️  Computers!"

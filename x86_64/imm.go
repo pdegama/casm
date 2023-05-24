@@ -5,10 +5,8 @@
 
 package x86_64
 
-import "fmt"
-
 // add imm byte
-func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, error) {
+func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
 	var immType operandType // imm type
 
@@ -36,15 +34,10 @@ func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode in
 		}
 	}
 
-	if immOperand.l {
-		// todo: lable is not support
-		return nil, fmt.Errorf("%v label not support", immType)
-	}
-
 	// check override prefix
 	err := checkOperandOverride(&operand{t: immType}, bitMode, pf)
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
 	var leBytes []uint8 // le imm bytes
@@ -73,5 +66,22 @@ func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode in
 		leBytes = uint64le(uint64(immOperand.v))
 	}
 
-	return leBytes, nil
+	labels := []label{}
+
+	if immOperand.l {
+		// if token is lable
+
+		l := label{
+			labelPos:  0,
+			labelName: immOperand.n,
+			labelType: immType,
+			value:     0,
+			disp:      false,
+		}
+
+		labels = append(labels, l) // append to label
+
+	}
+
+	return leBytes, labels, nil
 }
