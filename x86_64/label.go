@@ -17,7 +17,7 @@ type label struct {
 }
 
 // set label
-func (b *binaryGen) setLabel() {
+func (b *binaryGen) setLabel(offset uint) {
 
 	errs := []error{}
 	_ = errs
@@ -35,6 +35,8 @@ func (b *binaryGen) setLabel() {
 				continue
 			}
 
+			lPos = lPos + offset
+
 			switch l.labelType {
 			case imm8:
 				// label type is imm8
@@ -49,6 +51,7 @@ func (b *binaryGen) setLabel() {
 
 				leBytes := uint16le(uint16(lPos))
 				for i, v := range leBytes {
+					fmt.Println(imm32, l.labelPos+i, v, l)
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
 				}
 

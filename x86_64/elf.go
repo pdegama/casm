@@ -25,7 +25,7 @@ const (
 func (e *elf) buildELF(b *binaryGen) {
 
 	b.setPos()
-	b.setLabel()
+	b.setLabel(0x400000 + 0x40 + (2 * 0x38))
 	b.genBinary()
 	bin := b.getbinary()
 
