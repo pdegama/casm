@@ -14,7 +14,7 @@ import (
 )
 
 // data parse
-func dataBytes(line asmLine) ([]uint8, error) {
+func dataBytes(line asmLine) (bytesStructure, error) {
 
 	dataType := line.tokens[0]
 
@@ -36,7 +36,7 @@ func dataBytes(line asmLine) ([]uint8, error) {
 					dataBytes = append(dataBytes, b...)
 				} else {
 					// if not str then return err
-					return nil, fmt.Errorf("this is string is not support in %v this data type", dataType.token)
+					return bytesStructure{}, fmt.Errorf("this is string is not support in %v this data type", dataType.token)
 				}
 
 			} else {
@@ -69,7 +69,7 @@ func dataBytes(line asmLine) ([]uint8, error) {
 					tokenHex, err := hex.DecodeString(hexString)
 					if err != nil {
 						// if err not nil then hex is not valid
-						return nil ,fmt.Errorf("hex not valid")
+						return bytesStructure{}, fmt.Errorf("hex not valid")
 					}
 
 					tokenVal := big.NewInt(0).SetBytes(tokenHex).Uint64() // hex to int
@@ -102,7 +102,14 @@ func dataBytes(line asmLine) ([]uint8, error) {
 	}
 	fmt.Println()
 
-	return dataBytes, nil
+	return bytesStructure{
+		pos:    0,
+		label:  false,
+		name:   "",
+		bytes:  dataBytes,
+		len:    len(dataBytes),
+		labels: []label{},
+	}, nil
 
 }
 

@@ -11,16 +11,19 @@ import (
 
 // binary gen structure
 type binaryGen struct {
-	lines   []asmLine        // asm lines
-	bitMode int              // bit mode 16, 32 or 64
-	insts   []bytesStructure // bytes
-	bianry  []uint8          // binary
+	lines       []asmLine        // asm lines
+	bitMode     int              // bit mode 16, 32 or 64
+	bytesStruct []bytesStructure // bytes
+	bianry      []uint8          // binary
 }
 
 // bytes structure
 type bytesStructure struct {
-	bytes  []uint8 // instraction bytes
-	len    int     // instraction length
+	pos    int     // postion
+	label  bool    // is lable
+	name   string  // if label then name
+	bytes  []uint8 // bytes
+	len    int     // bytes length
 	labels []label // label
 }
 
@@ -35,18 +38,13 @@ func (s *binaryGen) setBitMode(bitMode int) {
 }
 
 // get insts
-func (s *binaryGen) getInstBytes() []bytesStructure {
-	return s.insts
-}
-
-// get insts
 func (s *binaryGen) genBinary() {
 
 	s.bianry = []uint8{} // clear binary
 
-	for _, instBytes := range s.insts {
+	for _, instBytes := range s.bytesStruct {
+		// loop of bytes structure
 
-		// loop of inst bytes
 		// append inst bytes to array
 		s.bianry = append(s.bianry, instBytes.bytes...)
 
@@ -73,20 +71,24 @@ func (s *binaryGen) gen() []error {
 			case lineInst:
 
 				// if line type is insrtuction
-				instByteCode, err := instructionGen(line, s.bitMode) // gen code for instruction
+				instBytes, err := instructionGen(line, s.bitMode) // gen code for instruction
 				if err != nil {
 					// if error
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				} else {
-					s.insts = append(s.insts, instByteCode)
+					s.bytesStruct = append(s.bytesStruct, instBytes)
 				}
 
 			case lineData:
-				_, err := dataBytes(line)
+
+				// if line type is data line
+				dataBytes, err := dataBytes(line)
 				if err != nil {
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
+				} else {
+					s.bytesStruct = append(s.bytesStruct, dataBytes)
 				}
 
 			case lineModulo:
