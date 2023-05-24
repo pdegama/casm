@@ -30,8 +30,9 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 				// if error then return error
 				return instBytesStruct, err
 			}
-			instBytes = append(instBytes, modrmByte...)
-			instLabels = append(instLabels, modrmLabels...)
+			addCurrentPosLabel(&modrmLabels, len(instBytes)) // set label pos
+			instBytes = append(instBytes, modrmByte...)      // append inst bytes
+			instLabels = append(instLabels, modrmLabels...)  // append labels
 
 		case modRM0, modRM1, modRM2, modRM3, modRM4, modRM5, modRM6, modRM7:
 
@@ -41,8 +42,10 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 				// if error then return error
 				return instBytesStruct, err
 			}
-			instBytes = append(instBytes, modrmByte...)
-			instLabels = append(instLabels, modrmLabels...)
+
+			addCurrentPosLabel(&modrmLabels, len(instBytes)) // set label pos
+			instBytes = append(instBytes, modrmByte...)      // append inst bytes
+			instLabels = append(instLabels, modrmLabels...)  // append labels
 
 		case plusRB, plusRW, plusRD, plusRO:
 
@@ -64,8 +67,10 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 				// if error then return error
 				return instBytesStruct, err
 			}
-			instBytes = append(instBytes, immBytes...)
-			instLabels = append(instLabels, immLabels...)
+
+			addCurrentPosLabel(&immLabels, len(instBytes)) // set label pos
+			instBytes = append(instBytes, immBytes...)     // append inst bytes
+			instLabels = append(instLabels, immLabels...)  // append labels
 
 		case valCB:
 			return instBytesStruct, fmt.Errorf("todo valCB") // todo
@@ -92,8 +97,10 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 		return instBytesStruct, err
 	}
 
-	prefixByte := genPrefix(&instPrefix)
-	instBytes = append(prefixByte, instBytes...)
+	prefixByte := genPrefix(&instPrefix)         // prefix bytes
+	instBytes = append(prefixByte, instBytes...) // append prefix
+
+	addPosLabel(&instLabels, len(prefixByte)) // add prefix length in label pos
 
 	for _, b := range instBytes {
 		fmt.Printf("%x ", b)
@@ -204,5 +211,27 @@ func checkRegisterOperand(opcode *archOpcode, inst *instruction, bitMode int, pf
 	}
 
 	return nil
+
+}
+
+// add currennt pos in label
+func addCurrentPosLabel(labels *[]label, cp int) {
+
+	// loop of labels
+	for i, _ := range *labels {
+		// add current position in label
+		(*labels)[i].labelPos = (*labels)[i].labelPos + cp
+	}
+
+}
+
+// add pos in label
+func addPosLabel(labels *[]label, cp int) {
+
+	// loop of labels
+	for i, _ := range *labels {
+		// add current position in label
+		(*labels)[i].labelPos = (*labels)[i].labelPos + cp
+	}
 
 }

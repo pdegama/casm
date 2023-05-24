@@ -47,6 +47,9 @@ $startto:
   mov [$msg], rdx
   mov [rdx + $myname], rdx
 
+  mov [rsi + $myname], $msg
+  mov [r14 + $myname], $msg
+
   $msg:
     str "I ❤️  Computers!"
     dw 10 0x15265
