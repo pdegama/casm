@@ -19,8 +19,9 @@ type binaryGen struct {
 
 // bytes structure
 type bytesStructure struct {
-	bytes []uint8 // instraction bytes
-	len   int     // instraction length
+	bytes  []uint8 // instraction bytes
+	len    int     // instraction length
+	labels []label // label
 }
 
 // set asm lines
