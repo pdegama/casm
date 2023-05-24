@@ -24,6 +24,7 @@ const (
 // build elf
 func (e *elf) buildELF(b *binaryGen) {
 
+	b.setPos()
 	b.setLabel()
 	b.genBinary()
 	bin := b.getbinary()

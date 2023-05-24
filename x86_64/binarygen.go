@@ -37,6 +37,19 @@ func (s *binaryGen) setBitMode(bitMode int) {
 	s.bitMode = bitMode // assign bit mode  to structure
 }
 
+// set position
+func (s *binaryGen) setPos() {
+
+	cPos := 0 // current pos
+
+	// loop of bytes structure
+	for bsIndex, bs := range s.bytesStruct {
+		s.bytesStruct[bsIndex].pos = cPos // set curren position
+		cPos += bs.len                    // byte len add to current position
+	}
+
+}
+
 // get insts
 func (s *binaryGen) genBinary() {
 
