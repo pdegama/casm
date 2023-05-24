@@ -318,6 +318,7 @@ func parseOperand(tokens []token) (operand, error) {
 				v: 0x00,
 				m: nil,
 				l: true,
+				n: tok.token,
 			})
 
 		}

@@ -7,4 +7,6 @@ package x86_64
 
 // label struct
 type label struct {
+	labelPos  int         // position of label value
+	labelType operandType // valuse operand type imm*
 }
