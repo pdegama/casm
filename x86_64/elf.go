@@ -24,7 +24,8 @@ const (
 // build elf
 func (e *elf) buildELF(b *binaryGen) {
 
-	bin := b.getBin()
+	b.genBinary()
+	bin := b.getbinary()
 
 	textSize := uint64(len(bin))
 	// Size of ELF header + 2 * size program header?

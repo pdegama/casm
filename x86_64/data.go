@@ -100,6 +100,7 @@ func dataBytes(line asmLine) ([]uint8, error) {
 	for _, b := range dataBytes {
 		fmt.Printf("%x ", b)
 	}
+	fmt.Println()
 
 	return dataBytes, nil
 

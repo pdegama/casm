@@ -7,14 +7,14 @@ package x86_64
 
 import (
 	"fmt"
-	"os"
 )
 
 // binary gen structure
 type binaryGen struct {
-	lines   []asmLine // asm lines
-	bitMode int       // bit mode 16, 32 or 64
-	binCode []uint8   // bin code
+	lines   []asmLine          // asm lines
+	bitMode int                // bit mode 16, 32 or 64
+	insts   []instructionBytes // insts
+	bianry  []uint8            // binary
 }
 
 // set asm lines
@@ -27,17 +27,30 @@ func (s *binaryGen) setBitMode(bitMode int) {
 	s.bitMode = bitMode // assign bit mode  to structure
 }
 
-func (s *binaryGen) saveBinFile() {
-	err := os.WriteFile("./a.out", s.binCode, 0777)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("save...")
+// get insts
+func (s *binaryGen) getInstBytes() []instructionBytes {
+	return s.insts
 }
 
-// get binary
-func (s *binaryGen) getBin() []uint8 {
-	return s.binCode
+// get insts
+func (s *binaryGen) genBinary() {
+
+	s.bianry = []uint8{} // clear binary
+
+	for _, instBytes := range s.insts {
+
+		// loop of inst bytes
+		// append inst bytes to array
+		s.bianry = append(s.bianry, instBytes.bytes...)
+	
+	}
+
+}
+
+// get row binary
+func (s *binaryGen) getbinary() []uint8 {
+	// return binary
+	return s.bianry
 }
 
 // binary generation
@@ -59,7 +72,7 @@ func (s *binaryGen) gen() []error {
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				} else {
-					s.binCode = append(s.binCode, instByteCode...)
+					s.insts = append(s.insts, instByteCode)
 				}
 
 			case lineData:

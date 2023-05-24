@@ -7,11 +7,19 @@ package x86_64
 
 import "fmt"
 
-// generation instruction
-func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) ([]uint8, error) {
+// instruction gen
+type instructionBytes struct {
+	bytes []uint8 // instraction bytes
+	len   int     // instraction length
+}
 
-	instBinCode := []uint8{}
-	instPrefix := prefix{}
+// generation instruction
+func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (instructionBytes, error) {
+
+	instBytes := []uint8{} // inst bytes
+	instPrefix := prefix{} // inst prefix
+
+	instBytesStruct := instructionBytes{} // inst bytes struct
 
 	fmt.Println(inst)
 	fmt.Println(opcode)
@@ -24,9 +32,9 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) ([]uint8, 
 			modrmByte, err := addModRM(&opcode, &inst, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
-				return nil, err
+				return instBytesStruct, err
 			}
-			instBinCode = append(instBinCode, modrmByte...)
+			instBytes = append(instBytes, modrmByte...)
 
 		case modRM0, modRM1, modRM2, modRM3, modRM4, modRM5, modRM6, modRM7:
 
@@ -34,9 +42,9 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) ([]uint8, 
 			modrmByte, err := addModRMfixRegField(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
-				return nil, err
+				return instBytesStruct, err
 			}
-			instBinCode = append(instBinCode, modrmByte...)
+			instBytes = append(instBytes, modrmByte...)
 
 		case plusRB, plusRW, plusRD, plusRO:
 
@@ -44,10 +52,10 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) ([]uint8, 
 
 			plusByte, err := plusRbyte(&opcode, &inst, bitMode, &instPrefix)
 			if err != nil {
-				return nil, err
+				return instBytesStruct, err
 			}
 
-			instBinCode[len(instBinCode)-1] = instBinCode[len(instBinCode)-1] + plusByte
+			instBytes[len(instBytes)-1] = instBytes[len(instBytes)-1] + plusByte
 
 		case valIB, valIW, valID, valIO:
 
@@ -56,43 +64,45 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) ([]uint8, 
 			immBytes, err := addImmIB(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
-				return nil, err
+				return instBytesStruct, err
 			}
-			instBinCode = append(instBinCode, immBytes...)
+			instBytes = append(instBytes, immBytes...)
 
 		case valCB:
-			return nil, fmt.Errorf("todo valCB") // todo
+			return instBytesStruct, fmt.Errorf("todo valCB") // todo
 		case valCW:
-			return nil, fmt.Errorf("todo valCW") // todo
+			return instBytesStruct, fmt.Errorf("todo valCW") // todo
 		case valCD:
-			return nil, fmt.Errorf("todo valCD") // todo
+			return instBytesStruct, fmt.Errorf("todo valCD") // todo
 		case valCP:
-			return nil, fmt.Errorf("todo valCP") // todo
+			return instBytesStruct, fmt.Errorf("todo valCP") // todo
 		case valCO:
-			return nil, fmt.Errorf("todo valCO") // todo
+			return instBytesStruct, fmt.Errorf("todo valCO") // todo
 		case valCT:
-			return nil, fmt.Errorf("todo valCT") // todo
+			return instBytesStruct, fmt.Errorf("todo valCT") // todo
 		case np:
-			return nil, fmt.Errorf("todo np") // todo
+			return instBytesStruct, fmt.Errorf("todo np") // todo
 		default:
-			instBinCode = append(instBinCode, uint8(i))
+			instBytes = append(instBytes, uint8(i))
 		}
 	}
 
 	// check register operands
 	err := checkRegisterOperand(&opcode, &inst, bitMode, &instPrefix)
 	if err != nil {
-		return nil, err
+		return instBytesStruct, err
 	}
 
 	prefixByte := genPrefix(&instPrefix)
-	instBinCode = append(prefixByte, instBinCode...)
+	instBytes = append(prefixByte, instBytes...)
 
-	for _, b := range instBinCode {
+	for _, b := range instBytes {
 		fmt.Printf("%x ", b)
 	}
 
-	return instBinCode, nil
+	instBytesStruct.bytes = instBytes
+
+	return instBytesStruct, nil
 }
 
 // plus +r* byte
