@@ -189,11 +189,6 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 			} else if isImmOperand(memOper.t) {
 
-				if memOper.l {
-					// if this is label then todo error
-					return nil, labels, fmt.Errorf("todo: modrm label disp mem opernad not support")
-				}
-
 				switch memOper.t {
 				case imm:
 					// this operand is not fix imm
@@ -212,6 +207,20 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
 						modrmBytes = append(modrmBytes, uint8(modRMByte))
 
+						if memOper.l {
+
+							// if inst is label
+							l := label{
+								labelPos:  len(modrmBytes),
+								labelName: memOper.n,
+								labelType: imm16,
+								value:     0,
+								disp:      false,
+							}
+
+							labels = append(labels, l) // append to labels
+						}
+
 						// and append disp imm bytes
 						modrmBytes = append(modrmBytes, immLeByte...)
 
@@ -227,6 +236,20 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 						// gen modrm byte
 						modRMByte := modRMbyte(0b00, regField, modrmMemField)
 						modrmBytes = append(modrmBytes, uint8(modRMByte))
+
+						if memOper.l {
+
+							// if inst is label
+							l := label{
+								labelPos:  len(modrmBytes),
+								labelName: memOper.n,
+								labelType: imm32,
+								value:     0,
+								disp:      false,
+							}
+
+							labels = append(labels, l) // append to labels
+						}
 
 						// and append disp imm bytes
 						modrmBytes = append(modrmBytes, immLeByte...)
@@ -253,6 +276,20 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 						// append 25 SIB byte because 0x25 is base disp
 						modrmBytes = append(modrmBytes, 0x25)
+
+						if memOper.l {
+
+							// if inst is label
+							l := label{
+								labelPos:  len(modrmBytes),
+								labelName: memOper.n,
+								labelType: imm32,
+								value:     0,
+								disp:      false,
+							}
+
+							labels = append(labels, l) // append to labels
+						}
 
 						// and append disp imm bytes
 						modrmBytes = append(modrmBytes, immLeByte...)
@@ -461,13 +498,9 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 
 	modRMmode := 0b10
 	var immLeByte []uint8
+	immType := imm8
 
-	if immOper.l {
-		// if this is label then todo error
-		return nil, labels, fmt.Errorf("todo: modrm label disp mem opernad not support")
-	}
-
-	if immOper.v <= 0xff {
+	if immOper.v <= 0xff && !immOper.l {
 		// if imm value is 8-bit
 		modRMmode = 0b01
 		immVal := uint8(immOper.v)
@@ -477,6 +510,7 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 			immVal = 0xff - immVal + 1
 		}
 
+		immType = imm8
 		immLeByte = uint8le(immVal)
 
 	} else {
@@ -493,6 +527,7 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 				immVal = 0xffff - immVal + 1
 			}
 
+			immType = imm16
 			immLeByte = uint16le(immVal)
 
 		case 32, 64:
@@ -506,6 +541,7 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 				immVal = 0xffffffff - immVal + 1
 			}
 
+			immType = imm32
 			immLeByte = uint32le(immVal)
 		default:
 			return nil, labels, fmt.Errorf("internal error: modrm")
@@ -533,6 +569,20 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 			modrmBytes = append(modrmBytes, uint8(sib))
 
 		}
+	}
+
+	if immOper.l {
+
+		// if inst is label
+		l := label{
+			labelPos:  len(modrmBytes),
+			labelName: immOper.n,
+			labelType: immType,
+			value:     0,
+			disp:      false,
+		}
+
+		labels = append(labels, l) // append to labels
 	}
 
 	modrmBytes = append(modrmBytes, immLeByte...)

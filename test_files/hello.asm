@@ -45,6 +45,7 @@ $startto:
   add [rcx], 0x121231231
   mov [0x74], rdx
   mov [$msg], rdx
+  mov [rdx + $myname], rdx
 
   $msg:
     str "I ❤️  Computers!"
