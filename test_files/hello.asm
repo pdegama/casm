@@ -21,6 +21,7 @@ $start:
   mov rdi, qword 0xfffff0      ;   STDOUT_FILENO,
 
   mov rdi, 90
+
   
   mov rcx, rdx
 
@@ -39,9 +40,11 @@ $startto:
   mov [qword 0x70], 13
 
   add rdx, 0x121231212
+  add [rcx], $qwe ; label shorting
 
   add [rcx], 0x121231231
-  add [rcx], $qwe ; label shorting
+  mov [0x74], rdx
+  mov [$msg], rdx
 
   $msg:
     str "I ❤️  Computers!"

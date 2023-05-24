@@ -8,11 +8,11 @@ package x86_64
 import "fmt"
 
 // add modRM byte
-func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([]uint8, error) {
+func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
 	// calculate modRM and return
 	if len(inst.operands) != 2 {
-		return nil, fmt.Errorf("internal error: todo: operand size is not two")
+		return nil, []label{}, fmt.Errorf("internal error: todo: operand size is not two")
 	}
 
 	modRMrmOper := &operand{t: undefinedOperand}  // modrm r/m operand
@@ -39,46 +39,47 @@ func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([
 	// modRMreg info
 	modRMregInfo, err := registerInfo(int(modRMregOper.v))
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
 	// check modRMreg is valid or not
 	err = registerIsValid(modRMregInfo, bitMode)
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
 	// check operand override prefix
 	err = checkOperandOverride(modRMregOper, bitMode, pf)
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
 	// check rex.r prefix
 	err = checkREXrPrexif(modRMregOper, bitMode, pf)
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
 	// get reg field
 	regField, err := modRMregField(*modRMregOper)
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
 	// calc modrm
-	modRMByte, err := calcModRM(modRMrmOper, regField, bitMode, pf)
+	modRMByte, labels, err := calcModRM(modRMrmOper, regField, bitMode, pf)
 	if err != nil {
-		return nil, err
+		return nil, []label{}, err
 	}
 
-	return modRMByte, nil
+	return modRMByte, labels, nil
 }
 
 // calc modrm
-func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8, error) {
+func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
 	modrmBytes := []uint8{} // modrm bytes
+	labels := []label{}     // labels
 
 	if rmOper.t == mem {
 		// todo: modrm mem operand support
@@ -94,31 +95,31 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 				// get mem register info
 				regInfo, err := registerInfo(int(memOper.v))
 				if err != nil {
-					return nil, err
+					return nil, labels, err
 				}
 
 				// check register is valid in mem or not
 				err = registerIsValidInMem(regInfo, bitMode)
 				if err != nil {
-					return nil, err
+					return nil, labels, err
 				}
 
 				// check address override prefix
 				err = checkAddressOverride(&memOper, bitMode, pf)
 				if err != nil {
-					return nil, err
+					return nil, labels, err
 				}
 
 				// check rex.b prefix
 				err = checkREXbPrexif(&memOper, bitMode, pf)
 				if err != nil {
-					return nil, err
+					return nil, labels, err
 				}
 
 				// get mem field
 				modrmMemField, err := modRMmemRegField(regInfo)
 				if err != nil {
-					return nil, err
+					return nil, labels, err
 				}
 
 				// if bitmode
@@ -176,7 +177,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 						modrmBytes = append(modrmBytes, uint8(sib))
 
-						return modrmBytes, nil // return modrm byte
+						return modrmBytes, labels, nil // return modrm byte
 					}
 				}
 
@@ -184,7 +185,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 				modRMByte := modRMbyte(0b00, regField, modrmMemField)
 				modrmBytes = append(modrmBytes, uint8(modRMByte))
 
-				return modrmBytes, nil // return modrm byte
+				return modrmBytes, labels, nil // return modrm byte
 
 			} else if isImmOperand(memOper.t) {
 
@@ -266,7 +267,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 							error because 64 bit is not support
 							16-bit bisp imm value
 						*/
-						return nil, fmt.Errorf("disp imm16 is not support in 64-bit")
+						return nil, labels, fmt.Errorf("disp imm16 is not support in 64-bit")
 					}
 
 					immVal := uint16(memOper.v) // convert imm value to 16-bit value
@@ -276,7 +277,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 					// check address override prefix
 					err := checkAddressOverride(&operand{t: imm16}, bitMode, pf)
 					if err != nil {
-						return nil, err
+						return nil, labels, err
 					}
 
 					modrmMemField := 6 // modrm r/m field is 6 is 16-bit modrm
@@ -297,7 +298,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 							64-bit is not support 16-bit bisp
 							imm value
 						*/
-						return nil, fmt.Errorf("disp imm64 is only support in 64-bit")
+						return nil, labels, fmt.Errorf("disp imm64 is only support in 64-bit")
 					}
 
 					immVal := uint32(memOper.v) // convert imm value to 32-bit value
@@ -321,7 +322,7 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 						// check address override prefix
 						err := checkAddressOverride(&operand{t: imm32}, bitMode, pf)
 						if err != nil {
-							return nil, err
+							return nil, labels, err
 						}
 
 						modrmMemField := 5 // modrm r/m field is 5 in 32-bit or 64-bit modrm
@@ -337,25 +338,26 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 
 				default:
 					// if this is label then todo error
-					return nil, fmt.Errorf("internal error: modrm")
+					return nil, labels, fmt.Errorf("internal error: modrm")
 				}
 
-				return modrmBytes, nil
+				return modrmBytes, labels, nil
 			}
 
-			return nil, fmt.Errorf("internal error: modrm")
+			return nil, labels, fmt.Errorf("internal error: modrm")
 
 		case 3:
 
-			modrmBytes, err := threeMemOperModRMrm(rmOper.m, regField, bitMode, pf)
+			modrmBytes, modrmLabels, err := threeMemOperModRMrm(rmOper.m, regField, bitMode, pf)
 			if err != nil {
-				return nil, err
+				return nil, labels, err
 			}
-			return modrmBytes, nil
+			labels = append(labels, modrmLabels...) //append modrm lables
+			return modrmBytes, labels, nil
 
 		default:
 			//
-			return nil, fmt.Errorf("invalid syntax memory operand")
+			return nil, labels, fmt.Errorf("invalid syntax memory operand")
 		}
 
 	}
@@ -367,42 +369,43 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 		modRMrmRegInfo, err := registerInfo(int(rmOper.v))
 		if err != nil {
 			// if error then return error
-			return nil, err
+			return nil, labels, err
 		}
 
 		// check modRMreg is valid or not
 		err = registerIsValid(modRMrmRegInfo, bitMode)
 		if err != nil {
-			return nil, err
+			return nil, labels, err
 		}
 
 		// check operand override prefix
 		err = checkOperandOverride(rmOper, bitMode, pf)
 		if err != nil {
-			return nil, err
+			return nil, labels, err
 		}
 
 		// check rex.b prefix
 		err = checkREXbPrexif(rmOper, bitMode, pf)
 		if err != nil {
-			return nil, err
+			return nil, labels, err
 		}
 
 		// gen modrm byte
 		modRMByte := modRMbyte(0b11, regField, modRMrmRegInfo.baseOffset)
 		modrmBytes = append(modrmBytes, uint8(modRMByte))
 
-		return modrmBytes, nil // return modrm byte
+		return modrmBytes, labels, nil // return modrm byte
 
 	}
 
-	return nil, fmt.Errorf("internal error: modrm")
+	return nil, labels, fmt.Errorf("internal error: modrm")
 }
 
 // 3 mem operand modrm
-func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix) ([]uint8, error) {
+func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
 	modrmBytes := []uint8{} // modrm bytes
+	labels := []label{}     // labels
 
 	regOper := opers[0]        // reg operand firest operand
 	operantionOper := opers[1] // operation opernad
@@ -410,7 +413,7 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 
 	if !isRegOperand(regOper.t) {
 		// if first operand is not register
-		return nil, fmt.Errorf("invalid mem operand")
+		return nil, labels, fmt.Errorf("invalid mem operand")
 	}
 
 	switch operantionOper.t {
@@ -418,42 +421,42 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 		// pass
 	default:
 		// if seconde operand os not operation operand
-		return nil, fmt.Errorf("invalid mem operand")
+		return nil, labels, fmt.Errorf("invalid mem operand")
 	}
 
 	if !isImmOperand(immOper.t) {
 		// if third operand is not imm operand
-		return nil, fmt.Errorf("invalid mem operand")
+		return nil, labels, fmt.Errorf("invalid mem operand")
 
 	}
 
 	regOperInfo, err := registerInfo(int(regOper.v))
 	if err != nil {
-		return nil, err
+		return nil, labels, err
 	}
 
 	// check register is valid in mem or not
 	err = registerIsValidInMem(regOperInfo, bitMode)
 	if err != nil {
-		return nil, err
+		return nil, labels, err
 	}
 
 	// check address override prefix
 	err = checkAddressOverride(&regOper, bitMode, pf)
 	if err != nil {
-		return nil, err
+		return nil, labels, err
 	}
 
 	// check rex.b prefix
 	err = checkREXbPrexif(&regOper, bitMode, pf)
 	if err != nil {
-		return nil, err
+		return nil, labels, err
 	}
 
 	// get mem field
 	modrmMemField, err := modRMmemRegField(regOperInfo)
 	if err != nil {
-		return nil, err
+		return nil, labels, err
 	}
 
 	modRMmode := 0b10
@@ -461,7 +464,7 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 
 	if immOper.l {
 		// if this is label then todo error
-		return nil, fmt.Errorf("todo: modrm label disp mem opernad not support")
+		return nil, labels, fmt.Errorf("todo: modrm label disp mem opernad not support")
 	}
 
 	if immOper.v <= 0xff {
@@ -505,7 +508,7 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 
 			immLeByte = uint32le(immVal)
 		default:
-			return nil, fmt.Errorf("internal error: modrm")
+			return nil, labels, fmt.Errorf("internal error: modrm")
 		}
 
 	}
@@ -534,12 +537,12 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 
 	modrmBytes = append(modrmBytes, immLeByte...)
 
-	return modrmBytes, nil
+	return modrmBytes, labels, nil
 
 }
 
 // add modrm byte fix reg field
-func addModRMfixRegField(opcode *archOpcode, inst *instruction, modRMregField int, bitMode int, pf *prefix) ([]uint8, error) {
+func addModRMfixRegField(opcode *archOpcode, inst *instruction, modRMregField int, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
 	var modRMrmOper *operand // r/m operand
 	var regField int         // modrm reg field
