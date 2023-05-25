@@ -5,6 +5,8 @@
 
 package x86_64
 
+import "fmt"
+
 // find arch opcode
 func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 
@@ -71,14 +73,14 @@ func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 							append to validPerfectOpcodes
 						*/
 						validPerfectOpcodes = append(validPerfectOpcodes, opcode)
-						// fmt.Println(">>>", opcode)
+						fmt.Println(">>>", opcode)
 					} else {
 						/*
 							if opecode is not perfect match then
 							append to validOpcodes
 						*/
 						validOpcodes = append(validOpcodes, opcode)
-						// fmt.Println("---", opcode)
+						fmt.Println("---", opcode)
 					}
 				}
 
@@ -133,9 +135,7 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 		//fmt.Println(parseImmType(thisOperand.operand))
 		if withOperand.t == parseImmType(thisOperand.v) {
 			if !thisOperand.l {
-				/*
-					if this operand is not lable
-				*/
+				// if this operand is not lable
 				return operandPerfectMatch
 			}
 		}
@@ -147,6 +147,74 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 				or imm64, then accept imm
 			*/
 			return operandMatch
+		}
+
+	}
+
+	/*
+		check rel type
+	*/
+
+	if thisOperand.t == imm {
+
+		switch parseImmType(thisOperand.v) {
+		case imm8:
+			// if value type is imm8
+			if withOperand.t == rel8 {
+				if !thisOperand.l {
+					// if this operand is not lable
+					return operandPerfectMatch
+				}
+			}
+
+		case imm16:
+			// if value type is imm16
+			if withOperand.t == rel16 {
+				if !thisOperand.l {
+					// if this operand is not lable
+					return operandPerfectMatch
+				}
+			}
+
+		case imm32:
+			// if value type is imm32
+			if withOperand.t == rel32 {
+				if !thisOperand.l {
+					// if this operand is not lable
+					return operandPerfectMatch
+				}
+			}
+		}
+
+		switch withOperand.t {
+		case rel8, rel16, rel32:
+			/*
+				if withOperand is rel8, rel16, rel32
+				or imm64, then accept imm
+			*/
+			return operandMatch
+		}
+
+	} else {
+
+		switch thisOperand.t {
+		case imm8:
+			// if value type is imm8
+			if withOperand.t == rel8 {
+				return operandPerfectMatch
+			}
+
+		case imm16:
+			// if value type is imm16
+			if withOperand.t == rel16 {
+				return operandPerfectMatch
+			}
+
+		case imm32:
+			// if value type is imm32
+			if withOperand.t == rel32 {
+				return operandPerfectMatch
+			}
 		}
 
 	}
@@ -226,13 +294,15 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		return
 	}
 
+	for _, opcode := range *opcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("---------")
+
 	// sorting opcodes
 	for i := 0; i < len(*opcodes); i++ {
-
 		for j := 0; j < i; j++ {
-
-			if isLessThanImm((*opcodes)[j].operands[immPos].t, (*opcodes)[i].operands[immPos].t) {
-
+			if isLessThanImmRel((*opcodes)[j].operands[immPos].t, (*opcodes)[i].operands[immPos].t) {
 				tmpOper := (*opcodes)[i]
 				(*opcodes)[i] = (*opcodes)[j]
 				(*opcodes)[j] = tmpOper
@@ -242,6 +312,11 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		}
 
 	}
+
+	for _, opcode := range *opcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("---------")
 
 	if immIsLabel {
 		/*
@@ -262,7 +337,7 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 			instruction imm is less then
 			opcode imm type
 		*/
-		if isLessThanImm(parseImmType(inst.operands[immPos].v), opcode.operands[immPos].t) {
+		if isLessThanImmRel(parseImmType(inst.operands[immPos].v), opcode.operands[immPos].t) {
 			/*
 				if instruction imm type is less
 				then opcode imm then opcode
@@ -279,6 +354,12 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		}
 	}
 
+	for _, opcode := range greatThanOpcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("g====")
+
+
 	for i := 0; i < len(greatThanOpcodes)/2; i++ {
 		// reverse greatThanOpcodes
 		tmpOpcode := greatThanOpcodes[i]
@@ -286,48 +367,123 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		greatThanOpcodes[len(greatThanOpcodes)-1-i] = tmpOpcode
 	}
 
+	for _, opcode := range greatThanOpcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("g====")
+
 	// make temp opcodes map after assign opcodes
 	tmpOpcodes := append(greatThanOpcodes, lessThanOpcodes...)
 	copy(*opcodes, tmpOpcodes) // copy temp opcodes to *opcodes
 
+	for _, opcode := range *opcodes {
+		fmt.Println(opcode)
+	}
+	fmt.Println("---------")
+
 }
 
-// is  imm
-func isLessThanImm(a operandType, b operandType) bool {
+// is a imm or rel is smaller then b imm or rel
+func isLessThanImmRel(a operandType, b operandType) bool {
 
 	// a imm is less than b imm?
 
 	switch b {
 	case imm16:
 		// if b is imm16
+
 		if a == imm8 {
 			/*
 				and a is imm8 then return true
-				beacuse imm8 (a) is smaller
-				then imm16 (b)
+				beacuse...
 			*/
 			return true
 		}
+
+		if a == rel8 {
+			/*
+				and a is rel8 then return true
+				beacuse...
+			*/
+			return true
+		}
+
 	case imm32:
 		// if b is imm32
+
 		if a == imm8 || a == imm16 {
 			/*
 				and a is imm8 or imm16 then return
-				true beacuse imm8 or imm16 (a) is
-				smaller then imm32 (b)
+				true beacuse...
 			*/
 			return true
 		}
+
+		if a == rel8 || a == rel16 {
+			/*
+				and a is rel8 or rel16 then return
+				true beacuse...
+			*/
+			return true
+		}
+
 	case imm64:
 		// if b is imm64
+
 		if a == imm8 || a == imm16 || a == imm32 {
 			/*
 				and a is imm8, imm16 or imm32 then
-				return true beacuse imm8, imm16 or
-				imm32 (a) is smaller then imm64 (b)
+				return true beacuse...
 			*/
 			return true
 		}
+
+		if a == rel8 || a == rel16 || a == rel32 {
+			/*
+				and a is rel8, rel16 or rel64 then
+				return true beacuse...
+			*/
+			return true
+		}
+
+	case rel16:
+		// if b is rel16
+
+		if a == rel8 {
+			/*
+				and a is rel8 then return true
+				beacuse...
+			*/
+			return true
+		}
+
+		if a == imm8 {
+			/*
+				and a is imm8 then return true
+				beacuse...
+			*/
+			return true
+		}
+
+	case rel32:
+		// if b is rel32
+
+		if a == rel8 || a == rel16 {
+			/*
+				and a is rel8 or rel16 then return
+				true beacuse...
+			*/
+			return true
+		}
+
+		if a == imm8 || a == imm16 {
+			/*
+				and a is imm8 or imm16 then return
+				true beacuse...
+			*/
+			return true
+		}
+
 	}
 
 	return false

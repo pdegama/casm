@@ -1,3 +1,3 @@
-%bits 64
+%bits 16
 
-mov [rsi + $myname], $parth
+call 0x74177

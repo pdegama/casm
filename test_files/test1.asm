@@ -1,3 +1,3 @@
-bits 64
+bits 16
 
-mov r14,  qword 0x7474747747
+jmp [ebx]

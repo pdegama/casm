@@ -8,13 +8,18 @@ mov rsi, $msg      ;   "Hello, world!\n",
 mov rdx, [$msglen]   ;   sizeof("Hello, world!\n")
 syscall           ; );
 
-mov [rsp -0x01], $pre
-call [rsp - 0x01 ]
+
+mov r13, $pre
+jmp r13
+
+$back:
+mov r11, $msglen
+mov [r11], r13
+jmp [r11]
 
 $exit:
 mov rax, 60       ; exit(
 mov rdi, 5        ;   EXIT_SUCCESS
-sub red
 syscall           ; );
 
 $pre:
@@ -23,7 +28,11 @@ mov rdi, 1        ;   STDOUT_FILENO,
 mov rsi, $msg2      ;   "Hello, world!\n",
 mov rdx, 3   ;   sizeof("Hello, world!\n")
 syscall           ; );
-ret
+
+mov rcx, $exit
+mov r11, $msglen
+mov [r11], rcx
+jmp [r11]
 
 $msg: 
   str "Hello, world!"
