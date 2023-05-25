@@ -494,6 +494,29 @@ func parseModulo(line asmLine, b *binaryGen) error {
 					return fmt.Errorf("invalid modulo tokens for `%v`", tok.token)
 				}
 
+			case "text":
+				// if text modulo
+				if len(line.tokens) == 2 {
+					// if two token
+
+					b.segment = textSegment // set text segment
+
+				} else {
+					return fmt.Errorf("invalid modulo tokens for `%v`", tok.token)
+				}
+
+			case "data":
+				// if data modulo
+
+				if len(line.tokens) == 2 {
+					// if two token
+
+					b.segment = dataSegment // set text segment
+
+				} else {
+					return fmt.Errorf("invalid modulo tokens for `%v`", tok.token)
+				}
+				
 			default:
 				return fmt.Errorf("invalid modulo operation `%v`", tok.token)
 			}

@@ -24,6 +24,7 @@ const (
 // build elf
 func (e *elf) buildELF(b *binaryGen) {
 
+	b.mergeSegments()
 	b.setPos()
 	b.setLabel(0x400000 + 0x40 + (2 * 0x38))
 	b.genBinary()

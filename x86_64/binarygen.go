@@ -9,12 +9,21 @@ import (
 	"fmt"
 )
 
+// segments
+const (
+	textSegment = 0
+	dataSegment = 1
+)
+
 // binary gen structure
 type binaryGen struct {
-	lines       []asmLine        // asm lines
-	bitMode     int              // bit mode 16, 32 or 64
-	bytesStruct []bytesStructure // bytes
-	bianry      []uint8          // binary
+	lines           []asmLine        // asm lines
+	bitMode         int              // bit mode 16, 32 or 64
+	bytesStruct     []bytesStructure // bytes
+	textBytesStruct []bytesStructure // text bytes struct
+	dataBytesStruct []bytesStructure // data bytes struct
+	bianry          []uint8          // binary
+	segment         int              // current segent (text, data)
 }
 
 // bytes structure
@@ -37,47 +46,12 @@ func (s *binaryGen) setBitMode(bitMode int) {
 	s.bitMode = bitMode // assign bit mode  to structure
 }
 
-// set position
-func (s *binaryGen) setPos() {
-
-	var cPos uint // current pos
-	cPos = 0
-
-	// loop of bytes structure
-	for bsIndex, bs := range s.bytesStruct {
-		s.bytesStruct[bsIndex].pos = cPos // set curren position
-		cPos += uint(bs.len)              // byte len add to current position
-	}
-
-}
-
-// get insts
-func (s *binaryGen) genBinary() {
-
-	s.bianry = []uint8{} // clear binary
-
-	for _, instBytes := range s.bytesStruct {
-		// loop of bytes structure
-
-		// append inst bytes to array
-		s.bianry = append(s.bianry, instBytes.bytes...)
-
-	}
-
-}
-
-// get row binary
-func (s *binaryGen) getbinary() []uint8 {
-	// return binary
-	return s.bianry
-}
-
 // binary generation
-func (s *binaryGen) gen() []error {
+func (b *binaryGen) gen() []error {
 
 	errs := []error{} // errors
 
-	for _, line := range s.lines {
+	for _, line := range b.lines {
 
 		if len(line.tokens) != 0 {
 
@@ -85,14 +59,14 @@ func (s *binaryGen) gen() []error {
 			case lineInst:
 
 				// if line is insrtuction
-				instBytes, err := instructionGen(line, s.bitMode) // gen code for instruction
+				instBytesStruct, err := instructionGen(line, b.bitMode) // gen code for instruction
 				if err != nil {
 					// if error
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				} else {
 					// if not error then append to bytes struct
-					s.bytesStruct = append(s.bytesStruct, instBytes)
+					b.addByteStruct(instBytesStruct)
 				}
 
 			case lineLabel:
@@ -105,25 +79,25 @@ func (s *binaryGen) gen() []error {
 					errs = append(errs, tErr)
 				} else {
 					// if not error then append to bytes struct
-					s.bytesStruct = append(s.bytesStruct, labelStruct)
+					b.addByteStruct(labelStruct)
 				}
 
 			case lineData:
 
 				// if line is data line
-				dataBytes, err := dataBytes(line) // get data byte
-				if err != nil {                   // if error
+				dataBytesStruct, err := dataBytes(line) // get data byte
+				if err != nil {                         // if error
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
 				} else {
 					// if not error then append to bytes struct
-					s.bytesStruct = append(s.bytesStruct, dataBytes)
+					b.addByteStruct(dataBytesStruct)
 				}
 
 			case lineModulo:
 
 				// if line is modulo
-				err := parseModulo(line, s) // parse modulo
+				err := parseModulo(line, b) // parse modulo
 				if err != nil {
 					tErr := fmt.Errorf("%s %v:%v %v", errorStr, *line.filePath, line.index+1, err)
 					errs = append(errs, tErr)
@@ -134,4 +108,69 @@ func (s *binaryGen) gen() []error {
 	}
 
 	return errs
+}
+
+// add bytes struct
+func (b *binaryGen) addByteStruct(bd bytesStructure) {
+
+	if b.segment == textSegment {
+		/*
+			if current segment is text segment
+			then append byte struct to text segment
+		*/
+		b.textBytesStruct = append(b.textBytesStruct, bd)
+	} else if b.segment == dataSegment {
+		/*
+			if current segment is data segment
+			then append byte struct to data segment
+		*/
+		b.dataBytesStruct = append(b.dataBytesStruct, bd)
+	}
+
+}
+
+// merge segments
+func (b *binaryGen) mergeSegments() {
+
+	// first append text segments to bytes structure
+	b.bytesStruct = append(b.bytesStruct, b.textBytesStruct...)
+
+	// second append data segments to bytes structure
+	b.bytesStruct = append(b.bytesStruct, b.dataBytesStruct...)
+
+}
+
+// set position
+func (b *binaryGen) setPos() {
+
+	var cPos uint // current pos
+	cPos = 0
+
+	// loop of bytes structure
+	for bsIndex, bs := range b.bytesStruct {
+		b.bytesStruct[bsIndex].pos = cPos // set curren position
+		cPos += uint(bs.len)              // byte len add to current position
+	}
+
+}
+
+// get insts
+func (b *binaryGen) genBinary() {
+
+	b.bianry = []uint8{} // clear binary
+
+	for _, instBytes := range b.bytesStruct {
+		// loop of bytes structure
+
+		// append inst bytes to array
+		b.bianry = append(b.bianry, instBytes.bytes...)
+
+	}
+
+}
+
+// get row binary
+func (s *binaryGen) getbinary() []uint8 {
+	// return binary
+	return s.bianry
 }
