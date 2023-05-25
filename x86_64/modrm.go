@@ -9,12 +9,7 @@ import "fmt"
 
 // add modRM byte
 func addModRM(opcode *archOpcode, inst *instruction, bitMode int, pf *prefix) ([]uint8, []label, error) {
-
-	// calculate modRM and return
-	if len(inst.operands) != 2 {
-		return nil, []label{}, fmt.Errorf("internal error: todo: operand size is not two")
-	}
-
+	
 	modRMrmOper := &operand{t: undefinedOperand}  // modrm r/m operand
 	modRMregOper := &operand{t: undefinedOperand} // modrm reg operand
 
