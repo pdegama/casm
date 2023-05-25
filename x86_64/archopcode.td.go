@@ -1238,9 +1238,9 @@ var archOpcodeList []archOpcode = []archOpcode{
 	{name: "RDTSC", operands: []archOperand{}, opcode: []int{0x0F, 0x31}, valid32BitMode: true, valid64BitMode: true},
 	{name: "RDTSCP", operands: []archOperand{}, opcode: []int{0x0F, 0x01, 0xF9}, valid32BitMode: true, valid64BitMode: true},
 	{name: "RET", operands: []archOperand{}, opcode: []int{0xC3}, valid32BitMode: true, valid64BitMode: true},
-	// todo: operand imm16u
+	{name: "RET", operands: []archOperand{{imm16, anyValue}}, opcode: []int{0xC2, valIW}, valid32BitMode: true, valid64BitMode: true},
 	{name: "RET_FAR", operands: []archOperand{}, opcode: []int{0xCB}, valid32BitMode: true, valid64BitMode: true},
-	// todo: operand imm16u
+	{name: "RET_FAR", operands: []archOperand{{imm16, anyValue}}, opcode: []int{0xCA, valIW}, valid32BitMode: true, valid64BitMode: true},
 	// todo: operand 1
 	{name: "ROL", operands: []archOperand{{regMem16, anyValue}, {reg8, cl}}, opcode: []int{0xD3, modRM0}, valid32BitMode: true, valid64BitMode: true},
 	{name: "ROL", operands: []archOperand{{regMem16, anyValue}, {imm8, anyValue}}, opcode: []int{0xC1, modRM0, valIB}, valid32BitMode: true, valid64BitMode: true},
