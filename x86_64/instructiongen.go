@@ -218,7 +218,7 @@ func checkRegisterOperand(opcode *archOpcode, inst *instruction, bitMode int, pf
 func addCurrentPosLabel(labels *[]label, cp int) {
 
 	// loop of labels
-	for i, _ := range *labels {
+	for i := range *labels {
 		// add current position in label
 		(*labels)[i].labelPos = (*labels)[i].labelPos + cp
 	}
@@ -229,7 +229,7 @@ func addCurrentPosLabel(labels *[]label, cp int) {
 func addPosLabel(labels *[]label, cp int) {
 
 	// loop of labels
-	for i, _ := range *labels {
+	for i := range *labels {
 		// add current position in label
 		(*labels)[i].labelPos = (*labels)[i].labelPos + cp
 	}
