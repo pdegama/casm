@@ -16,7 +16,7 @@ type label struct {
 }
 
 // set label
-func (b *binaryGen) setLabel(offset uint) {
+func (b *binaryGen) setLabel(offset uint) []error {
 
 	errs := []error{}
 	_ = errs
@@ -76,6 +76,7 @@ func (b *binaryGen) setLabel(offset uint) {
 
 	}
 
+	return errs // return error
 }
 
 // get label position

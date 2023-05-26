@@ -22,13 +22,18 @@ const (
 )
 
 // build elf
-func (e *elf) buildELF(b *binaryGen) {
+func (e *elf) buildELF(b *binaryGen) []error {
 
-	b.mergeSegments()
-	b.setPos()
-	b.setLabel(0x400000 + 0x40 + (2 * 0x38))
-	b.genBinary()
-	bin := b.getbinary()
+	b.mergeSegments() // merge segment
+	b.setPos()        // set bytes pos
+
+	errs := b.setLabel(0x400000 + 0x40 + (2 * 0x38)) // set labels
+	if len(errs) != 0 {
+		return errs
+	}
+
+	b.genBinary()        // genret binary
+	bin := b.getbinary() // get binary
 
 	textSize := uint64(len(bin))
 	// Size of ELF header + 2 * size program header?
@@ -92,6 +97,8 @@ func (e *elf) buildELF(b *binaryGen) {
 	e.addBytes(bin...)
 	// Output the data segment
 	e.addBytes()
+
+	return []error{}
 
 }
 

@@ -73,8 +73,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 			instLabels = append(instLabels, immLabels...)  // append labels
 
 		case valCB, valCW, valCD:
-			return instBytesStruct, fmt.Errorf("todo valCB") // todo
-
+			
 			// offset bytes
 
 			offsetBytes, offsetLabels, err := addRelBytes(&opcode, &inst, i, bitMode, &instPrefix)

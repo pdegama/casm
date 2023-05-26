@@ -36,8 +36,8 @@ func assemble(arch *x86_64) {
 	binGen := binaryGen{}
 	binGen.setBitMode(16)     // set bit mode
 	binGen.setAsmLines(lines) // set asm lines
-	
-	errs = binGen.gen()       // gen binary
+
+	errs = binGen.gen() // gen binary
 	if len(errs) != 0 {
 		for _, err := range errs {
 			fmt.Println(err)
@@ -46,9 +46,14 @@ func assemble(arch *x86_64) {
 	}
 
 	elfGen := elf{}
-	elfGen.buildELF(&binGen)
+	errs = elfGen.buildELF(&binGen)
+	if len(errs) != 0 {
+		for _, err := range errs {
+			fmt.Printf("%s %v\n", errorStr, err)
+		}
+		return
+	}
 	elfGen.saveBinFile()
-
 
 	// tmp
 	/* for _, line := range lines {

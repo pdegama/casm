@@ -86,11 +86,11 @@ func addImmBytes(opcode *archOpcode, inst *instruction, immOperType int, bitMode
 }
 
 // add rel byte
-func addRelBytes(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, []label, error) {
+func addRelBytes(opcode *archOpcode, inst *instruction, relOperType int, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
-	var relType operandType // imm type
+	var relType operandType // rel type
 
-	switch immOperType {
+	switch relOperType {
 	case valCB:
 		relType = rel8
 	case valCW:
@@ -99,8 +99,62 @@ func addRelBytes(opcode *archOpcode, inst *instruction, immOperType int, bitMode
 		relType = rel32
 	}
 
-	_= relType
+	var relOperand *operand // rel operand
 
-	return []uint8{}, []label{}, nil
+	// loop of arch operands
+	for aOperIndex, aOper := range opcode.operands {
+		if aOper.t == relType {
+			/*
+				if arch operand type is match relType
+				then assign inst operand to relOperand
+			*/
+			relOperand = &inst.operands[aOperIndex]
+		}
+	}
+
+	// check override prefix
+/* 	err := checkOperandOverride(&operand{t: relType}, bitMode, pf)
+	if err != nil {
+		return nil, []label{}, err
+	}
+ */
+	var leBytes []uint8 // le rel bytes
+
+	switch relType {
+	case rel8:
+		/*
+			if operand type is rel8 then
+			convert value to rel8 and le bytes
+		*/
+		leBytes = uint8le(uint8(0))
+	case rel16:
+		/*
+			if operand type is rel16 ...
+		*/
+		leBytes = uint16le(uint16(0))
+	case rel32:
+		/*
+			if operand type is rel32 ...
+		*/
+		leBytes = uint32le(uint32(0))
+	}
+
+	labels := []label{}
+
+	if relOperand.l {
+		// if token is lable
+
+		l := label{
+			labelPos:  0,
+			labelName: relOperand.n,
+			labelType: relType,
+			value:     relOperand.v,
+		}
+
+		labels = append(labels, l) // append to label
+
+	}
+
+	return leBytes, labels, nil
 
 }
