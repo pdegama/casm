@@ -1,8 +1,9 @@
-bits 64
+bits 32
 
 $parth:
 
-jmp [$qwe]
+call word $parth
+call word $parth
 
 $qwe:
 
