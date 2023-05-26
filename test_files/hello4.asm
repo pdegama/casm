@@ -9,9 +9,7 @@ mov rsi, $msg
 mov rdx, [$msglen]
 syscall
 
-mov rdi, $add1
-mov [rdi], $start2
-jmp [rdi]
+jmp $start2
 
 $exit:
   mov rax, 60       ; exit(
@@ -27,9 +25,7 @@ $start2:
   mov rdx, [$msglen]
   syscall
 
-mov rdi, $add1
-mov [rdi], $exit
-jmp [rdi]
+jmp $exit
 
 %data
 

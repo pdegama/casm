@@ -34,30 +34,28 @@ func (b *binaryGen) setLabel(offset uint) []error {
 				continue
 			}
 
-			
+			lPos = lPos + offset // add offset to lPos
+
 			switch l.labelType {
 			case imm8:
 				// label type is imm8
-				
-				lPos = lPos + offset
+
 				leBytes := uint8le(uint8(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
 				}
-				
+
 			case imm16:
 				// label type is imm16
-				
-				lPos = lPos + offset
+
 				leBytes := uint16le(uint16(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
 				}
-				
+
 			case imm32:
 				// label type is imm32
-				
-				lPos = lPos + offset
+
 				leBytes := uint32le(uint32(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
@@ -65,9 +63,38 @@ func (b *binaryGen) setLabel(offset uint) []error {
 
 			case imm64:
 				// label type is imm64
-				
-				lPos = lPos + offset
+
 				leBytes := uint64le(uint64(lPos))
+				for i, v := range leBytes {
+					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
+				}
+
+			case rel8:
+				// label type is rel8
+
+				cPos := (bs.pos + uint(bs.len)) + offset // current position
+				disp := lPos - cPos                      // diplament position
+				leBytes := uint8le(uint8(disp))
+				for i, v := range leBytes {
+					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
+				}
+
+			case rel16:
+				// label type is rel16
+
+				cPos := (bs.pos + uint(bs.len)) + offset // current position
+				disp := lPos - cPos                      // diplament position
+				leBytes := uint16le(uint16(disp))
+				for i, v := range leBytes {
+					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
+				}
+
+			case rel32:
+				// label type is rel32
+
+				cPos := (bs.pos + uint(bs.len)) + offset // current position
+				disp := lPos - cPos                      // diplament position
+				leBytes := uint32le(uint32(disp))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
 				}
