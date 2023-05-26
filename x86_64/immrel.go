@@ -1,7 +1,7 @@
 // Copyright (c) 2023 Parth Degama
 // This code is licensed under MIT license
 
-// imm
+// imm rel
 
 package x86_64
 
