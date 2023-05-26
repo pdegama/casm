@@ -210,7 +210,6 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 								labelName: memOper.n,
 								labelType: imm16,
 								value:     0,
-								disp:      false,
 							}
 
 							labels = append(labels, l) // append to labels
@@ -240,7 +239,6 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 								labelName: memOper.n,
 								labelType: imm32,
 								value:     0,
-								disp:      false,
 							}
 
 							labels = append(labels, l) // append to labels
@@ -280,7 +278,6 @@ func calcModRM(rmOper *operand, regField int, bitMode int, pf *prefix) ([]uint8,
 								labelName: memOper.n,
 								labelType: imm32,
 								value:     0,
-								disp:      false,
 							}
 
 							labels = append(labels, l) // append to labels
@@ -574,7 +571,6 @@ func threeMemOperModRMrm(opers []operand, regField int, bitMode int, pf *prefix)
 			labelName: immOper.n,
 			labelType: immType,
 			value:     0,
-			disp:      false,
 		}
 
 		labels = append(labels, l) // append to labels

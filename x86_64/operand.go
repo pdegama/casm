@@ -166,3 +166,21 @@ func isImmOperand(operType operandType) bool {
 	*/
 	return false
 }
+
+// is rel operand type
+func isRelOperand(operType operandType) bool {
+
+	switch operType {
+	case rel8, rel16, rel32:
+		/*
+			retrun true because rel8, rel16,
+			rel32
+		*/
+		return true
+	}
+
+	/*
+		other return false
+	*/
+	return false
+}

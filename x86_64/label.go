@@ -13,7 +13,6 @@ type label struct {
 	labelName string      // label name
 	labelType operandType // valuse operand type imm*
 	value     uint        // if value
-	disp      bool        // displesment
 }
 
 // set label

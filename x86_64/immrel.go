@@ -6,7 +6,7 @@
 package x86_64
 
 // add imm byte
-func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, []label, error) {
+func addImmBytes(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, []label, error) {
 
 	var immType operandType // imm type
 
@@ -76,7 +76,6 @@ func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode in
 			labelName: immOperand.n,
 			labelType: immType,
 			value:     0,
-			disp:      false,
 		}
 
 		labels = append(labels, l) // append to label
@@ -84,4 +83,24 @@ func addImmIB(opcode *archOpcode, inst *instruction, immOperType int, bitMode in
 	}
 
 	return leBytes, labels, nil
+}
+
+// add rel byte
+func addRelBytes(opcode *archOpcode, inst *instruction, immOperType int, bitMode int, pf *prefix) ([]uint8, []label, error) {
+
+	var relType operandType // imm type
+
+	switch immOperType {
+	case valCB:
+		relType = rel8
+	case valCW:
+		relType = rel16
+	case valCD:
+		relType = rel32
+	}
+
+	_= relType
+
+	return []uint8{}, []label{}, nil
+
 }

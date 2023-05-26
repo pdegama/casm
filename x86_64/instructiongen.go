@@ -62,7 +62,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 
 			// imm bytes
 
-			immBytes, immLabels, err := addImmIB(&opcode, &inst, i, bitMode, &instPrefix)
+			immBytes, immLabels, err := addImmBytes(&opcode, &inst, i, bitMode, &instPrefix)
 			if err != nil {
 				// if error then return error
 				return instBytesStruct, err
@@ -72,12 +72,21 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 			instBytes = append(instBytes, immBytes...)     // append inst bytes
 			instLabels = append(instLabels, immLabels...)  // append labels
 
-		case valCB:
+		case valCB, valCW, valCD:
 			return instBytesStruct, fmt.Errorf("todo valCB") // todo
-		case valCW:
-			return instBytesStruct, fmt.Errorf("todo valCW") // todo
-		case valCD:
-			return instBytesStruct, fmt.Errorf("todo valCD") // todo
+
+			// offset bytes
+
+			offsetBytes, offsetLabels, err := addRelBytes(&opcode, &inst, i, bitMode, &instPrefix)
+			if err != nil {
+				// if error then return error
+				return instBytesStruct, err
+			}
+
+			addCurrentPosLabel(&offsetLabels, len(instBytes)) // set label pos
+			instBytes = append(instBytes, offsetBytes...)     // append inst bytes
+			instLabels = append(instLabels, offsetLabels...)  // append labels
+
 		case valCP:
 			return instBytesStruct, fmt.Errorf("todo valCP") // todo
 		case valCO:
