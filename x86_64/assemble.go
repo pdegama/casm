@@ -10,7 +10,7 @@ import (
 )
 
 // assemble asm file
-func assemble(arch *x86_64) {
+func assemble(arch *x86_64, oFile string, fFmt int) {
 
 	// tokenization
 	lines, err := lexer(arch.asmFile)
@@ -45,16 +45,32 @@ func assemble(arch *x86_64) {
 		return
 	}
 
-	elfGen := elf{}
-	errs = elfGen.buildELF(&binGen)
-	if len(errs) != 0 {
-		for _, err := range errs {
-			fmt.Printf("%s %v\n", errorStr, err)
+	switch fFmt {
+	case fFmtElf64:
+		// if elf file
+		elfGen := elf{}
+		errs = elfGen.buildELF(&binGen)
+		if len(errs) != 0 {
+			for _, err := range errs {
+				fmt.Printf("%s %v\n", errorStr, err)
+			}
+			return
 		}
-		return
-	}
-	elfGen.saveBinFile()
+		elfGen.saveBinFile(oFile)
 
+	case fFmtRawBin:
+		// if raw bin
+		rawBinGen := rawbin{}
+		errs := rawBinGen.buildBin(&binGen)
+		if len(errs) != 0 {
+			for _, err := range errs {
+				fmt.Printf("%s %v\n", errorStr, err)
+			}
+			return
+		}
+		rawBinGen.saveBinFile(oFile)
+
+	}
 	// tmp
 	/* for _, line := range lines {
 		fmt.Println(line)

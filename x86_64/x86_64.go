@@ -15,10 +15,15 @@ func (arch *x86_64) SetAsmFile(fileName string) {
 	arch.asmFile = fileName
 }
 
+const (
+	fFmtRawBin = 0
+	fFmtElf64  = 1
+)
+
 // assemble asm file
-func (arch *x86_64) Assemble() {
+func (arch *x86_64) Assemble(oFile string, fFmt int) {
 	// call assemble function
-	assemble(arch)
+	assemble(arch, oFile, fFmt)
 }
 
 // new x86_64 architecture instant

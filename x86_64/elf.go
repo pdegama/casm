@@ -5,10 +5,7 @@
 
 package x86_64
 
-import (
-	"fmt"
-	"os"
-)
+import "os"
 
 // elf structure
 type elf struct {
@@ -124,10 +121,9 @@ func (e *elf) addValue(size int, val uint64) {
 }
 
 // save elf file
-func (e *elf) saveBinFile() {
-	err := os.WriteFile("./a.out", e.elfBytes, 0777)
+func (e *elf) saveBinFile(fName string) {
+	err := os.WriteFile(fName, e.elfBytes, 0777)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("save...")
 }

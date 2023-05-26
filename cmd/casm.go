@@ -6,17 +6,45 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"hellocomputers/casm/x86_64"
 	"os"
 )
 
 func main() {
 
-	asmFilePath := os.Args[1]
+	asmFile := flag.String("ifile", "", "assembly file")
+	binFile := flag.String("ofile", "./a.out", "output file")
+	fmtType := flag.String("filef", "elf64", "format [ elf64 | bin ]")
+
+	flag.Parse()
+	fmt.Println(*asmFile, *binFile, *fmtType)
+
+	if *asmFile == "" {
+		if len(flag.CommandLine.Args()) > 0 {
+			*asmFile = flag.CommandLine.Args()[0]
+		} else {
+			flag.PrintDefaults()
+			os.Exit(0)
+		}
+	}
+
+	fType := 1
+
+	switch *fmtType {
+	case "elf64":
+		fType = 1
+	case "bin":
+		fType = 0
+	default:
+		flag.PrintDefaults()
+		os.Exit(0)
+	}
 
 	// new x86_64 program
 	asmProg := x86_64.NewX86_64()
-	asmProg.SetAsmFile(asmFilePath) // set asm file
-	asmProg.Assemble()              // assemble
+	asmProg.SetAsmFile(*asmFile)      // set asm file
+	asmProg.Assemble(*binFile, fType) // assemble
 
 }
