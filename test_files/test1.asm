@@ -1,3 +1,3 @@
 bits 16
 
-jmp [ebx]
+jmp dword 0x74

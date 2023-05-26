@@ -34,27 +34,30 @@ func (b *binaryGen) setLabel(offset uint) []error {
 				continue
 			}
 
-			lPos = lPos + offset
-
+			
 			switch l.labelType {
 			case imm8:
 				// label type is imm8
-
+				
+				lPos = lPos + offset
 				leBytes := uint8le(uint8(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
 				}
-
+				
 			case imm16:
 				// label type is imm16
-
+				
+				lPos = lPos + offset
 				leBytes := uint16le(uint16(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
 				}
-
+				
 			case imm32:
 				// label type is imm32
+				
+				lPos = lPos + offset
 				leBytes := uint32le(uint32(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
@@ -62,7 +65,8 @@ func (b *binaryGen) setLabel(offset uint) []error {
 
 			case imm64:
 				// label type is imm64
-
+				
+				lPos = lPos + offset
 				leBytes := uint64le(uint64(lPos))
 				for i, v := range leBytes {
 					b.bytesStruct[bsIndex].bytes[l.labelPos+i] = v
