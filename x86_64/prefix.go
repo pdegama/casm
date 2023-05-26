@@ -212,7 +212,6 @@ func effectiveBitSize(ope *operand) (int, error) {
 
 	if isImmOperand(ope.t) {
 		// if operand is imm
-
 		switch ope.t {
 		case imm8:
 			// imm8 is 8-bit
@@ -229,7 +228,22 @@ func effectiveBitSize(ope *operand) (int, error) {
 		}
 	}
 
-	return 0, fmt.Errorf("internal error: modrm")
+	if isRelOperand(ope.t) {
+		// if operand is rel
+		switch ope.t{
+		case rel8:
+			// rel8 is 8-bit
+			return 8, nil
+		case rel16:
+			// rel16 is 16-bit
+			return 16, nil
+		case rel32:
+			// rel32 is 8-bit
+			return 32, nil
+		}
+	}
+
+	return 0, fmt.Errorf("internal error: effective bit size")
 }
 
 // gen prefix
