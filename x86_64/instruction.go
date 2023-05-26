@@ -40,8 +40,9 @@ func instructionGen(line asmLine, bitMode int) (bytesStructure, error) {
 		instBinCode, err = genInsrtuction(opcode, inst, bitMode)
 		if err != nil {
 			return bytesStructure{}, err
+		} else {
+			break
 		}
-		break
 	}
 	fmt.Println()
 
