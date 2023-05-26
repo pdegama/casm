@@ -113,11 +113,11 @@ func addRelBytes(opcode *archOpcode, inst *instruction, relOperType int, bitMode
 	}
 
 	// check override prefix
-/* 	err := checkOperandOverride(&operand{t: relType}, bitMode, pf)
-	if err != nil {
-		return nil, []label{}, err
-	}
- */
+	/* 	err := checkOperandOverride(&operand{t: relType}, bitMode, pf)
+	   	if err != nil {
+	   		return nil, []label{}, err
+	   	}
+	*/
 	var leBytes []uint8 // le rel bytes
 
 	switch relType {
@@ -147,6 +147,18 @@ func addRelBytes(opcode *archOpcode, inst *instruction, relOperType int, bitMode
 		l := label{
 			labelPos:  0,
 			labelName: relOperand.n,
+			labelType: relType,
+			value:     0,
+		}
+
+		labels = append(labels, l) // append to label
+
+	} else {
+		// if token is not lable
+
+		l := label{
+			labelPos:  0,
+			labelName: "$___reldips",
 			labelType: relType,
 			value:     relOperand.v,
 		}

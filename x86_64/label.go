@@ -28,10 +28,26 @@ func (b *binaryGen) setLabel(offset uint) []error {
 
 		for _, l := range bs.labels { // loop of labels
 
+			var lPos uint
+
 			lPos, err := b.getLabelPos(l.labelName)
 			if err != nil {
-				errs = append(errs, err)
-				continue
+
+				// if err is not nil then token not found
+
+				if l.labelName == "$___reldips" {
+					/*
+						if label name $___reldips
+						then this is direct disp
+					*/
+
+					lPos = l.value
+
+				} else {
+					// if token is not...
+					errs = append(errs, err)
+					continue
+				}
 			}
 
 			lPos = lPos + offset // add offset to lPos

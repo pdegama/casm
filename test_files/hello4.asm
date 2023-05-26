@@ -9,7 +9,7 @@ mov rsi, $msg
 mov rdx, [$msglen]
 syscall
 
-jmp $start2
+jmp dword 55
 
 $exit:
   mov rax, 60       ; exit(
