@@ -9,9 +9,7 @@ $start:
   mov rdx, [$msglen]
   syscall
 
-mov rdi, $add1
-mov [rdi], $start2
-call [rdi]
+call $start2
 
 $exit:
   mov rax, 60       ; exit(

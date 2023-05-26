@@ -1,3 +1,9 @@
-bits 16
+bits 64
 
-jmp dword 0x74
+$parth:
+
+jmp [$qwe]
+
+$qwe:
+
+
