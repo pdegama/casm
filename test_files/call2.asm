@@ -34,7 +34,7 @@ $msg:
 $msglen: 
   db 14 0 0 0 0 0 0 0
 $msg2: 
-  str "Hiiii, world!"
+  str "Hiiii, Hiii2!"
   db 10
 $add1: 
   db 0 0 0 0 0 0 0 0

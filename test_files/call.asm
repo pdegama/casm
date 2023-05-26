@@ -31,12 +31,12 @@ $start2:
 %data
 
 $msg: 
-  str "Hello, world!"
+  str "Hiiii, Hiii1!"
   db 10
 $msglen: 
   db 14 0 0 0 0 0 0 0
 $msg2: 
-  str "Hiiii, world!"
+  str "Hello, world!"
   db 10
 $add1: 
   db 0 0 0 0 0 0 0 0
