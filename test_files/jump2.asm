@@ -30,12 +30,12 @@ jmp $exit
 %data
 
 $msg: 
-  str "Hello, world!"
+  str "Jiiii, world!"
   db 10
 $msglen: 
   db 14 0 0 0 0 0 0 0
 $msg2: 
-  str "Hiiii, world!"
+  str "Hello, world!"
   db 10
 $add1: 
   db 0 0 0 0 0 0 0 0

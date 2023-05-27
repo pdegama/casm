@@ -2,7 +2,7 @@
 
 %text
 
-mov r11, 0x4
+mov r11, 0x5
 mov r15, [$masslen]
 
 mov al, 250
@@ -11,6 +11,7 @@ mov bl, 6
 add al, bl
 
 CMOVC r15, r11
+sub r15, 0x1
 
 $printHello:
   mov rax, 1 
