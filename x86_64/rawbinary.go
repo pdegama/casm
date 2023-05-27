@@ -13,12 +13,12 @@ type rawbin struct {
 }
 
 // build raw bin file
-func (e *rawbin) buildBin(b *binaryGen) []error {
+func (e *rawbin) buildBin(b *binaryGen, offset uint) []error {
 
 	b.mergeSegments() // merge segment
 	b.setPos()        // set bytes pos
 
-	errs := b.setLabel(0x00) // set labels
+	errs := b.setLabel(offset) // set labels
 	if len(errs) != 0 {
 		return errs
 	}

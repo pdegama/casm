@@ -17,6 +17,7 @@ func (arch *x86_64) SetAsmFile(fileName string) {
 
 const (
 	fFmtRawBin = 0
+	fFmtBootLoader = 2
 	fFmtElf64  = 1
 )
 

@@ -61,7 +61,19 @@ func assemble(arch *x86_64, oFile string, fFmt int) {
 	case fFmtRawBin:
 		// if raw bin
 		rawBinGen := rawbin{}
-		errs := rawBinGen.buildBin(&binGen)
+		errs := rawBinGen.buildBin(&binGen, 0x00)
+		if len(errs) != 0 {
+			for _, err := range errs {
+				fmt.Printf("%s %v\n", errorStr, err)
+			}
+			return
+		}
+		rawBinGen.saveBinFile(oFile)
+
+	case fFmtBootLoader:
+		// if raw bin
+		rawBinGen := rawbin{}
+		errs := rawBinGen.buildBin(&binGen, 0x7C00)
 		if len(errs) != 0 {
 			for _, err := range errs {
 				fmt.Printf("%s %v\n", errorStr, err)

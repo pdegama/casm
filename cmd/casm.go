@@ -15,7 +15,7 @@ func main() {
 
 	asmFile := flag.String("ifile", "", "assembly file")
 	binFile := flag.String("ofile", "./a.out", "output file")
-	fmtType := flag.String("filef", "elf64", "format [ elf64 | bin ]")
+	fmtType := flag.String("filef", "elf64", "format [ elf64 | bin | boot ]")
 
 	flag.Parse()
 	// fmt.Println(*asmFile, *binFile, *fmtType)
@@ -36,6 +36,8 @@ func main() {
 		fType = 1
 	case "bin":
 		fType = 0
+	case "boot":
+		fType = 2
 	default:
 		flag.PrintDefaults()
 		os.Exit(0)
