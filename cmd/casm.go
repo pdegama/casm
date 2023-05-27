@@ -7,7 +7,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"hellocomputers/casm/x86_64"
 	"os"
 )
@@ -19,7 +18,7 @@ func main() {
 	fmtType := flag.String("filef", "elf64", "format [ elf64 | bin ]")
 
 	flag.Parse()
-	fmt.Println(*asmFile, *binFile, *fmtType)
+	// fmt.Println(*asmFile, *binFile, *fmtType)
 
 	if *asmFile == "" {
 		if len(flag.CommandLine.Args()) > 0 {
