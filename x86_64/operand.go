@@ -123,6 +123,12 @@ func isMemOperand(operType operandType) bool {
 			regMem16, regMem32, regMem64
 		*/
 		return true
+	case mem16_16, mem16_32, mem16_64:
+		/*
+			return true bacause mem16_16, mem16_32, 
+			mem16_64
+		*/
+		return true
 	}
 
 	/*

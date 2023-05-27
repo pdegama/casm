@@ -1,8 +1,3 @@
 %bits 32
 
-$parth:
-
-call word $parth
-call word $parth
-
-$qwe:
+call_far [0x74]

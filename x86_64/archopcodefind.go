@@ -224,14 +224,14 @@ func operandIsValid(withOperand *archOperand, thisOperand *operand) int {
 	*/
 
 	if thisOperand.t == mem {
-		switch withOperand.t {
-		case regMem8, regMem16, regMem32, regMem64:
+		if isMemOperand(withOperand.t) {
 			/*
-				if withOperand is regMem8, regMem16,
-				regMem32 or regMem64, then accept mem
+				if withOperand is mem operand then
+				accept mem
 			*/
 			return operandPerfectMatch
 		}
+
 	}
 
 	/*
@@ -358,7 +358,6 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		fmt.Println(opcode)
 	}
 	fmt.Println("g====")
-
 
 	for i := 0; i < len(greatThanOpcodes)/2; i++ {
 		// reverse greatThanOpcodes
