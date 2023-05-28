@@ -87,10 +87,21 @@ const (
 	r14b
 	r15b
 
+	// segment registers
+
+	es
+	cs
+	ss
+	ds
+	fs
+	gs
+
 	//
 )
 
 const _ = noneReg
+
+const segmentRegister = -1
 
 var registers []register = []register{
 
@@ -169,6 +180,14 @@ var registers []register = []register{
 	{"R13B", r13b, 8, 13, 5, true},
 	{"R14B", r14b, 8, 14, 6, true},
 	{"R15B", r15b, 8, 15, 7, true},
+
+	// segment registers
+	{"ES", es, segmentRegister, 0, 0, true},
+	{"CS", cs, segmentRegister, 1, 1, true},
+	{"SS", ss, segmentRegister, 2, 2, true},
+	{"DS", ds, segmentRegister, 3, 3, true},
+	{"FS", fs, segmentRegister, 4, 4, true},
+	{"GS", gs, segmentRegister, 5, 5, true},
 
 	//
 }

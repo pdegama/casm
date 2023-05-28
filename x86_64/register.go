@@ -66,6 +66,9 @@ func getRegisterOperandType(reg register) operandType {
 	case 64:
 		// if register bit size is 64
 		return reg64
+	case segmentRegister:
+		// if register is segment reg
+		return sReg
 	default:
 		// if register bit size is invalid
 		panic("invalid register")

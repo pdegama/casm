@@ -143,8 +143,13 @@ func isRegOperand(operType operandType) bool {
 	switch operType {
 	case reg, reg8, reg16, reg32, reg64:
 		/*
-			retrun true because reg, reg8, reg16,
+			return true because reg, reg8, reg16,
 			reg32, reg64
+		*/
+		return true
+	case sReg:
+		/* 
+			return true because sReg
 		*/
 		return true
 	}
