@@ -5,8 +5,6 @@
 
 package x86_64
 
-import "fmt"
-
 // find arch opcode
 func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 
@@ -73,14 +71,14 @@ func findArchOpcode(inst *instruction, bitMode int) []archOpcode {
 							append to validPerfectOpcodes
 						*/
 						validPerfectOpcodes = append(validPerfectOpcodes, opcode)
-						fmt.Println(">>>", opcode)
+						// fmt.Println(">>>", opcode)
 					} else {
 						/*
 							if opecode is not perfect match then
 							append to validOpcodes
 						*/
 						validOpcodes = append(validOpcodes, opcode)
-						fmt.Println("---", opcode)
+						// fmt.Println("---", opcode)
 					}
 				}
 
@@ -293,11 +291,12 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		*/
 		return
 	}
-
-	for _, opcode := range *opcodes {
-		fmt.Println(opcode)
-	}
-	fmt.Println("---------")
+	/*
+		for _, opcode := range *opcodes {
+			fmt.Println(opcode)
+		}
+		fmt.Println("---------")
+	*/
 
 	// sorting opcodes
 	for i := 0; i < len(*opcodes); i++ {
@@ -313,10 +312,12 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 
 	}
 
-	for _, opcode := range *opcodes {
-		fmt.Println(opcode)
-	}
-	fmt.Println("---------")
+	/*
+		for _, opcode := range *opcodes {
+			fmt.Println(opcode)
+		}
+		fmt.Println("---------")
+	*/
 
 	if immIsLabel {
 		/*
@@ -354,10 +355,12 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		}
 	}
 
-	for _, opcode := range greatThanOpcodes {
-		fmt.Println(opcode)
-	}
-	fmt.Println("g====")
+	/*
+		for _, opcode := range greatThanOpcodes {
+			fmt.Println(opcode)
+		}
+		fmt.Println("g====")
+	*/
 
 	for i := 0; i < len(greatThanOpcodes)/2; i++ {
 		// reverse greatThanOpcodes
@@ -366,19 +369,23 @@ func filterOpcodeImm(inst *instruction, opcodes *[]archOpcode) {
 		greatThanOpcodes[len(greatThanOpcodes)-1-i] = tmpOpcode
 	}
 
-	for _, opcode := range greatThanOpcodes {
-		fmt.Println(opcode)
-	}
-	fmt.Println("g====")
+	/*
+		for _, opcode := range greatThanOpcodes {
+			fmt.Println(opcode)
+		}
+		fmt.Println("g====")
+	*/
 
 	// make temp opcodes map after assign opcodes
 	tmpOpcodes := append(greatThanOpcodes, lessThanOpcodes...)
 	copy(*opcodes, tmpOpcodes) // copy temp opcodes to *opcodes
 
-	for _, opcode := range *opcodes {
-		fmt.Println(opcode)
-	}
-	fmt.Println("---------")
+	/*
+		for _, opcode := range *opcodes {
+			fmt.Println(opcode)
+		}
+		fmt.Println("---------")
+	*/
 
 }
 

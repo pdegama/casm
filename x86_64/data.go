@@ -96,11 +96,12 @@ func dataBytes(line asmLine) (bytesStructure, error) {
 		}
 
 	}
-
-	for _, b := range dataBytes {
-		fmt.Printf("%x ", b)
-	}
-	fmt.Println()
+	/*
+		for _, b := range dataBytes {
+			fmt.Printf("%x ", b)
+		}
+		fmt.Println()
+	*/
 
 	return bytesStructure{
 		pos:    0,

@@ -23,9 +23,11 @@ func instructionGen(line asmLine, bitMode int) (bytesStructure, error) {
 		return bytesStructure{}, err
 	}
 
-	fmt.Println()
-	fmt.Println(inst)
-	fmt.Println("-----------------------------------------------------------------------")
+	/*
+	 	fmt.Println()
+	   	fmt.Println(inst)
+	   	fmt.Println("-----------------------------------------------------------------------")
+	*/
 
 	validInstOpcde := findArchOpcode(&inst, bitMode) // find valid opcode(s)
 	if len(validInstOpcde) == 0 {
@@ -44,7 +46,7 @@ func instructionGen(line asmLine, bitMode int) (bytesStructure, error) {
 			break
 		}
 	}
-	fmt.Println()
+	// fmt.Println()
 
 	return instBinCode, nil
 }

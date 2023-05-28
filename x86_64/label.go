@@ -24,7 +24,7 @@ func (b *binaryGen) setLabel(offset uint) []error {
 	// loop of bytes structure
 	for bsIndex, bs := range b.bytesStruct {
 
-		fmt.Println(bs)
+		// fmt.Println(bs)
 
 		for _, l := range bs.labels { // loop of labels
 
@@ -119,7 +119,7 @@ func (b *binaryGen) setLabel(offset uint) []error {
 
 		}
 
-		fmt.Println(b.bytesStruct[bsIndex])
+		// fmt.Println(b.bytesStruct[bsIndex])
 
 	}
 

@@ -17,8 +17,8 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 
 	instLabels := []label{} // inst labels
 
-	fmt.Println(inst)
-	fmt.Println(opcode)
+	// fmt.Println(inst)
+	// fmt.Println(opcode)
 
 	for _, i := range opcode.opcode {
 		switch i {
@@ -73,7 +73,7 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 			instLabels = append(instLabels, immLabels...)  // append labels
 
 		case valCB, valCW, valCD:
-			
+
 			// offset bytes
 
 			offsetBytes, offsetLabels, err := addRelBytes(&opcode, &inst, i, bitMode, &instPrefix)
@@ -113,9 +113,11 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 
 	addPosLabel(&instLabels, len(prefixByte)) // add prefix length in label pos
 
-	for _, b := range instBytes {
-		fmt.Printf("%x ", b)
-	}
+	/*
+		 for _, b := range instBytes {
+			fmt.Printf("%x ", b)
+		}
+	*/
 
 	instBytesStruct.bytes = instBytes
 	instBytesStruct.len = len(instBytes)
