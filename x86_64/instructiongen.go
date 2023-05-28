@@ -105,6 +105,9 @@ func genInsrtuction(opcode archOpcode, inst instruction, bitMode int) (bytesStru
 		return instBytesStruct, err
 	}
 
+	// check instruction is require rex prefix...
+	checkREXprefix(&opcode, &instPrefix)
+
 	prefixByte := genPrefix(&instPrefix)         // prefix bytes
 	instBytes = append(prefixByte, instBytes...) // append prefix
 

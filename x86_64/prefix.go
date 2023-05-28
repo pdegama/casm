@@ -230,7 +230,7 @@ func effectiveBitSize(ope *operand) (int, error) {
 
 	if isRelOperand(ope.t) {
 		// if operand is rel
-		switch ope.t{
+		switch ope.t {
 		case rel8:
 			// rel8 is 8-bit
 			return 8, nil
@@ -297,4 +297,28 @@ func genPrefix(p *prefix) []uint8 {
 	}
 
 	return prefixByte
+}
+
+// check rex prefix require
+func checkREXprefix(opcode *archOpcode, pf *prefix) {
+
+	/*
+		CALL, ENTER, JMP, LEAVE, LGDT,
+		LIDT, LLDT, LOOP, LTR, POPF,
+		POPFD, POPFQ, POP, PUSH, PUSHF,
+		PUSHFD, PUSHFQ, RET instructions
+		not requiring rex prefix
+	*/
+
+	switch opcode.name {
+	case "CALL", "ENTER", "JMP", "LEAVE", "LGDT",
+		"LIDT", "LLDT", "LOOP", "LTR", "POPF",
+		"POPFD", "POPFQ", "POP", "PUSH", "PUSHF",
+		"PUSHFD", "PUSHFQ", "RET":
+
+		// set rex prefix w firel false
+		pf.rex.w = false
+
+	}
+
 }

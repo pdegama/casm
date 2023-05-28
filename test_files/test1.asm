@@ -1,3 +1,3 @@
-bits 32
+bits 64
 
-call far [0x74]
+mov [r15d], edx
