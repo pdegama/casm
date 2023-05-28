@@ -182,12 +182,12 @@ var registers []register = []register{
 	{"R15B", r15b, 8, 15, 7, true},
 
 	// segment registers
-	{"ES", es, segmentRegister, 0, 0, true},
-	{"CS", cs, segmentRegister, 1, 1, true},
-	{"SS", ss, segmentRegister, 2, 2, true},
-	{"DS", ds, segmentRegister, 3, 3, true},
-	{"FS", fs, segmentRegister, 4, 4, true},
-	{"GS", gs, segmentRegister, 5, 5, true},
+	{"ES", es, segmentRegister, 0, 0, false},
+	{"CS", cs, segmentRegister, 1, 1, false},
+	{"SS", ss, segmentRegister, 2, 2, false},
+	{"DS", ds, segmentRegister, 3, 3, false},
+	{"FS", fs, segmentRegister, 4, 4, false},
+	{"GS", gs, segmentRegister, 5, 5, false},
 
 	//
 }

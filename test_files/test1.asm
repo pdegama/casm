@@ -1,3 +1,3 @@
 bits 64
 
-mov gs, [edx]
+mov [r15d + 0x12], edx
