@@ -28,8 +28,8 @@ const (
 	// amd
 	amdManualName string = "amd64"
 	amdManualWeb  string = "https://www.amd.com/en/support/tech-docs?keyword=AMD64+Architecture+Programmer%27s+Manual"
-	amdManualURL  string = "https://www.amd.com/system/files/TechDocs/40332.pdf"
-	amdManualURL2 string = "https://www.amd.com/system/files/TechDocs/24594.pdf"
+	amdManualURL  string = "https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/40332.pdf"
+	amdManualURL2 string = "https://www.amd.com/content/dam/amd/en/documents/processor-tech-docs/programmer-references/24594.pdf"
 )
 
 func main() {
